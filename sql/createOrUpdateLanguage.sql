@@ -12,13 +12,13 @@ DECLARE
     pkey character varying;
 BEGIN
     -- check for nulls
-    IF _display_code IS NULL OR lower(_display_code) = 'null' THEN
+    IF lower(_display_code) = 'null' THEN
         _display_code := NULL;
     END IF;
-    IF _name IS NULL OR lower(_name) = 'null' THEN
+    IF lower(_name) = 'null' THEN
         _name := NULL;
     END IF;
-    IF _name_section IS NULL OR lower(_name_section) = 'null' THEN
+    IF lower(_name_section) = 'null' THEN
         _name_section := NULL;
     END IF;
 

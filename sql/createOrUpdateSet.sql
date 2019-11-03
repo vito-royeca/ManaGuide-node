@@ -33,31 +33,31 @@ DECLARE
     parent_row cmset%rowtype;
 BEGIN
     -- check for nulls
-    IF _mtgo_code IS NULL OR lower(_mtgo_code) = 'null' THEN
+    IF lower(_mtgo_code) = 'null' THEN
         _mtgo_code := NULL;
     END IF;
-    IF _my_keyrune_code IS NULL OR lower(_my_keyrune_code) = 'null' THEN
+    IF lower(_my_keyrune_code) = 'null' THEN
         _my_keyrune_code := NULL;
     END IF;
-    IF _my_name_section IS NULL OR lower(_my_name_section) = 'null' THEN
+    IF lower(_my_name_section) = 'null' THEN
         _my_name_section := NULL;
     END IF;
-    IF _my_year_section IS NULL OR lower(_my_year_section) = 'null' THEN
+    IF lower(_my_year_section) = 'null' THEN
         _my_year_section := NULL;
     END IF;
-    IF _name IS NULL OR lower(_name) = 'null' THEN
+    IF lower(_name) = 'null' THEN
         _name := NULL;
     END IF;
-    IF _release_date IS NULL OR lower(_release_date) = 'null' THEN
+    IF lower(_release_date) = 'null' THEN
         _release_date := NULL;
     END IF;
-    IF _cmsetblock IS NULL OR lower(_cmsetblock) = 'null' THEN
+    IF lower(_cmsetblock) = 'null' THEN
         _cmsetblock := NULL;
     END IF;
-    IF _cmsettype IS NULL OR lower(_cmsettype) = 'null' THEN
+    IF lower(_cmsettype) = 'null' THEN
         _cmsettype := NULL;
     END IF;
-    IF _cmset_parent IS NULL OR lower(_cmset_parent) = 'null' THEN
+    IF lower(_cmset_parent) = 'null' THEN
         _cmset_parent := NULL;
     END IF;
 

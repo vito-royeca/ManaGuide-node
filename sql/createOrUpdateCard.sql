@@ -41,7 +41,14 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying,
     character varying,
     character varying,
-    character varying) RETURNS varchar AS $$
+    character varying,
+    character varying,
+    character varying,
+    character varying[],
+    character varying[],
+    character varying[],
+    character varying[],
+    jsonb) RETURNS varchar AS $$
 DECLARE
     _collector_number ALIAS FOR $1;
     _cmc ALIAS FOR $2;
@@ -86,92 +93,100 @@ DECLARE
     _cmrarity ALIAS FOR $41;
     _cmlanguage ALIAS FOR $42;
     _cmlayout ALIAS FOR $43;
+    _cmwatermark ALIAS FOR $44;
+    _cmframe ALIAS FOR $45;
+    _cmframeeffects ALIAS FOR $46;
+    _cmcolors ALIAS FOR $47;
+    _cmcolor_identities ALIAS FOR $48;
+    _cmcolor_indicators ALIAS FOR $49;
+    _cmlegalities ALIAS FOR $50;
 
     pkey character varying;
     pkey2 character varying;
     pkey3 character varying;
+    row RECORD;
 BEGIN
     -- check for nulls
-    IF _collector_number IS NULL OR lower(_collector_number) = 'null' THEN
+    IF lower(_collector_number) = 'null' THEN
         _collector_number := NULL;
     END IF;
-    IF _flavor_text IS NULL OR lower(_flavor_text) = 'null' THEN
+    IF lower(_flavor_text) = 'null' THEN
         _flavor_text := NULL;
     END IF;
-    IF _image_uris IS NULL THEN
-        _image_uris := NULL;
-    END IF;
-    IF _loyalty IS NULL OR lower(_loyalty) = 'null' THEN
+    IF lower(_loyalty) = 'null' THEN
         _loyalty := NULL;
     END IF;
-    IF _mana_cost IS NULL OR lower(_mana_cost) = 'null' THEN
+    IF lower(_mana_cost) = 'null' THEN
         _mana_cost := NULL;
     END IF;
-    IF _my_name_section IS NULL OR lower(_my_name_section) = 'null' THEN
+    IF lower(_my_name_section) = 'null' THEN
         _my_name_section := NULL;
     END IF;
-    IF _name IS NULL OR lower(_name) = 'null' THEN
+    IF lower(_name) = 'null' THEN
         _name := NULL;
     END IF;
-    IF _oracle_text IS NULL OR lower(_oracle_text) = 'null' THEN
+    IF lower(_oracle_text) = 'null' THEN
         _oracle_text := NULL;
     END IF;
-    IF _power IS NULL OR lower(_power) = 'null' THEN
+    IF lower(_power) = 'null' THEN
         _power := NULL;
     END IF;
-    IF _printed_name IS NULL OR lower(_printed_name) = 'null' THEN
+    IF lower(_printed_name) = 'null' THEN
         _printed_name := NULL;
     END IF;
-    IF _printed_text IS NULL OR lower(_printed_text) = 'null' THEN
+    IF lower(_printed_text) = 'null' THEN
         _printed_text := NULL;
     END IF;
-    IF _toughness IS NULL OR lower(_toughness) = 'null' THEN
+    IF lower(_toughness) = 'null' THEN
         _toughness := NULL;
     END IF;
-    IF _arena_id IS NULL OR lower(_arena_id) = 'null' THEN
+    IF lower(_arena_id) = 'null' THEN
         _arena_id := NULL;
     END IF;
-    IF _mtgo_id IS NULL OR lower(_mtgo_id) = 'null' THEN
+    IF lower(_mtgo_id) = 'null' THEN
         _mtgo_id := NULL;
     END IF;
-    IF _tcgplayer_id IS NULL OR lower(_tcgplayer_id) = 'null' THEN
+    IF lower(_tcgplayer_id) = 'null' THEN
         _tcgplayer_id := NULL;
     END IF;
-    IF _hand_modifier IS NULL OR lower(_hand_modifier) = 'null' THEN
+    IF lower(_hand_modifier) = 'null' THEN
         _hand_modifier := NULL;
     END IF;
-    IF _life_modifier IS NULL OR lower(_life_modifier) = 'null' THEN
+    IF lower(_life_modifier) = 'null' THEN
         _life_modifier := NULL;
     END IF;
-    IF _released_at IS NULL THEN
-        _released_at := NULL;
-    END IF;
-    IF _mtgo_foil_id IS NULL OR lower(_mtgo_foil_id) = 'null'  THEN
+    IF lower(_mtgo_foil_id) = 'null'  THEN
         _mtgo_foil_id := NULL;
     END IF;
-    IF _card_back_id IS NULL OR lower(_card_back_id) = 'null' THEN
+    IF lower(_card_back_id) = 'null' THEN
         _card_back_id := NULL;
     END IF;
-    IF _oracle_id IS NULL OR lower(_oracle_id) = 'null' THEN
+    IF lower(_oracle_id) = 'null' THEN
         _oracle_id := NULL;
     END IF;
-    IF _illustration_id IS NULL OR lower(_illustration_id) = 'null' THEN
+    IF lower(_illustration_id) = 'null' THEN
         _illustration_id := NULL;
     END IF;
-    IF _cmartist IS NULL OR lower(_cmartist) = 'null' THEN
+    IF lower(_cmartist) = 'null' THEN
         _cmartist := NULL;
     END IF;
-    IF _cmset IS NULL OR lower(_cmset) = 'null' THEN
+    IF lower(_cmset) = 'null' THEN
         _cmset := NULL;
     END IF;
-    IF _cmrarity IS NULL OR lower(_cmrarity) = 'null' THEN
+    IF lower(_cmrarity) = 'null' THEN
         _cmrarity := NULL;
     END IF;
-    IF _cmlanguage IS NULL OR lower(_cmlanguage) = 'null' THEN
+    IF lower(_cmlanguage) = 'null' THEN
         _cmlanguage := NULL;
     END IF;
-    IF _cmlayout IS NULL OR lower(_cmlayout) = 'null' THEN
+    IF lower(_cmlayout) = 'null' THEN
         _cmlayout := NULL;
+    END IF;
+    IF lower(_cmwatermark) = 'null' THEN
+        _cmwatermark := NULL;
+    END IF;
+    IF lower(_cmframe) = 'null' THEN
+        _cmframe := NULL;
     END IF;
 
     SELECT id INTO pkey FROM cmcard WHERE id = _id;
@@ -220,7 +235,9 @@ BEGIN
             cmset,
             cmrarity,
             cmlanguage,
-            cmlayout)
+            cmlayout,
+            cmwatermark,
+            cmframe)
         VALUES(
             _collector_number,
             _cmc,
@@ -264,7 +281,9 @@ BEGIN
             _cmset,
             _cmrarity,
             _cmlanguage,
-            _cmlayout);
+            _cmlayout,
+            _cmwatermark,
+            _cmframe);
     ELSE
         UPDATE cmcard SET
             collector_number = _collector_number,
@@ -310,12 +329,16 @@ BEGIN
             cmrarity = _cmrarity,
             cmlanguage = _cmlanguage,
             cmlayout = _cmlayout,
+            cmwatermark = _cmwatermark,
+            cmframe = _cmframe,
             date_updated = now()
         WHERE id = _id;
     END IF;
 
+    -- set and language
     IF _cmset IS NOT NULL AND _cmlanguage IS NOT NULL THEN
-        SELECT cmset, cmlanguage INTO pkey2, pkey3 FROM cmset_language WHERE cmset = _cmset AND cmlanguage = _cmlanguage;
+        SELECT cmset, cmlanguage INTO pkey2, pkey3 FROM cmset_language
+        WHERE cmset = _cmset AND cmlanguage = _cmlanguage;
 
         IF NOT FOUND THEN
             INSERT INTO cmset_language(
@@ -326,6 +349,100 @@ BEGIN
                 _cmlanguage
             );
         END IF;
+    END IF;
+
+    -- frame effects
+    IF _cmframeeffects IS NOT NULL THEN
+        FOREACH pkey IN ARRAY _cmframeeffects LOOP
+            SELECT cmcard, cmframeeffect INTO pkey2, pkey3 FROM cmcard_frameeffect
+            WHERE cmcard = _id AND cmframeeffect = pkey;
+
+            IF NOT FOUND THEN
+                INSERT INTO cmcard_frameeffect(
+                    cmcard,
+                    cmframeeffect
+                ) VALUES (
+                    _id,
+                    pkey
+                );
+            END IF;
+        END LOOP;
+    END IF;
+
+    -- colors
+    IF _cmcolors IS NOT NULL THEN
+        FOREACH pkey IN ARRAY _cmcolors LOOP
+                SELECT cmcard, cmcolor INTO pkey2, pkey3 FROM cmcard_color
+                WHERE cmcard = _id AND cmcolor = pkey;
+
+                IF NOT FOUND THEN
+                    INSERT INTO cmcard_color(
+                        cmcard,
+                        cmcolor
+                    ) VALUES (
+                        _id,
+                        pkey
+                    );
+                END IF;
+            END LOOP;
+    END IF;
+
+    -- color identities
+    IF _cmcolor_identities IS NOT NULL THEN
+        FOREACH pkey IN ARRAY _cmcolor_identities LOOP
+                SELECT cmcard, cmcolor INTO pkey2, pkey3 FROM cmcard_coloridentity
+                WHERE cmcard = _id AND cmcolor = pkey;
+
+                IF NOT FOUND THEN
+                    INSERT INTO cmcard_coloridentity(
+                        cmcard,
+                        cmcolor
+                    ) VALUES (
+                        _id,
+                        pkey
+                    );
+                END IF;
+            END LOOP;
+    END IF;
+
+    -- color indicators
+    IF _cmcolor_indicators IS NOT NULL THEN
+        FOREACH pkey IN ARRAY _cmcolor_indicators LOOP
+            SELECT cmcard, cmcolor INTO pkey2, pkey3 FROM cmcard_colorindicator
+            WHERE cmcard = _id AND cmcolor = pkey;
+
+            IF NOT FOUND THEN
+                INSERT INTO cmcard_colorindicator(
+                    cmcard,
+                    cmcolor
+                ) VALUES (
+                    _id,
+                    pkey
+                );
+            END IF;
+        END LOOP;
+    END IF;
+
+    -- legalities
+    IF _cmlegalities IS NOT NULL THEN
+        FOR pkey2, pkey3 IN
+            SELECT * FROM jsonb_each_text(_cmlegalities) LOOP
+
+                SELECT cmcard INTO pkey FROM cmcard_format_legality
+                WHERE cmcard = _id AND cmformat = pkey2 AND cmlegality = pkey3;
+
+                IF NOT FOUND THEN
+                    INSERT INTO cmcard_format_legality(
+                        cmcard,
+                        cmformat,
+                        cmlegality
+                    ) VALUES (
+                        _id,
+                        pkey2,
+                        pkey3
+                    );
+                END IF;
+        END LOOP;
     END IF;
 
     RETURN _id;
