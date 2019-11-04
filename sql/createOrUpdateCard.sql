@@ -48,7 +48,11 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying[],
     character varying[],
     character varying[],
-    jsonb) RETURNS varchar AS $$
+    jsonb,
+    character varying,
+    character varying,
+    character varying[],
+    character varying[]) RETURNS varchar AS $$
 DECLARE
     _collector_number ALIAS FOR $1;
     _cmc ALIAS FOR $2;
@@ -100,6 +104,10 @@ DECLARE
     _cmcolor_identities ALIAS FOR $48;
     _cmcolor_indicators ALIAS FOR $49;
     _cmlegalities ALIAS FOR $50;
+    _type_line ALIAS FOR $51;
+    _printed_type_line ALIAS FOR $52;
+    _cmcardtype_subtypes ALIAS FOR $53;
+    _cmcardtype_supertypes ALIAS FOR $54;
 
     pkey character varying;
     pkey2 character varying;
@@ -188,6 +196,12 @@ BEGIN
     IF lower(_cmframe) = 'null' THEN
         _cmframe := NULL;
     END IF;
+    IF lower(_type_line) = 'null' THEN
+        _type_line := NULL;
+    END IF;
+    IF lower(_printed_type_line) = 'null' THEN
+        _printed_type_line := NULL;
+    END IF;
 
     SELECT id INTO pkey FROM cmcard WHERE id = _id;
 
@@ -237,7 +251,9 @@ BEGIN
             cmlanguage,
             cmlayout,
             cmwatermark,
-            cmframe)
+            cmframe,
+            type_line,
+            printed_type_line)
         VALUES(
             _collector_number,
             _cmc,
@@ -283,7 +299,9 @@ BEGIN
             _cmlanguage,
             _cmlayout,
             _cmwatermark,
-            _cmframe);
+            _cmframe,
+            _type_line,
+            _printed_type_line);
     ELSE
         UPDATE cmcard SET
             collector_number = _collector_number,
@@ -331,117 +349,121 @@ BEGIN
             cmlayout = _cmlayout,
             cmwatermark = _cmwatermark,
             cmframe = _cmframe,
+            type_line = _type_line,
+            printed_type_line = _printed_type_line,
             date_updated = now()
         WHERE id = _id;
     END IF;
 
     -- set and language
+    DELETE FROM cmset_language WHERE cmset = _cmset AND cmlanguage = _cmlanguage;
     IF _cmset IS NOT NULL AND _cmlanguage IS NOT NULL THEN
-        SELECT cmset, cmlanguage INTO pkey2, pkey3 FROM cmset_language
-        WHERE cmset = _cmset AND cmlanguage = _cmlanguage;
-
-        IF NOT FOUND THEN
-            INSERT INTO cmset_language(
-                cmset,
-                cmlanguage
-            ) VALUES(
-                _cmset,
-                _cmlanguage
-            );
-        END IF;
+        INSERT INTO cmset_language(
+            cmset,
+            cmlanguage
+        ) VALUES(
+            _cmset,
+            _cmlanguage
+        );
     END IF;
 
     -- frame effects
+    DELETE FROM cmcard_frameeffect WHERE cmcard = _id;
     IF _cmframeeffects IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmframeeffects LOOP
-            SELECT cmcard, cmframeeffect INTO pkey2, pkey3 FROM cmcard_frameeffect
-            WHERE cmcard = _id AND cmframeeffect = pkey;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_frameeffect(
-                    cmcard,
-                    cmframeeffect
-                ) VALUES (
-                    _id,
-                    pkey
-                );
-            END IF;
+            INSERT INTO cmcard_frameeffect(
+                cmcard,
+                cmframeeffect
+            ) VALUES (
+                _id,
+                pkey
+            );
         END LOOP;
     END IF;
 
     -- colors
+    DELETE FROM cmcard_color WHERE cmcard = _id;
     IF _cmcolors IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolors LOOP
-                SELECT cmcard, cmcolor INTO pkey2, pkey3 FROM cmcard_color
-                WHERE cmcard = _id AND cmcolor = pkey;
-
-                IF NOT FOUND THEN
-                    INSERT INTO cmcard_color(
-                        cmcard,
-                        cmcolor
-                    ) VALUES (
-                        _id,
-                        pkey
-                    );
-                END IF;
-            END LOOP;
+            INSERT INTO cmcard_color(
+                cmcard,
+                cmcolor
+            ) VALUES (
+                _id,
+                pkey
+            );
+        END LOOP;
     END IF;
 
     -- color identities
+    DELETE FROM cmcard_coloridentity WHERE cmcard = _id;
     IF _cmcolor_identities IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_identities LOOP
-                SELECT cmcard, cmcolor INTO pkey2, pkey3 FROM cmcard_coloridentity
-                WHERE cmcard = _id AND cmcolor = pkey;
-
-                IF NOT FOUND THEN
-                    INSERT INTO cmcard_coloridentity(
-                        cmcard,
-                        cmcolor
-                    ) VALUES (
-                        _id,
-                        pkey
-                    );
-                END IF;
-            END LOOP;
+            INSERT INTO cmcard_coloridentity(
+                cmcard,
+                cmcolor
+            ) VALUES (
+                _id,
+                pkey
+            );
+        END LOOP;
     END IF;
 
     -- color indicators
+    DELETE FROM cmcard_colorindicator WHERE cmcard = _id;
     IF _cmcolor_indicators IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_indicators LOOP
-            SELECT cmcard, cmcolor INTO pkey2, pkey3 FROM cmcard_colorindicator
-            WHERE cmcard = _id AND cmcolor = pkey;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_colorindicator(
-                    cmcard,
-                    cmcolor
-                ) VALUES (
-                    _id,
-                    pkey
-                );
-            END IF;
+            INSERT INTO cmcard_colorindicator(
+                cmcard,
+                cmcolor
+            ) VALUES (
+                _id,
+                pkey
+            );
         END LOOP;
     END IF;
 
     -- legalities
+    DELETE FROM cmcard_format_legality WHERE cmcard = _id;
     IF _cmlegalities IS NOT NULL THEN
-        FOR pkey2, pkey3 IN
-            SELECT * FROM jsonb_each_text(_cmlegalities) LOOP
+        FOR pkey2, pkey3 IN SELECT * FROM jsonb_each_text(_cmlegalities) LOOP
+            INSERT INTO cmcard_format_legality(
+                cmcard,
+                cmformat,
+                cmlegality
+            ) VALUES (
+                _id,
+                pkey2,
+                pkey3
+            );
+        END LOOP;
+    END IF;
 
-                SELECT cmcard INTO pkey FROM cmcard_format_legality
-                WHERE cmcard = _id AND cmformat = pkey2 AND cmlegality = pkey3;
+    -- subtypes
+    DELETE FROM cmcard_subtype WHERE cmcard = _id;
+    IF _cmcardtype_subtypes IS NOT NULL THEN
+        FOREACH pkey IN ARRAY _cmcardtype_subtypes LOOP
+            INSERT INTO cmcard_subtype(
+                cmcard,
+                cmcardtype
+            ) VALUES (
+                _id,
+                pkey
+            );
+        END LOOP;
+    END IF;
 
-                IF NOT FOUND THEN
-                    INSERT INTO cmcard_format_legality(
-                        cmcard,
-                        cmformat,
-                        cmlegality
-                    ) VALUES (
-                        _id,
-                        pkey2,
-                        pkey3
-                    );
-                END IF;
+    -- supertypes
+    DELETE FROM cmcard_supertype WHERE cmcard = _id;
+    IF _cmcardtype_subtypes IS NOT NULL THEN
+        FOREACH pkey IN ARRAY _cmcardtype_supertypes LOOP
+            INSERT INTO cmcard_supertype(
+                cmcard,
+                cmcardtype
+            ) VALUES (
+                _id,
+                pkey
+            );
         END LOOP;
     END IF;
 

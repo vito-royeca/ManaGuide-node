@@ -7,6 +7,7 @@ const logger = require('morgan');
 // routers
 const artistsRouter = require('./routes/artists');
 const cardsRouter = require('./routes/cards');
+const cardTypesRouter = require('./routes/cardtypes');
 const colorsRouter = require('./routes/colors');
 const formatsRouter = require('./routes/formats');
 const framesRouter = require('./routes/frames');
@@ -37,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/artists', artistsRouter);
 app.use('/cards', cardsRouter);
+app.use('/cardtypes', cardTypesRouter);
 app.use('/colors', colorsRouter);
 app.use('/formats', formatsRouter);
 app.use('/frames', framesRouter);
