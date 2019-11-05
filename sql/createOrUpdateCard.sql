@@ -51,8 +51,8 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     jsonb,
     character varying,
     character varying,
-    character varying[],
-    character varying[]) RETURNS varchar AS $$
+    jsonb,
+    jsonb) RETURNS varchar AS $$
 DECLARE
     _collector_number ALIAS FOR $1;
     _cmc ALIAS FOR $2;
