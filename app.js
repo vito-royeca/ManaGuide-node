@@ -3,6 +3,10 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const helmet = require('helmet');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit')
+const { body, check } = require('express-validator')
 
 // routers
 const artistsRouter = require('./routes/artists');
@@ -17,6 +21,7 @@ const layoutsRouter = require('./routes/layouts');
 const legalitiesRouter = require('./routes/legalities');
 const indexRouter = require('./routes/index');
 const raritiesRouter = require('./routes/rarities');
+const rulingsRouter = require('./routes/rulings');
 const setsRouter = require('./routes/sets');
 const setBlocksRouter = require('./routes/setblocks');
 const setTypesRouter = require('./routes/settypes');
@@ -28,11 +33,20 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// limiter
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // 10 requests,
+})
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(compression())
+app.use(helmet())
+//app.use(limiter)
 
 // API
 app.use('/', indexRouter);
@@ -47,6 +61,7 @@ app.use('/languages', languagesRouter);
 app.use('/layouts', layoutsRouter);
 app.use('/legalities', legalitiesRouter);
 app.use('/rarities', raritiesRouter);
+app.use('/rulings', rulingsRouter);
 app.use('/sets', setsRouter);
 app.use('/setblocks', setBlocksRouter);
 app.use('/settypes', setTypesRouter);
