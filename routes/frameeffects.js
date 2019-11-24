@@ -25,7 +25,7 @@ router.post('/', function(req, res, next) {
         req.body.id,
         req.body.name,
         req.body.name_section,
-        req.body.description_
+        req.body.description
     ];
 
     db.executeQuery(req, res, next, text, parameters);

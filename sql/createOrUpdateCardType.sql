@@ -20,6 +20,10 @@ BEGIN
         _cmcardtype_parent := NULL;
     END IF;
 
+    IF _cmcardtype_parent IS NOT NULL THEN
+        SELECT createOrUpdateCardType(_cmcardtype_parent, LEFT(_cmcardtype_parent, 1), NULL) INTO pkey;
+    END IF;
+
     SELECT name INTO pkey FROM cmcardtype WHERE name = _name;
 
     IF NOT FOUND THEN

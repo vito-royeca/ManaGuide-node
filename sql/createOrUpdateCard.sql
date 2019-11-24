@@ -51,8 +51,9 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     jsonb,
     character varying,
     character varying,
-    jsonb,
-    jsonb) RETURNS varchar AS $$
+    character varying[],
+    character varying[],
+    character varying) RETURNS varchar AS $$
 DECLARE
     _collector_number ALIAS FOR $1;
     _cmc ALIAS FOR $2;
@@ -108,6 +109,7 @@ DECLARE
     _printed_type_line ALIAS FOR $52;
     _cmcardtype_subtypes ALIAS FOR $53;
     _cmcardtype_supertypes ALIAS FOR $54;
+    _variation_of ALIAS FOR $55;
 
     pkey character varying;
     pkey2 character varying;
@@ -201,6 +203,9 @@ BEGIN
     END IF;
     IF lower(_printed_type_line) = 'null' THEN
         _printed_type_line := NULL;
+    END IF;
+    IF lower(_variation_of) = 'null' THEN
+        _variation_of := NULL;
     END IF;
 
     SELECT id INTO pkey FROM cmcard WHERE id = _id;
@@ -465,6 +470,15 @@ BEGIN
                 pkey
             );
         END LOOP;
+    END IF;
+
+    -- variation_of
+    IF _variation_of IS NOT NULL THEN
+        SELECT id INTO pkey FROM cmcard WHERE id = _variation_of;
+
+        IF FOUND THEN
+            UPDATE cmcard SET variation_of = pkey WHERE id = _id;
+        END IF;
     END IF;
 
     RETURN _id;

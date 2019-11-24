@@ -12,7 +12,8 @@ CREATE OR REPLACE FUNCTION selectSets(
         release_date character varying,
         tcgplayer_id integer,
         block json,
-        type json) AS $$
+        type json,
+        languages character varying[]) AS $$
 DECLARE
     _code ALIAS FOR $1;
 
@@ -40,8 +41,11 @@ BEGIN
                             SELECT st.name, st.name_section
                             FROM cmsettype st WHERE st.name = s.cmsettype
                         ) x
-                   ) AS type
-                FROM cmset s';
+                   ) AS type,
+                   array(
+                        SELECT cmlanguage FROM cmset_language l WHERE l.cmset = s.code
+	               ) AS languages
+            FROM cmset s';
 
     IF _code IS NOT NULL THEN
         command := command || ' WHERE s.code = '''||_code||''' ORDER BY s.name ASC';

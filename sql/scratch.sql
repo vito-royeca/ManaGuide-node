@@ -1,4 +1,4 @@
-delete from cmset_language;
+/*delete from cmset_language;
 delete from cmcard;
 delete from cmset;
 delete from cmsetblock;
@@ -6,13 +6,12 @@ delete from cmsettype;
 delete from cmartist;
 delete from cmrarity;
 delete from cmlanguage;
-delete from cmlayout;
+delete from cmlayout;*/
 
 --update cmset set my_keyrune_code = null;
 --select * from cmset where code = 'aer';
 
 
-/*
 SELECT card_count,
        code,
        is_foil_only,
@@ -36,7 +35,4 @@ SELECT card_count,
                                           FROM cmsettype st WHERE st.name = s.cmsettype
                                       ) x
        ) AS type
-
-       FROM cmset s ORDER BY s.name ASC;
-
- */
+FROM cmset s;

@@ -6,13 +6,14 @@ const logger = require('morgan');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit')
-const { body, check } = require('express-validator')
+//const { body, check } = require('express-validator')
 
 // routers
 const artistsRouter = require('./routes/artists');
 const cardsRouter = require('./routes/cards');
 const cardTypesRouter = require('./routes/cardtypes');
 const colorsRouter = require('./routes/colors');
+const componentsRouter = require('./routes/components');
 const formatsRouter = require('./routes/formats');
 const framesRouter = require('./routes/frames');
 const frameEffectsRouter = require('./routes/frameeffects');
@@ -54,6 +55,7 @@ app.use('/artists', artistsRouter);
 app.use('/cards', cardsRouter);
 app.use('/cardtypes', cardTypesRouter);
 app.use('/colors', colorsRouter);
+app.use('/components', componentsRouter);
 app.use('/formats', formatsRouter);
 app.use('/frames', framesRouter);
 app.use('/frameeffects', frameEffectsRouter);

@@ -15,7 +15,7 @@ BEGIN
         INSERT INTO cmframe(
             name,
             name_section,
-            description_)
+            description)
         VALUES(
             _name,
             _name_section,
@@ -24,7 +24,7 @@ BEGIN
         UPDATE cmframe SET
             name = _name,
             name_section = _name_section,
-            description_ = _description,
+            description = _description,
             date_updated = now()
         WHERE name = _name;
     END IF;
