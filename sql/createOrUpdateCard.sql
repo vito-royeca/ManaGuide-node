@@ -28,7 +28,7 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     boolean,
     boolean,
     boolean,
-    date,
+    character varying,
     boolean,
     boolean,
     character varying,
@@ -53,7 +53,8 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying,
     character varying[],
     character varying[],
-    character varying) RETURNS varchar AS $$
+    character varying,
+    integer) RETURNS varchar AS $$
 DECLARE
     _collector_number ALIAS FOR $1;
     _cmc ALIAS FOR $2;
@@ -110,10 +111,12 @@ DECLARE
     _cmcardtype_subtypes ALIAS FOR $53;
     _cmcardtype_supertypes ALIAS FOR $54;
     _variation_of ALIAS FOR $55;
+    _face_order ALIAS FOR $56;
 
     pkey character varying;
     pkey2 character varying;
     pkey3 character varying;
+    released_at_ date;
     row RECORD;
 BEGIN
     -- check for nulls
@@ -164,6 +167,11 @@ BEGIN
     END IF;
     IF lower(_life_modifier) = 'null' THEN
         _life_modifier := NULL;
+    END IF;
+    IF lower(_released_at) = 'null'  THEN
+        released_at_ := NULL;
+    ELSE
+        released_at_ := to_date(_released_at, 'YYYY-MM-DD');
     END IF;
     IF lower(_mtgo_foil_id) = 'null'  THEN
         _mtgo_foil_id := NULL;
@@ -258,7 +266,8 @@ BEGIN
             cmwatermark,
             cmframe,
             type_line,
-            printed_type_line)
+            printed_type_line,
+            face_order)
         VALUES(
             _collector_number,
             _cmc,
@@ -289,7 +298,7 @@ BEGIN
             _is_booster,
             _is_digital,
             _is_promo,
-            _released_at,
+            released_at_,
             _is_textless,
             _is_variation,
             _mtgo_foil_id::integer,
@@ -306,7 +315,8 @@ BEGIN
             _cmwatermark,
             _cmframe,
             _type_line,
-            _printed_type_line);
+            _printed_type_line,
+            _face_order);
     ELSE
         UPDATE cmcard SET
             collector_number = _collector_number,
@@ -338,7 +348,7 @@ BEGIN
             is_booster = _is_booster,
             is_digital = _is_digital,
             is_promo = _is_promo,
-            released_at = _released_at,
+            released_at = released_at_,
             is_textless = _is_textless,
             is_variation = _is_variation,
             mtgo_foil_id = _mtgo_foil_id::integer,
@@ -356,6 +366,7 @@ BEGIN
             cmframe = _cmframe,
             type_line = _type_line,
             printed_type_line = _printed_type_line,
+            face_order = _face_order,
             date_updated = now()
         WHERE id = _id;
     END IF;
