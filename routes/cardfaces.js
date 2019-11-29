@@ -20,7 +20,7 @@ router.get('/:cmcard', function(req, res, next) {
 
 // create
 router.post('/', function(req, res, next) {
-    const text = 'SELECT createOrUpdateCardFace($1,$2)';
+    const text = 'SELECT createOrUpdateCardFaces($1,$2)';
     const parameters = [
         req.body.cmcard,
         req.body.cmcard_face

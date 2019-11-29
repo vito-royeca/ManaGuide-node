@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION createOrUpdateCardFace(
+CREATE OR REPLACE FUNCTION createOrUpdateCardFaces(
     character varying,
     character varying) RETURNS varchar AS $$
 DECLARE

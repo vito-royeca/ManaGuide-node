@@ -11,7 +11,7 @@ BEGIN
         LEFT JOIN cmset s ON c.cmset = s.code
         WHERE c.id NOT IN (SELECT cmcard_face FROM cmcard_face);
 
-    RAISE NOTICE 'variations: %/%', currentRow, rows;
+    RAISE NOTICE '% - variations: %/%', now(), currentRow, rows;
     FOR row IN SELECT id, c.name, cmset, cmlanguage FROM cmcard c
         LEFT JOIN cmset s ON c.cmset = s.code
         WHERE c.id NOT IN (SELECT cmcard_face FROM cmcard_face)
@@ -36,7 +36,7 @@ BEGIN
 		currentRow := currentRow + 1;
 
 		IF currentRow % 1000 = 0 THEN
-		    RAISE NOTICE 'variations: %/%', currentRow, rows;
+		    RAISE NOTICE '% - variations: %/%', now(), currentRow, rows;
 		END IF;
     END LOOP;
 

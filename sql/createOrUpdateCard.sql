@@ -30,7 +30,6 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     boolean,
     character varying,
     boolean,
-    boolean,
     character varying,
     boolean,
     character varying,
@@ -49,11 +48,11 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying[],
     character varying[],
     jsonb,
+    jsonb,
     character varying,
     character varying,
     character varying[],
     character varying[],
-    character varying,
     integer) RETURNS varchar AS $$
 DECLARE
     _collector_number ALIAS FOR $1;
@@ -87,31 +86,30 @@ DECLARE
     _is_promo ALIAS FOR $29;
     _released_at ALIAS FOR $30;
     _is_textless ALIAS FOR $31;
-    _is_variation ALIAS FOR $32;
-    _mtgo_foil_id ALIAS FOR $33;
-    _is_reprint ALIAS FOR $34;
-    _id ALIAS FOR $35;
-    _card_back_id ALIAS FOR $36;
-    _oracle_id ALIAS FOR $37;
-    _illustration_id ALIAS FOR $38;
-    _cmartist ALIAS FOR $39;
-    _cmset ALIAS FOR $40;
-    _cmrarity ALIAS FOR $41;
-    _cmlanguage ALIAS FOR $42;
-    _cmlayout ALIAS FOR $43;
-    _cmwatermark ALIAS FOR $44;
-    _cmframe ALIAS FOR $45;
-    _cmframeeffects ALIAS FOR $46;
-    _cmcolors ALIAS FOR $47;
-    _cmcolor_identities ALIAS FOR $48;
-    _cmcolor_indicators ALIAS FOR $49;
-    _cmlegalities ALIAS FOR $50;
+    _mtgo_foil_id ALIAS FOR $32;
+    _is_reprint ALIAS FOR $33;
+    _id ALIAS FOR $34;
+    _card_back_id ALIAS FOR $35;
+    _oracle_id ALIAS FOR $36;
+    _illustration_id ALIAS FOR $37;
+    _cmartist ALIAS FOR $38;
+    _cmset ALIAS FOR $39;
+    _cmrarity ALIAS FOR $40;
+    _cmlanguage ALIAS FOR $41;
+    _cmlayout ALIAS FOR $42;
+    _cmwatermark ALIAS FOR $43;
+    _cmframe ALIAS FOR $44;
+    _cmframeeffects ALIAS FOR $45;
+    _cmcolors ALIAS FOR $46;
+    _cmcolor_identities ALIAS FOR $47;
+    _cmcolor_indicators ALIAS FOR $48;
+    _cmlegalities ALIAS FOR $49;
+    _cmparts ALIAS FOR $50;
     _type_line ALIAS FOR $51;
     _printed_type_line ALIAS FOR $52;
     _cmcardtype_subtypes ALIAS FOR $53;
     _cmcardtype_supertypes ALIAS FOR $54;
-    _variation_of ALIAS FOR $55;
-    _face_order ALIAS FOR $56;
+    _face_order ALIAS FOR $55;
 
     pkey character varying;
     pkey2 character varying;
@@ -212,9 +210,6 @@ BEGIN
     IF lower(_printed_type_line) = 'null' THEN
         _printed_type_line := NULL;
     END IF;
-    IF lower(_variation_of) = 'null' THEN
-        _variation_of := NULL;
-    END IF;
 
     SELECT id INTO pkey FROM cmcard WHERE id = _id;
 
@@ -251,7 +246,6 @@ BEGIN
             is_promo,
             released_at,
             is_textless,
-            is_variation,
             mtgo_foil_id,
             is_reprint,
             id,
@@ -300,7 +294,6 @@ BEGIN
             _is_promo,
             released_at_,
             _is_textless,
-            _is_variation,
             _mtgo_foil_id::integer,
             _is_reprint,
             _id,
@@ -350,7 +343,6 @@ BEGIN
             is_promo = _is_promo,
             released_at = released_at_,
             is_textless = _is_textless,
-            is_variation = _is_variation,
             mtgo_foil_id = _mtgo_foil_id::integer,
             is_reprint = _is_reprint,
             id = _id,
@@ -483,13 +475,20 @@ BEGIN
         END LOOP;
     END IF;
 
-    -- variation_of
-    IF _variation_of IS NOT NULL THEN
-        SELECT id INTO pkey FROM cmcard WHERE id = _variation_of;
-
-        IF FOUND THEN
-            UPDATE cmcard SET variation_of = pkey WHERE id = _id;
-        END IF;
+    -- parts
+    DELETE FROM cmcard_component_part WHERE cmcard = _id;
+    IF _cmparts IS NOT NULL THEN
+        FOR pkey2, pkey3 IN SELECT * FROM jsonb_each_text(_cmparts) LOOP
+            INSERT INTO cmcard_componet_part(
+                cmcard,
+                cmcomponent,
+                cmcard_part
+            ) VALUES (
+                _id,
+                pkey2,
+                pkey3
+            );
+        END LOOP;
     END IF;
 
     RETURN _id;

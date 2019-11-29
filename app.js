@@ -12,7 +12,6 @@ const rateLimit = require('express-rate-limit')
 const artistsRouter = require('./routes/artists');
 const cardsRouter = require('./routes/cards');
 const cardFacesRouter = require('./routes/cardfaces');
-const cardPartsRouter = require('./routes/cardparts');
 const cardTypesRouter = require('./routes/cardtypes');
 const colorsRouter = require('./routes/colors');
 const componentsRouter = require('./routes/components');
@@ -111,7 +110,6 @@ app.use('/', indexRouter);
 app.use('/artists', artistsRouter);
 app.use('/cards', cardsRouter);
 app.use('/cardfaces', cardFacesRouter);
-app.use('/cardparts', cardPartsRouter);
 app.use('/cardtypes', cardTypesRouter);
 app.use('/colors', colorsRouter);
 app.use('/components', componentsRouter);
