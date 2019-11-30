@@ -2,6 +2,7 @@ CREATE OR REPLACE FUNCTION createOrUpdateCardVariations() RETURNS integer AS $$
 DECLARE
     currentRow integer := 0;
     rows integer := 0;
+    currentTime timestamp;
     row RECORD;
     row2 RECORD;
 BEGIN
@@ -36,7 +37,8 @@ BEGIN
 		currentRow := currentRow + 1;
 
 		IF currentRow % 1000 = 0 THEN
-		    RAISE NOTICE '% - variations: %/%', now(), currentRow, rows;
+            SELECT now() INTO currentTime;
+            RAISE NOTICE '% - variations: %/%', currentTime, currentRow, rows;
 		END IF;
     END LOOP;
 

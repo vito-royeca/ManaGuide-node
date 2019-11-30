@@ -1,22 +1,21 @@
 CREATE OR REPLACE FUNCTION selectSets(
     character varying)
-    RETURNS TABLE
-            (
-                card_count      integer,
-                code            character varying,
-                is_foil_only    boolean,
-                is_online_only  boolean,
-                mtgo_code       character varying,
-                my_keyrune_code character varying,
-                my_name_section character varying,
-                my_year_section character varying,
-                name            character varying,
-                release_date    character varying,
-                tcgplayer_id    integer,
-                set_block       json,
-                set_type        json,
-                languages       json[]
-            )
+    RETURNS TABLE (
+        card_count      integer,
+        code            character varying,
+        is_foil_only    boolean,
+        is_online_only  boolean,
+        mtgo_code       character varying,
+        my_keyrune_code character varying,
+        my_name_section character varying,
+        my_year_section character varying,
+        name            character varying,
+        release_date    character varying,
+        tcgplayer_id    integer,
+        set_block       json,
+        set_type        json,
+        languages       json[]
+    )
 AS
 $$
 DECLARE
@@ -48,18 +47,17 @@ BEGIN
                    ) AS set_type,
                    array(
                         SELECT row_to_json(x) FROM (
-                            SELECT l.code, l.name, l.display_code
+                            SELECT l.code, l.display_code, l.name, l.name_section
                             FROM cmset_language sl left join cmlanguage l on sl.cmlanguage = l.code
                             WHERE sl.cmset = s.code
                         ) x
-
 	               ) AS languages
             FROM cmset s';
 
     IF _code IS NOT NULL THEN
-        command := command || ' WHERE s.code = ''' || _code || ''' ORDER BY s.name ASC ';
+        command := command || ' WHERE s.code = ''' || _code || ''' ORDER BY s.name ASC';
     ELSE
-        command := command || ' ORDER BY s.name ASC ';
+        command := command || ' ORDER BY s.name ASC';
     END IF;
 
     RETURN QUERY EXECUTE command;

@@ -2,17 +2,20 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
-// select all
-router.get('/', function(req, res, next) {
-    const text = 'SELECT * FROM cmcard ORDER BY name ASC';
-
-    db.executeQuery(req, res, next, text, null);
-});
-
 // select by id
 router.get('/:id', function(req, res, next) {
     const text = 'SELECT * FROM cmcard WHERE id = $1 ORDER BY name ASC';
     const parameters = [req.params.id];
+
+    db.executeQuery(req, res, next, text, parameters);
+});
+
+// select by cmset and cmlanguage
+router.get('/:cmset/:cmlanguage', function(req, res, next) {
+    const text = 'SELECT * from selectCards($1,$2)';
+    const parameters = [
+        req.params.cmset,
+        req.params.cmlanguage];
 
     db.executeQuery(req, res, next, text, parameters);
 });
