@@ -5,14 +5,14 @@ const pool = db.pool;
 
 // select all
 router.get('/', function(req, res, next) {
-    const text = 'SELECT * FROM cmframeeffect ORDER BY name ASC';
+    const text = 'SELECT id, name, name_section, description FROM cmframeeffect ORDER BY name ASC';
 
     db.executeQuery(req, res, next, text, null);
 });
 
 // select by name
 router.get('/:name', function(req, res, next) {
-    const text = 'SELECT * FROM cmframeeffect WHERE name = $1';
+    const text = 'SELECT id, name, name_section, description FROM cmframeeffect WHERE name = $1';
     const parameters = [req.params.name];
 
     db.executeQuery(req, res, next, text, parameters);

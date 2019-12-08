@@ -3,16 +3,9 @@ const router = express.Router();
 const db = require('./db');
 const pool = db.pool;
 
-// select all
-router.get('/', function(req, res, next) {
-    const text = 'SELECT * FROM cmcard_face ORDER BY name cmcard';
-
-    db.executeQuery(req, res, next, text, null);
-});
-
 // select by name
 router.get('/:cmcard', function(req, res, next) {
-    const text = 'SELECT * FROM cmcard_face WHERE cmcard = $1';
+    const text = 'SELECT cmcard, cmcard_face FROM cmcard_face WHERE cmcard = $1';
     const parameters = [req.params.name];
 
     db.executeQuery(req, res, next, text, parameters);

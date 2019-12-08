@@ -47,7 +47,20 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         watermark json,
         frame json,
         printed_type_line character varying,
-        type_line character varying
+        type_line character varying,
+        -- start additions
+        colors json[],
+        color_identities json[],
+        color_indicators json[]
+        --component_parts json[]
+        --faces json[],
+        --format_legalities json[],
+        --frame_effects json[],
+        --other_languages json[],
+        --other_printings json[],
+        --subtypes json[],
+        --supertypes json[],
+        --variations json[]
     )
 AS
 $$
@@ -93,8 +106,9 @@ BEGIN
                     is_reprint,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT ar.first_name, ar.last_name, ar.name, ar.name_section
-                            FROM cmartist ar WHERE ar.name = c.cmartist
+                            SELECT v.first_name, v.last_name, v.name, v.name_section
+                            FROM cmartist v
+                            WHERE v.name = c.cmartist
                         ) x
                     ) AS artist,
                     id,
@@ -103,42 +117,68 @@ BEGIN
                     illustration_id,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT s.code
-                            FROM cmset s WHERE s.code = c.cmset
+                            SELECT v.code
+                            FROM cmset v WHERE v.code = c.cmset
                         ) x
                     ) AS set,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT r.name, r.name_section
-                            FROM cmrarity r WHERE r.name = c.cmrarity
+                            SELECT v.name, v.name_section
+                            FROM cmrarity v
+                            WHERE v.name = c.cmrarity
                         ) x
                     ) AS rarity,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT l.code
-                            FROM cmlanguage l WHERE l.code = c.cmlanguage
+                            SELECT v.code
+                            FROM cmlanguage v
+                            WHERE v.code = c.cmlanguage
                         ) x
                     ) AS language,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT ly.name, ly.name_section, ly.description
-                            FROM cmlayout ly WHERE ly.name = c.cmlayout
+                            SELECT v.name, v.name_section, v.description
+                            FROM cmlayout v
+                            WHERE v.name = c.cmlayout
                         ) x
                     ) AS layout,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name, w.name_section
-                            FROM cmwatermark w WHERE w.name = c.cmwatermark
+                            SELECT v.name, v.name_section
+                            FROM cmwatermark v
+                            WHERE v.name = c.cmwatermark
                         ) x
                     ) AS watermark,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT fr.name, fr.name_section
-                            FROM cmframe fr WHERE fr.name = c.cmframe
+                            SELECT v.name, v.name_section
+                            FROM cmframe v
+                            WHERE v.name = c.cmframe
                         ) x
                     ) AS frame,
                     printed_type_line,
-                    type_line
+                    type_line,
+                    array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT w.name, w.name_section, w.symbol, w.is_mana_color
+                            FROM cmcard_color v left join cmcolor w on v.cmcolor = w.symbol
+                            WHERE v.cmcard = c.id
+                        ) x
+                    ) AS colors,
+                    array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT w.name, w.name_section, w.symbol, w.is_mana_color
+                            FROM cmcard_coloridentity v left join cmcolor w on v.cmcolor = w.symbol
+                            WHERE v.cmcard = c.id
+                        ) x
+                    ) AS color_identities,
+                    array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT w.name, w.name_section, w.symbol, w.is_mana_color
+                            FROM cmcard_colorindicator v left join cmcolor w on v.cmcolor = w.symbol
+                            WHERE v.cmcard = c.id
+                        ) x
+                    ) AS color_indicators
                 FROM cmcard c';
 
     command := command || ' WHERE c.id = ''' || _id || '''';

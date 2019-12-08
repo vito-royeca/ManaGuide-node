@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 
 // select by name
 router.get('/:name', function(req, res, next) {
-    const text = 'SELECT * FROM cmartist WHERE name = $1';
+    const text = 'SELECT name, first_name, last_name, name_section FROM cmartist WHERE name = $1';
     const parameters = [req.params.name];
 
     db.executeQuery(req, res, next, text, parameters);

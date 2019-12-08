@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 
 // select by code
 router.get('/:code', function(req, res, next) {
-    const text = 'SELECT * FROM cmsetblock WHERE code = $1';
+    const text = 'SELECT code, name, name_section FROM cmsetblock WHERE code = $1';
     const parameters = [req.params.code];
 
     db.executeQuery(req, res, next, text, parameters);

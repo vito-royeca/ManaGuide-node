@@ -43,9 +43,10 @@ router.post('/', function(req, res, next) {
 // update Keyrune Code
 router.post('/updatekeyrune/:code', function(req, res, next) {
     const text = 'UPDATE cmset SET my_keyrune_code = $1 WHERE code = $2';
-    const code = req.params.code;
-    const my_keyrune_code = req.body.my_keyrune_code;
-    const parameters = [my_keyrune_code, code];
+    const parameters = [
+        req.body.my_keyrune_code,
+        req.params.code
+    ];
 
     db.executeQuery(req, res, next, text, parameters);
 });

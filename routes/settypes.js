@@ -5,14 +5,14 @@ const pool = db.pool;
 
 // select all
 router.get('/', function(req, res, next) {
-    const text = 'SELECT * FROM cmsettype ORDER BY name ASC';
+    const text = 'SELECT name, name_section FROM cmsettype ORDER BY name ASC';
 
     db.executeQuery(req, res, next, text, null);
 });
 
 // select by name
 router.get('/:name', function(req, res, next) {
-    const text = 'SELECT * FROM cmsettype WHERE name = $1';
+    const text = 'SELECT name, name_section FROM cmsettype WHERE name = $1';
     const parameters = [req.params.name];
 
     db.executeQuery(req, res, next, text, parameters);

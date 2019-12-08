@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
 
 // select by name
 router.get('/:name', function(req, res, next) {
-    const text = 'SELECT * FROM cmcolor WHERE name = $1';
+    const text = 'SELECT symbol, name, name_section FROM cmcolor WHERE name = $1';
     const parameters = [req.params.name];
 
     db.executeQuery(req, res, next, text, parameters);
