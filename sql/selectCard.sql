@@ -51,8 +51,8 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         -- start additions
         colors json[],
         color_identities json[],
-        color_indicators json[]
-        --component_parts json[]
+        color_indicators json[],
+        component_parts json[]
         --faces json[],
         --format_legalities json[],
         --frame_effects json[],
@@ -178,7 +178,14 @@ BEGIN
                             FROM cmcard_colorindicator v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.id
                         ) x
-                    ) AS color_indicators
+                    ) AS color_indicators,
+                    array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT w.name, w.name_section
+                            FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
+                            WHERE v.cmcard = c.id
+                        ) x
+                    ) AS component_parts
                 FROM cmcard c';
 
     command := command || ' WHERE c.id = ''' || _id || '''';

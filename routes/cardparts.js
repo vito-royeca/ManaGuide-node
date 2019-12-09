@@ -5,7 +5,7 @@ const pool = db.pool;
 
 // select by name
 router.get('/:cmcard', function(req, res, next) {
-    const text = 'SELECT cmcard, cmcard_face FROM cmcard_face WHERE cmcard = $1';
+    const text = 'SELECT cmcard, cmcomponent, cmcard_part FROM cmcard_component_part WHERE cmcard = $1';
     const parameters = [req.params.cmcard];
 
     db.executeQuery(req, res, next, text, parameters);
@@ -13,10 +13,11 @@ router.get('/:cmcard', function(req, res, next) {
 
 // create
 router.post('/', function(req, res, next) {
-    const text = 'SELECT createOrUpdateCardFaces($1,$2)';
+    const text = 'SELECT createOrUpdateCardParts($1,$2,$3)';
     const parameters = [
         req.body.cmcard,
-        req.body.cmcard_face
+        req.body.cmcomponent,
+        req.body.cmcard_part
     ];
 
     db.executeQuery(req, res, next, text, parameters);
@@ -24,7 +25,7 @@ router.post('/', function(req, res, next) {
 
 // delete
 router.delete('/', function(req, res, next) {
-    const text = 'DELETE FROM cmcard_face';
+    const text = 'DELETE FROM cmcard_component_part';
 
     db.executeQuery(req, res, next, text, null);
 });

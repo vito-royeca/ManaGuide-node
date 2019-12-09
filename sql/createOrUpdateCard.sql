@@ -48,7 +48,6 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying[],
     character varying[],
     jsonb,
-    jsonb,
     character varying,
     character varying,
     character varying[],
@@ -104,12 +103,11 @@ DECLARE
     _cmcolor_identities ALIAS FOR $47;
     _cmcolor_indicators ALIAS FOR $48;
     _cmlegalities ALIAS FOR $49;
-    _cmparts ALIAS FOR $50;
-    _type_line ALIAS FOR $51;
-    _printed_type_line ALIAS FOR $52;
-    _cmcardtype_subtypes ALIAS FOR $53;
-    _cmcardtype_supertypes ALIAS FOR $54;
-    _face_order ALIAS FOR $55;
+    _type_line ALIAS FOR $50;
+    _printed_type_line ALIAS FOR $51;
+    _cmcardtype_subtypes ALIAS FOR $52;
+    _cmcardtype_supertypes ALIAS FOR $53;
+    _face_order ALIAS FOR $54;
 
     pkey character varying;
     pkey2 character varying;
@@ -471,22 +469,6 @@ BEGIN
             ) VALUES (
                 _id,
                 pkey
-            );
-        END LOOP;
-    END IF;
-
-    -- parts
-    DELETE FROM cmcard_component_part WHERE cmcard = _id;
-    IF _cmparts IS NOT NULL THEN
-        FOR pkey2, pkey3 IN SELECT * FROM jsonb_each_text(_cmparts) LOOP
-            INSERT INTO cmcard_componet_part(
-                cmcard,
-                cmcomponent,
-                cmcard_part
-            ) VALUES (
-                _id,
-                pkey2,
-                pkey3
             );
         END LOOP;
     END IF;

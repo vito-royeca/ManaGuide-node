@@ -107,9 +107,9 @@ BEGIN
                 name = _name,
                 release_date = parent_row.release_date,
                 tcgplayer_id = _tcgplayer_id,
-                cmsetblock = parent_row.cmsetblock,
-                cmsettype = parent_row.cmsettype,
-                cmset_parent = parent_row.code,
+                cmsetblock = _cmsetblock,
+                cmsettype = _cmsettype,
+                cmset_parent = _cmset_parent,
                 date_updated = now()
             WHERE code = _code;
         ELSE
@@ -128,6 +128,13 @@ BEGIN
                 cmsettype = _cmsettype,
 			    date_updated = now()
             WHERE code = _code;
+
+            UPDATE cmset SET
+                my_keyrune_code = _my_keyrune_code,
+                my_name_section = _my_name_section,
+                my_year_section = _my_year_section,
+                date_updated = now()
+            WHERE cmset_parent = _code;
         END IF;
     END IF;
 
