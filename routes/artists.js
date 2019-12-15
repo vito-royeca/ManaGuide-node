@@ -17,17 +17,4 @@ router.get('/:name', function(req, res, next) {
     db.executeQuery(req, res, next, text, parameters);
 });
 
-// create
-router.post('/', function(req, res, next) {
-    const text = 'SELECT createOrUpdateArtist($1,$2,$3,$4)';
-    const parameters = [
-        req.body.name,
-        req.body.first_name,
-        req.body.last_name,
-        req.body.name_section
-    ];
-
-    db.executeQuery(req, res, next, text, parameters);
-});
-
 module.exports = router;

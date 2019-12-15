@@ -40,8 +40,7 @@ BEGIN
             code = _code,
             display_code = _display_code,
             name = _name,
-            name_section = _name_section,
-            date_updated = now()
+            name_section = _name_section
         WHERE code = _code;
     END IF;
 

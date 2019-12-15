@@ -11,22 +11,4 @@ router.get('/:cmcard', function(req, res, next) {
     db.executeQuery(req, res, next, text, parameters);
 });
 
-// create
-router.post('/', function(req, res, next) {
-    const text = 'SELECT createOrUpdateCardFaces($1,$2)';
-    const parameters = [
-        req.body.cmcard,
-        req.body.cmcard_face
-    ];
-
-    db.executeQuery(req, res, next, text, parameters);
-});
-
-// delete
-router.delete('/', function(req, res, next) {
-    const text = 'DELETE FROM cmcard_face';
-
-    db.executeQuery(req, res, next, text, null);
-});
-
 module.exports = router;

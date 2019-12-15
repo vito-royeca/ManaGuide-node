@@ -9,14 +9,4 @@ router.get('/', function(req, res, next) {
     db.executeQuery(req, res, next, text, null);
 });
 
-// update Scryfall version
-router.post('/updatescryfall', function(req, res, next) {
-    const text = 'UPDATE server_info SET date_updated = now(),  scryfall_version = $1';
-    const parameters = [
-        req.body.scryfall_version
-    ];
-
-    db.executeQuery(req, res, next, text, parameters);
-});
-
 module.exports = router;

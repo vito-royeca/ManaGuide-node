@@ -17,16 +17,4 @@ router.get('/:code', function(req, res, next) {
     db.executeQuery(req, res, next, text, parameters);
 });
 
-// create
-router.post('/', function(req, res, next) {
-    const text = 'SELECT createOrUpdateSetBlock($1,$2,$3)';
-    const parameters = [
-        req.body.code,
-        req.body.name,
-        req.body.name_section
-    ];
-
-    db.executeQuery(req, res, next, text, parameters);
-});
-
 module.exports = router;

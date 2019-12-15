@@ -18,23 +18,4 @@ router.get('/:oracle_id', function(req, res, next) {
     db.executeQuery(req, res, next, text, parameters);
 });
 
-// create
-router.post('/', function(req, res, next) {
-    const text = 'SELECT createOrUpdateRuling($1,$2,$3)';
-    const parameters = [
-        req.body.oracle_id,
-        req.body.text,
-        req.body.date_published
-    ];
-
-    db.executeQuery(req, res, next, text, parameters);
-});
-
-// delete
-router.delete('/', function(req, res, next) {
-    const text = 'DELETE FROM cmruling';
-
-    db.executeQuery(req, res, next, text, null);
-});
-
 module.exports = router;

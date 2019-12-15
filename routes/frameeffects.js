@@ -18,17 +18,4 @@ router.get('/:name', function(req, res, next) {
     db.executeQuery(req, res, next, text, parameters);
 });
 
-// create
-router.post('/', function(req, res, next) {
-    const text = 'SELECT createOrUpdateFrameEffect($1,$2,$3,$4)';
-    const parameters = [
-        req.body.id,
-        req.body.name,
-        req.body.name_section,
-        req.body.description
-    ];
-
-    db.executeQuery(req, res, next, text, parameters);
-});
-
 module.exports = router;

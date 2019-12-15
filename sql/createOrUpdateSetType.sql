@@ -19,8 +19,7 @@ BEGIN
     ELSE
         UPDATE cmsettype SET
             name = _name,
-            name_section = _name_section,
-            date_updated = now()
+            name_section = _name_section
         WHERE name = _name;
     END IF;
 

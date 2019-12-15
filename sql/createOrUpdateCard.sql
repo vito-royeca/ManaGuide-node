@@ -356,8 +356,7 @@ BEGIN
             cmframe = _cmframe,
             type_line = _type_line,
             printed_type_line = _printed_type_line,
-            face_order = _face_order,
-            date_updated = now()
+            face_order = _face_order
         WHERE id = _id;
     END IF;
 

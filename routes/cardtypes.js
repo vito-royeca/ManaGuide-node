@@ -18,16 +18,4 @@ router.get('/:name', function(req, res, next) {
     db.executeQuery(req, res, next, text, parameters);
 });
 
-// create
-router.post('/', function(req, res, next) {
-    const text = 'SELECT createOrUpdateCardType($1,$2,$3)';
-    const parameters = [
-        req.body.name,
-        req.body.name_section,
-        req.body.cmcardtype_parent
-    ];
-
-    db.executeQuery(req, res, next, text, parameters);
-});
-
 module.exports = router;

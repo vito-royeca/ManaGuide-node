@@ -21,8 +21,7 @@ BEGIN
     ELSE
         UPDATE cmcard_face SET
             cmcard = _cmcard,
-            cmcard_face = _cmcard_face,
-            date_updated = now()
+            cmcard_face = _cmcard_face
         WHERE cmcard = _cmcard
             AND cmcard_face = _cmcard_face;
     END IF;

@@ -27,8 +27,7 @@ BEGIN
         UPDATE cmcard_component_part SET
             cmcard = _cmcard,
             cmcomponent = _cmcomponent,
-            cmcard_part = _cmcard_part,
-            date_updated = now()
+            cmcard_part = _cmcard_part
         WHERE cmcard = _cmcard
           AND cmcomponent = _cmcomponent
           AND cmcard_part = _cmcard_part;
