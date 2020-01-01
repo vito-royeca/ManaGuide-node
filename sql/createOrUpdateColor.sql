@@ -29,7 +29,8 @@ BEGIN
             symbol = _symbol,
             name = _name,
             name_section = _name_section,
-            is_mana_color = _is_mana_color
+            is_mana_color = _is_mana_color,
+            date_updated = now()
         WHERE name = _name;
     END IF;
 

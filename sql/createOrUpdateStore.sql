@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION createOrUpdateComponent(
+CREATE OR REPLACE FUNCTION createOrUpdateStore(
     character varying,
     character varying) RETURNS varchar AS $$
 DECLARE
@@ -7,17 +7,17 @@ DECLARE
 
     pkey character varying;
 BEGIN
-    SELECT name INTO pkey FROM cmcomponent WHERE name = _name;
+    SELECT name INTO pkey FROM cmstore WHERE name = _name;
 
     IF NOT FOUND THEN
-        INSERT INTO cmcomponent(
+        INSERT INTO cmstore(
             name,
             name_section)
         VALUES(
             _name,
             _name_section);
     ELSE
-        UPDATE cmcomponent SET
+        UPDATE cmstore SET
             name = _name,
             name_section = _name_section,
             date_updated = now()

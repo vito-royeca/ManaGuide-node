@@ -29,7 +29,8 @@ BEGIN
             name = _name,
             first_name = _first_name,
             last_name = _last_name,
-            name_section = _name_section
+            name_section = _name_section,
+            date_updated = now()
         WHERE name = _name;
     END IF;
 

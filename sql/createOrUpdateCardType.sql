@@ -39,7 +39,8 @@ BEGIN
         UPDATE cmcardtype SET
             name = _name,
             name_section = _name_section,
-            cmcardtype_parent = _cmcardtype_parent
+            cmcardtype_parent = _cmcardtype_parent,
+            date_updated = now()
         WHERE name = _name;
     END IF;
 

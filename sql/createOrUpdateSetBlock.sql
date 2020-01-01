@@ -24,7 +24,8 @@ BEGIN
         UPDATE cmsetblock SET
             code = _code,
             name = _name,
-            name_section = _name_section
+            name_section = _name_section,
+            date_updated = now()
         WHERE code = _code;
     END IF;
 

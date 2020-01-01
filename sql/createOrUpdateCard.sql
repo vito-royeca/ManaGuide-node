@@ -14,6 +14,7 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying,
     integer[],
     character varying,
+    double precision,
     character varying,
     character varying,
     character varying,
@@ -69,45 +70,46 @@ DECLARE
     _mana_cost ALIAS FOR $13;
     _multiverse_ids ALIAS FOR $14;
     _my_name_section ALIAS FOR $15;
-    _name ALIAS FOR $16;
-    _oracle_text ALIAS FOR $17;
-    _power ALIAS FOR $18;
-    _printed_name ALIAS FOR $19;
-    _printed_text ALIAS FOR $20;
-    _toughness ALIAS FOR $21;
-    _arena_id ALIAS FOR $22;
-    _mtgo_id ALIAS FOR $23;
-    _tcgplayer_id ALIAS FOR $24;
-    _hand_modifier ALIAS FOR $25;
-    _life_modifier ALIAS FOR $26;
-    _is_booster ALIAS FOR $27;
-    _is_digital ALIAS FOR $28;
-    _is_promo ALIAS FOR $29;
-    _released_at ALIAS FOR $30;
-    _is_textless ALIAS FOR $31;
-    _mtgo_foil_id ALIAS FOR $32;
-    _is_reprint ALIAS FOR $33;
-    _id ALIAS FOR $34;
-    _card_back_id ALIAS FOR $35;
-    _oracle_id ALIAS FOR $36;
-    _illustration_id ALIAS FOR $37;
-    _cmartist ALIAS FOR $38;
-    _cmset ALIAS FOR $39;
-    _cmrarity ALIAS FOR $40;
-    _cmlanguage ALIAS FOR $41;
-    _cmlayout ALIAS FOR $42;
-    _cmwatermark ALIAS FOR $43;
-    _cmframe ALIAS FOR $44;
-    _cmframeeffects ALIAS FOR $45;
-    _cmcolors ALIAS FOR $46;
-    _cmcolor_identities ALIAS FOR $47;
-    _cmcolor_indicators ALIAS FOR $48;
-    _cmlegalities ALIAS FOR $49;
-    _type_line ALIAS FOR $50;
-    _printed_type_line ALIAS FOR $51;
-    _cmcardtype_subtypes ALIAS FOR $52;
-    _cmcardtype_supertypes ALIAS FOR $53;
-    _face_order ALIAS FOR $54;
+    _my_number_order ALIAS FOR $16;
+    _name ALIAS FOR $17;
+    _oracle_text ALIAS FOR $18;
+    _power ALIAS FOR $19;
+    _printed_name ALIAS FOR $21;
+    _printed_text ALIAS FOR $21;
+    _toughness ALIAS FOR $22;
+    _arena_id ALIAS FOR $23;
+    _mtgo_id ALIAS FOR $24;
+    _tcgplayer_id ALIAS FOR $25;
+    _hand_modifier ALIAS FOR $26;
+    _life_modifier ALIAS FOR $27;
+    _is_booster ALIAS FOR $28;
+    _is_digital ALIAS FOR $29;
+    _is_promo ALIAS FOR $30;
+    _released_at ALIAS FOR $31;
+    _is_textless ALIAS FOR $32;
+    _mtgo_foil_id ALIAS FOR $33;
+    _is_reprint ALIAS FOR $34;
+    _id ALIAS FOR $35;
+    _card_back_id ALIAS FOR $36;
+    _oracle_id ALIAS FOR $37;
+    _illustration_id ALIAS FOR $38;
+    _cmartist ALIAS FOR $39;
+    _cmset ALIAS FOR $40;
+    _cmrarity ALIAS FOR $41;
+    _cmlanguage ALIAS FOR $42;
+    _cmlayout ALIAS FOR $43;
+    _cmwatermark ALIAS FOR $44;
+    _cmframe ALIAS FOR $45;
+    _cmframeeffects ALIAS FOR $46;
+    _cmcolors ALIAS FOR $47;
+    _cmcolor_identities ALIAS FOR $48;
+    _cmcolor_indicators ALIAS FOR $49;
+    _cmlegalities ALIAS FOR $50;
+    _type_line ALIAS FOR $51;
+    _printed_type_line ALIAS FOR $52;
+    _cmcardtype_subtypes ALIAS FOR $53;
+    _cmcardtype_supertypes ALIAS FOR $54;
+    _face_order ALIAS FOR $55;
 
     pkey character varying;
     pkey2 character varying;
@@ -228,6 +230,7 @@ BEGIN
             mana_cost,
             multiverse_ids,
             my_name_section,
+            my_number_order,
             name,
             oracle_text,
             power,
@@ -276,6 +279,7 @@ BEGIN
             _mana_cost,
             _multiverse_ids,
             _my_name_section,
+            _my_number_order,
             _name,
             _oracle_text,
             _power,
@@ -325,6 +329,7 @@ BEGIN
             mana_cost = _mana_cost,
             multiverse_ids = _multiverse_ids,
             my_name_section = _my_name_section,
+            my_number_order = _my_number_order,
             name = _name,
             oracle_text = _oracle_text,
             power = _power,
@@ -356,7 +361,8 @@ BEGIN
             cmframe = _cmframe,
             type_line = _type_line,
             printed_type_line = _printed_type_line,
-            face_order = _face_order
+            face_order = _face_order,
+            date_updated = now()
         WHERE id = _id;
     END IF;
 

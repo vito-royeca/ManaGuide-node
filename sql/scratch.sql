@@ -12,4 +12,6 @@ delete from cmlayout;*/
 --select * from cmset where code = 'aer';
 
 
-select selectCard('076c5ceb-4236-46ef-ba8e-336088fcedd9')
+
+
+

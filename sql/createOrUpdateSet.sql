@@ -109,7 +109,8 @@ BEGIN
                 tcgplayer_id = _tcgplayer_id,
                 cmsetblock = _cmsetblock,
                 cmsettype = _cmsettype,
-                cmset_parent = _cmset_parent
+                cmset_parent = _cmset_parent,
+                date_updated = now()
             WHERE code = _code;
         ELSE
             UPDATE cmset SET

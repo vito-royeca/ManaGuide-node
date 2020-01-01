@@ -24,7 +24,8 @@ BEGIN
         UPDATE cmlayout SET
             name = _name,
             name_section = _name_section,
-            description = _description
+            description = _description,
+            date_updated = now()
         WHERE name = _name;
     END IF;
 

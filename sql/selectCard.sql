@@ -4,7 +4,6 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         cmc double precision,
         face_order integer,
         flavor_text character varying,
-        image_uris jsonb,
         is_foil boolean,
         is_full_art boolean,
         is_highres_image boolean,
@@ -14,9 +13,8 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         is_story_spotlight boolean,
         loyalty character varying,
         mana_cost character varying,
-        multiverse_ids integer[],
         my_name_section character varying,
-        my_number_order character varying,
+        my_number_order double precision,
         name character varying,
         oracle_text character varying,
         power character varying,
@@ -35,32 +33,34 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         is_textless boolean,
         mtgo_foil_id integer,
         is_reprint boolean,
-        artist json,
         id character varying,
         card_back_id character varying,
         oracle_id character varying,
         illustration_id character varying,
+        printed_type_line character varying,
+        type_line character varying,
+        image_uris jsonb,
+        multiverse_ids integer[],
         set json,
         rarity json,
         language json,
         layout json,
         watermark json,
         frame json,
-        printed_type_line character varying,
-        type_line character varying,
-        -- start additions
+        artist json,
         colors json[],
         color_identities json[],
         color_indicators json[],
-        component_parts json[]
-        --faces json[],
-        --format_legalities json[],
-        --frame_effects json[],
-        --other_languages json[],
-        --other_printings json[],
-        --subtypes json[],
-        --supertypes json[],
-        --variations json[]
+        component_parts json[],
+        faces json[],
+        other_languages json[],
+        other_printings json[],
+        variations json[],
+        format_legalities json[],
+        frame_effects json[],
+        subtypes json[],
+        supertypes json[],
+        prices json[]
     )
 AS
 $$
@@ -69,52 +69,47 @@ DECLARE
     command character varying;
 BEGIN
     command := 'SELECT
-                    collector_number,
-                    cmc,
-                    face_order,
-                    flavor_text,
-                    image_uris,
-                    is_foil,
-                    is_full_art,
-                    is_highres_image,
-                    is_nonfoil,
-                    is_oversized,
-                    is_reserved,
-                    is_story_spotlight,
-                    loyalty,
-                    mana_cost,
-                    multiverse_ids,
-                    my_name_section,
-                    my_number_order,
-                    name,
-                    oracle_text,
-                    power,
-                    printed_name,
-                    printed_text,
-                    toughness,
-                    arena_id,
-                    mtgo_id,
-                    tcgplayer_id,
-                    hand_modifier,
-                    life_modifier,
-                    is_booster,
-                    is_digital,
-                    is_promo,
-                    released_at,
-                    is_textless,
-                    mtgo_foil_id,
-                    is_reprint,
-                    (
-                        SELECT row_to_json(x) FROM (
-                            SELECT v.first_name, v.last_name, v.name, v.name_section
-                            FROM cmartist v
-                            WHERE v.name = c.cmartist
-                        ) x
-                    ) AS artist,
-                    id,
-                    card_back_id,
-                    oracle_id,
-                    illustration_id,
+                    c.collector_number,
+                    c.cmc,
+                    c.face_order,
+                    c.flavor_text,
+                    c.is_foil,
+                    c.is_full_art,
+                    c.is_highres_image,
+                    c.is_nonfoil,
+                    c.is_oversized,
+                    c.is_reserved,
+                    c.is_story_spotlight,
+                    c.loyalty,
+                    c.mana_cost,
+                    c.my_name_section,
+                    c.my_number_order,
+                    c.name,
+                    c.oracle_text,
+                    c.power,
+                    c.printed_name,
+                    c.printed_text,
+                    c.toughness,
+                    c.arena_id,
+                    c.mtgo_id,
+                    c.tcgplayer_id,
+                    c.hand_modifier,
+                    c.life_modifier,
+                    c.is_booster,
+                    c.is_digital,
+                    c.is_promo,
+                    c.released_at,
+                    c.is_textless,
+                    c.mtgo_foil_id,
+                    c.is_reprint,
+                    c.id,
+                    c.card_back_id,
+                    c.oracle_id,
+                    c.illustration_id,
+                    c.printed_type_line,
+                    c.type_line,
+                    c.image_uris,
+                    c.multiverse_ids,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT v.code
@@ -151,13 +146,18 @@ BEGIN
                     ) AS watermark,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.name, v.name_section
+                            SELECT v.name, v.name_section, v.description
                             FROM cmframe v
                             WHERE v.name = c.cmframe
                         ) x
                     ) AS frame,
-                    printed_type_line,
-                    type_line,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT v.first_name, v.last_name, v.name, v.name_section
+                            FROM cmartist v
+                            WHERE v.name = c.cmartist
+                        ) x
+                    ) AS artist,
                     array(
                         SELECT row_to_json(x) FROM (
                             SELECT w.name, w.name_section, w.symbol, w.is_mana_color
@@ -185,10 +185,113 @@ BEGIN
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
                             WHERE v.cmcard = c.id
                         ) x
-                    ) AS component_parts
-                FROM cmcard c';
+                    ) AS component_parts ';
 
-    command := command || ' WHERE c.id = ''' || _id || '''';
+    -- Faces
+    command := command ||
+                    ', array(
+                        SELECT row_to_json(x) FROM (' ||
+                            command ||
+                            'FROM cmcard c left join cmcard_face w on w.cmcard_face = c.id
+                            WHERE w.cmcard = ''' || _id || '''' ||
+                        ') x
+                    ) AS faces ';
+
+    -- Other Languages
+    command := command ||
+                    ', array(
+                        SELECT row_to_json(x) FROM (' ||
+                            command ||
+                            'FROM cmcard c left join cmlanguage w on w.code = cmlanguage
+                            left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.id
+                            left join cmset y on y.code = c.cmset
+                            WHERE x.cmcard = ''' || _id || '''' ||
+                            ' order by y.release_date desc
+                        ) x
+                    ) AS other_languages ';
+
+    -- Other Printings
+    command := command ||
+                    ', array(
+                        SELECT row_to_json(x) FROM (' ||
+                            command ||
+                            'FROM cmcard c
+                            left join cmcard_otherprinting w on w.cmcard_otherprinting = c.id
+                            left join cmset y on y.code = c.cmset
+                            WHERE w.cmcard = ''' || _id || '''' ||
+                            ' order by y.release_date desc
+                        ) x
+                    ) AS other_printings ';
+
+    -- Variations
+    command := command ||
+                ', array(
+                    SELECT row_to_json(x) FROM (' ||
+                        command ||
+                        'FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.id
+                        left join cmset y on y.code = c.cmset
+                        WHERE w.cmcard = ''' || _id || '''' ||
+                        ' order by y.release_date desc
+                    ) x
+                ) AS variations ';
+
+    -- Legalities
+    command := command ||
+                ', array(
+                    SELECT row_to_json(x) FROM (
+                        --SELECT w.name as legality_name, w.name_section as legality_section, x.name as format_name, x.name_section as format_section
+                        --FROM cmcard_format_legality v left join cmformat w on v.cmformat = w.name
+                        --left join cmlegality x on v.cmlegality = x.name
+                        --WHERE v.cmcard = c.id
+                        SELECT (SELECT row_to_json(a) FROM (select w.name, w.name_section) a) AS format,
+                            (SELECT row_to_json(b) FROM (select x.name, x.name_section) b) AS legality
+                        FROM cmcard_format_legality v left join cmformat w on v.cmformat = w.name
+                        left join cmlegality x on v.cmlegality = x.name
+                        WHERE v.cmcard = c.id
+                    ) x
+                ) AS format_legalities ';
+
+    -- Frame Effects
+    command := command ||
+               ', array(
+                    SELECT row_to_json(x) FROM (
+                        SELECT w.id, w.name, w.name_section, w.description
+                        FROM cmcard_frameeffect v left join cmframeeffect w on v.cmframeeffect = w.id
+                        WHERE v.cmcard = c.id
+                    ) x
+                ) AS frame_effects ';
+
+    -- Subtypes
+    command := command ||
+               ', array(
+                    SELECT row_to_json(x) FROM (
+                        SELECT w.name, w.name_section, w.cmcardtype_parent AS parent
+                        FROM cmcard_subtype v left join cmcardtype w on v.cmcardtype = w.name
+                        WHERE v.cmcard = c.id
+                    ) x
+                ) AS subtypes ';
+
+    -- Supertypes
+    command := command ||
+               ', array(
+                    SELECT row_to_json(x) FROM (
+                        SELECT w.name, w.name_section, w.cmcardtype_parent AS parent
+                        FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
+                        WHERE v.cmcard = c.id
+                    ) x
+                ) AS supertypes ';
+
+    -- Prices
+    command := command ||
+               ', array(
+                    SELECT row_to_json(x) FROM (
+                        SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created
+                        FROM cmcardprice v
+                        WHERE v.cmcard = c.id
+                    ) x
+                ) AS prices ';
+
+    command := command || 'FROM cmcard c WHERE c.id = ''' || _id || '''';
 
     RETURN QUERY EXECUTE command;
 END;

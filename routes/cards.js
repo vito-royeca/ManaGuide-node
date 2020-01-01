@@ -20,4 +20,6 @@ router.get('/:cmset/:cmlanguage', function(req, res, next) {
     db.executeQuery(req, res, next, text, parameters);
 });
 
+// update price
+
 module.exports = router;
