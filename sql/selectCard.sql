@@ -239,10 +239,6 @@ BEGIN
     command := command ||
                 ', array(
                     SELECT row_to_json(x) FROM (
-                        --SELECT w.name as legality_name, w.name_section as legality_section, x.name as format_name, x.name_section as format_section
-                        --FROM cmcard_format_legality v left join cmformat w on v.cmformat = w.name
-                        --left join cmlegality x on v.cmlegality = x.name
-                        --WHERE v.cmcard = c.id
                         SELECT (SELECT row_to_json(a) FROM (select w.name, w.name_section) a) AS format,
                             (SELECT row_to_json(b) FROM (select x.name, x.name_section) b) AS legality
                         FROM cmcard_format_legality v left join cmformat w on v.cmformat = w.name

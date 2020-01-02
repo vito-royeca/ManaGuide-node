@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION selectCards(
         loyalty character varying,
         mana_cost character varying,
         my_name_section character varying,
-        my_number_order character varying,
+        my_number_order double precision,
         name character varying,
         power character varying,
         printed_name character varying,
@@ -17,7 +17,8 @@ CREATE OR REPLACE FUNCTION selectCards(
         rarity json,
         language json,
         printed_type_line character varying,
-        type_line character varying
+        type_line character varying,
+        prices json[]
     )
 AS
 $$
@@ -57,7 +58,14 @@ BEGIN
                         ) x
                     ) AS language,
                     printed_type_line,
-                    type_line
+                    type_line,
+                    array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created
+                            FROM cmcardprice v
+                            WHERE v.cmcard = c.id
+                        ) x
+                    ) AS prices
                 FROM cmcard c';
 
     command := command || ' WHERE c.cmset = ''' || _cmset || ''' AND c.cmlanguage = ''' || _cmlanguage || ''' ORDER BY c.name ASC';

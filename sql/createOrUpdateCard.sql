@@ -74,7 +74,7 @@ DECLARE
     _name ALIAS FOR $17;
     _oracle_text ALIAS FOR $18;
     _power ALIAS FOR $19;
-    _printed_name ALIAS FOR $21;
+    _printed_name ALIAS FOR $20;
     _printed_text ALIAS FOR $21;
     _toughness ALIAS FOR $22;
     _arena_id ALIAS FOR $23;
