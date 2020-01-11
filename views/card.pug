@@ -1,0 +1,5 @@
+extends layout.pug
+
+block content
+    each card in data
+        h1 #{card.language.code == 'en' ? card.name : card.printed_name}

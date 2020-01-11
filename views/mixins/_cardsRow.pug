@@ -1,0 +1,27 @@
+mixin tableRow(card)
+    .ui.card
+        .content
+            .right.floated.meta
+                if card.mana_cost != null
+                    script.
+                        var manaUrls = manaSymbol(card.mana_cost)
+                        for (var i=0; i<manaUrls.length; i++) {
+                            document.write("<img src='"+manaUrls[i]+"' height='16'>")
+                        }
+            a.header(href="/card/"+card.id+"?web=true") #{card.language.code == 'en' ? card.name : card.printed_name}
+            .meta #{card.language.code == 'en' ? card.type_line : card.printed_type_line}
+        a.image(href="/card/"+card.id+"?web=true")
+            img.ui.medium.rounded.image(src=card.image_uris.art_crop)
+        .extra.content Normal $40
+            .right.floated.meta Foil $50
+        .extra.content
+            table
+                tr
+                    td
+                        i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
+                    td #{card.set.name}
+                tr
+                    td(colspan=2) ##{card.collector_number} | #{card.rarity.name} | #{card.language.name}
+
+
+

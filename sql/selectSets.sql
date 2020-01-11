@@ -12,6 +12,7 @@ CREATE OR REPLACE FUNCTION selectSets(
         name            character varying,
         release_date    character varying,
         tcgplayer_id    integer,
+        parent          json,
         set_block       json,
         set_type        json,
         languages       json[]
@@ -33,6 +34,12 @@ BEGIN
                     name,
                     release_date,
                     tcgplayer_id,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT p.code
+                            FROM cmset p WHERE p.code = s.cmset_parent
+                        ) x
+                   ) AS parent,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT sb.code, sb.name, sb.name_section
@@ -57,7 +64,7 @@ BEGIN
     IF _code IS NOT NULL THEN
         command := command || ' WHERE s.code = ''' || _code || ''' ORDER BY s.name ASC';
     ELSE
-        command := command || ' ORDER BY s.name ASC';
+        command := command || ' ORDER BY s.release_date DESC, s.name ASC';
     END IF;
 
     RETURN QUERY EXECUTE command;

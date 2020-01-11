@@ -10,6 +10,7 @@ const rateLimit = require('express-rate-limit')
 
 // routers
 const artistsRouter = require('./routes/artists');
+const cardRouter = require('./routes/card');
 const cardsRouter = require('./routes/cards');
 const cardFacesRouter = require('./routes/cardfaces');
 const cardPartsRouter = require('./routes/cardparts');
@@ -26,6 +27,7 @@ const indexRouter = require('./routes/index');
 const raritiesRouter = require('./routes/rarities');
 const rulingsRouter = require('./routes/rulings');
 const serverInfoRouter = require('./routes/serverinfo');
+const setRouter = require('./routes/set');
 const setsRouter = require('./routes/sets');
 const setBlocksRouter = require('./routes/setblocks');
 const setTypesRouter = require('./routes/settypes');
@@ -110,6 +112,7 @@ app.use(passport.session());
 // API
 app.use('/', indexRouter);
 app.use('/artists', artistsRouter);
+app.use('/card', cardRouter);
 app.use('/cards', cardsRouter);
 app.use('/cardfaces', cardFacesRouter);
 app.use('/cardparts', cardPartsRouter);
@@ -125,6 +128,7 @@ app.use('/legalities', legalitiesRouter);
 app.use('/rarities', raritiesRouter);
 app.use('/rulings', rulingsRouter);
 app.use('/serverinfo', serverInfoRouter);
+app.use('/set', setRouter);
 app.use('/sets', setsRouter);
 app.use('/setblocks', setBlocksRouter);
 app.use('/settypes', setTypesRouter);

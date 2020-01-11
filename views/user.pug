@@ -12,3 +12,13 @@ block content
             p Note: <code>_raw</code> and <code>_json</code> properties have been ommited.
             pre
                 code #{userProfile}
+
+
+
+                // layout
+                h1.ui.center.aligned.header #{ pageTitle }
+                    .ui.container
+                        block content
+                    block footer
+                        footer
+                            p &copy #{new Date().getFullYear()} Mana Guide

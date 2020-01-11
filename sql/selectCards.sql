@@ -2,22 +2,23 @@ CREATE OR REPLACE FUNCTION selectCards(
     character varying,
     character varying)
     RETURNS TABLE (
+        id character varying,
+        collector_number character varying,
         face_order integer,
-        image_uris jsonb,
         loyalty character varying,
         mana_cost character varying,
         my_name_section character varying,
         my_number_order double precision,
         name character varying,
-        power character varying,
         printed_name character varying,
+        printed_type_line character varying,
+        type_line character varying,
+        power character varying,
         toughness character varying,
-        id character varying,
+        image_uris jsonb,
         set json,
         rarity json,
         language json,
-        printed_type_line character varying,
-        type_line character varying,
         prices json[]
     )
 AS
@@ -28,20 +29,23 @@ DECLARE
     command character varying;
 BEGIN
     command := 'SELECT
+                    id,
+                    collector_number,
                     face_order,
-                    image_uris,
                     loyalty,
                     mana_cost,
                     my_name_section,
                     my_number_order,
                     name,
-	                power,
                     printed_name,
+                    printed_type_line,
+                    type_line,
+	                power,
                     toughness,
-                    id,
+                    image_uris,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT s.code
+                            SELECT s.code, s.name
                             FROM cmset s WHERE s.code = c.cmset
                         ) x
                     ) AS set,
@@ -53,12 +57,10 @@ BEGIN
                     ) AS rarity,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT l.code
+                            SELECT l.code, l.name
                             FROM cmlanguage l WHERE l.code = c.cmlanguage
                         ) x
                     ) AS language,
-                    printed_type_line,
-                    type_line,
                     array(
                         SELECT row_to_json(x) FROM (
                             SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created
