@@ -3,7 +3,7 @@ include mixins/_cardsRow
 
 block content
     each set in data
-        h1.ui.center.aligned.header #{ set.name }
+        h1.ui.header #{ set.name }
         .ui.centered.link.cards
             each card in set.cards
                 +tableRow(card)

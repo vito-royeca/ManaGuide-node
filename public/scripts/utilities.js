@@ -4,7 +4,7 @@ function manaSymbol(manaCost) {
     }
 
     var cleanString = manaCost.replace("{", "")
-    var array = cleanString.toArray()
+    var array = cleanString.split("}")
     var urlArray = []
 
     for (var i = 0; i < array.length; i++) {

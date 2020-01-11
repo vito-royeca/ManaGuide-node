@@ -1,0 +1,8 @@
+extends layout.pug
+include mixins/_cardsRow
+
+block content
+    h1.ui.header Search Results: #{ data.length }
+    .ui.centered.link.cards
+        each card in data
+            +tableRow(card)

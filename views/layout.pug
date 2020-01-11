@@ -43,13 +43,32 @@ html(lang='en')
             table.ui.celled img { display: inline-block; }
             footer { margin: 35px 0 15px 0; text-align: center; }
 
-        // my JS
-        script(src="/scripts/utilities.js")
-
     body
+        -    function manaSymbol(manaCost) {
+        -        if (manaCost == null) {
+        -            return null
+        -        }
+        -
+        -        var cleanString = manaCost.replace(/{/g, "").trim()
+        -        var array = cleanString.split("}")
+        -        var urlArray = []
+        -
+        -        for (var i = 0; i < array.length-1; i++) {
+        -            var mana = array[i]
+        -            if (mana.toLowerCase() == "chaos") {
+        -                mana = "Chaos"
+        -            }
+        -
+        -            var url = "/images/mana/" + mana + ".svg"
+        -            urlArray[i] = url
+        -        }
+        -
+        -        return urlArray
+        -    }
+
         .preloader
             .loaded
-        header.header.navbar-fixed-top#home
+        header.header.navbar#home
             .navbar.navbar-default.main-menu
                 .container
                     .navbar-header
@@ -57,9 +76,15 @@ html(lang='en')
                             span.icon-bar
                             span.icon-bar
                             span.icon-bar
-                        a.navbar-brand(href="#home" alt="Logo")
+                        a.navbar-brand(href="/" alt="Logo")
                             img(src="/images/logo.png")
-                        a.navbar-brand(href="/")
+                        a.navbar-brand(href="/search")
+
+                        form.navbar-brand(action="search" method="get" id="search-form" name="search-form" class="validate" novalidate)
+                            .ui.form
+                                .field
+                                    input(type="hidden" value="true" name="web" id="web")
+                                    input(type="text" value="" name="query" id="query" placeholder="Search for Magic cards...")
                     .collapse.navbar-collapse
                         ul.nav.navbar-nav.navbar-right
                             li
@@ -71,8 +96,9 @@ html(lang='en')
 
         section#content
             .container
-                .row.main_description
-                    block content
+                .row
+                    .row.main_description
+                        block content
 
         footer.center-content#footer
             .container
