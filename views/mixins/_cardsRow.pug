@@ -3,8 +3,11 @@ mixin tableRow(card)
         .content
             if card.mana_cost != null
                 .right.floated.meta
-                    each manaUrl in  manaSymbol(card.mana_cost)
-                        img(src=manaUrl height="16")
+                    each mana in  manaSymbols(card.mana_cost)
+                        if mana == "//"
+                            = mana
+                        else
+                            img(src="/images/mana/" + mana + ".svg" height="16")
             a.header(href="/card/"+card.id+"?web=true") #{card.language.code == 'en' ? card.name : card.printed_name}
             .meta #{card.language.code == 'en' ? card.type_line : card.printed_type_line}
         a.image(href="/card/"+card.id+"?web=true")
@@ -13,15 +16,24 @@ mixin tableRow(card)
             else
                 img.ui.rounded.image(src=card.image_uris.art_crop)
         .content
+            - var foil = -1
+            - var normal = -1
+
             if card.prices.length > 0
                 each price in card.prices
                     if price.is_foil
-                        .right.floated.content Foil $#{ price.market }
+                        - foil = price.market
                     else
-                        .left.floated.content Normal $#{ price.market }
+                        - foil = price.market
+            if normal != -1
+                .left.floated.content Normal $#{ normal }
             else
-                .left.floated.content Normal NA
-                .right.floated.content Foil NA
+                .left.floated.content Normal &#8212;
+            if foil != -1
+                .right.floated.content Foil $#{ foil }
+            else
+                .right.floated.content Foil &#8212;
+
         .extra.content
             table
                 tr
