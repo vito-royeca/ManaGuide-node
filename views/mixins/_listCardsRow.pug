@@ -1,0 +1,18 @@
+mixin listTableRow(card)
+    tr
+        td.center.aligned
+            i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
+        td.right.aligned #{card.collector_number}
+        td #{card.language.code == 'en' ? card.name : card.printed_name}
+        td
+            if card.mana_cost != null
+                .right.floated.meta
+                    each mana in  manaSymbols(card.mana_cost)
+                        if mana == "//"
+                            = mana
+                        else
+                            img(src="/images/mana/" + mana + ".svg" height="16")
+        td #{card.language.code == 'en' ? card.type_line : card.printed_type_line}
+        td #{card.rarity.name}
+        td &nbsp;
+        td &nbsp;

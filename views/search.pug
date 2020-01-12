@@ -1,8 +1,122 @@
 extends layout.pug
-include mixins/_cardsRow
+include mixins/_montageCardsRow
+include mixins/_imageCardsRow
+include mixins/_listCardsRow
 
 block content
+    script.
+        function invokeForm(target, value) {
+            document.getElementById(target).value = value
+            if (value) {
+                document.getElementById("search-form").submit();
+            }
+        }
     h1.ui.header Search Results: #{ data.length }
-    .ui.centered.link.cards
-        each card in data
-            +tableRow(card)
+    p
+    form(action="/search" method="get" id="select-form" name="select-form")
+        .ui.form
+            input(type="hidden" value="true" name="web" id="web")
+            input(type="hidden" value=query name="query" id="query")
+            .three.fields
+                .field
+                    select(name="displayAs" id="displayAs" onchange="invokeForm(\"displayAs\", this.value);")
+                        option(value="") Display As
+                        if displayAs == "montage"
+                            option(value="montage" selected) Montage
+                        else
+                            option(value="montage") Montage
+
+                        if displayAs == "image"
+                            option(value="image" selected) Image
+                        else
+                            option(value="image") Image
+
+                        if displayAs == "list"
+                            option(value="list" selected) List
+                        else
+                            option(value="list") List
+                .field
+                    select(name="sortedBy" id="sortedBy" onchange="invokeForm(\"sortedBy\", this.value);")
+                        option(value="") Sorted By
+                        if sortedBy == "set"
+                            option(value="set" selected) Set
+                        else
+                            option(value="set") Set
+
+                        if sortedBy == "collectorNumber"
+                            option(value="collectorNumber" selected) Collector Number
+                        else
+                            option(value="collectorNumber") Collector Number
+
+                        if sortedBy == "name"
+                            option(value="name" selected) Name
+                        else
+                            option(value="name") Name
+
+                        if sortedBy == "cmc"
+                            option(value="cmc" selected) Casting Cost
+                        else
+                            option(value="cmc") Casting Cost
+
+                        if sortedBy == "type"
+                            option(value="type" selected) Type
+                        else
+                            option(value="type") Type
+
+                        if sortedBy == "rarity"
+                            option(value="rarity" selected) Rarity
+                        else
+                            option(value="rarity") Rarity
+
+                        if sortedBy == "normalPrice"
+                            option(value="normalPrice" selected) Normal Price
+                        else
+                            option(value="normalPrice") Normal Price
+
+                        if sortedBy == "foilPrice"
+                            option(value="foilPrice" selected) Foil Price
+                        else
+                            option(value="foilPrice") Foil Price
+                .field
+                    select(name="orderBy" id="orderBy" onchange="invokeForm(\"orderBy\", this.value);")
+                        option(value="") Order By
+                        if orderBy == "ascending"
+                            option(value="ascending" selected) Ascending
+                        else
+                            option(value="ascending") Ascending
+
+                        if orderBy == "descending"
+                            option(value="descending" selected) Descending
+                        else
+                            option(value="descending") Descending
+    p
+    if displayAs == "montage"
+        .ui.centered.link.cards
+            each card in data
+                +montageTableRow(card)
+    else if displayAs == "image"
+        .ui.small.images
+            each card in data
+                +imageTableRow(card)
+    else if displayAs == "list"
+        table.ui.sortable.celled.table
+            thead
+                tr
+                    th Set
+                    th #
+                    th.sorted.ascending Name
+                    th Casting Cost
+                    th Type
+                    th Rarity
+                    th Normal
+                    th Foil
+            tbody
+                each set in data
+                    +listTableRow(set)
+            tfoot
+                tr
+                    th(colspan='8')
+
+        script.
+            $('table').tablesort()
+

@@ -21,6 +21,16 @@ router.get('/', function(req, res, next) {
         res.end(message)
     } else {
         const parameters = [query]
+
+        if (!req.query.displayAs || req.query.displayAs === "") {
+            req.query.displayAs = "montage"
+        }
+        if (!req.query.sortedBy || req.query.sortedBy === "") {
+            req.query.sortedBy = "name"
+        }
+        if (!req.query.orderBy || req.query.orderBy === "") {
+            req.query.orderBy = "ascending"
+        }
         db.executeQuery(req, res, next, text, parameters)
     }
 })

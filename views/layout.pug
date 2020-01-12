@@ -39,6 +39,7 @@ html(lang='en')
 
         // semantic style
         link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css" type="text/css")
+        script(src="/js/tablesort.js")
         style.
             table.ui.celled img { display: inline-block; }
             footer { margin: 35px 0 15px 0; text-align: center; }
@@ -51,7 +52,11 @@ html(lang='en')
         -
         -        var cleanString = manaCost.replace(/{/g, "").trim()
         -        cleanString = cleanString.replace(/ /g, "").trim()
-        -        cleanString = cleanString.replace(/\/\//g, "//}").trim()
+        -        if (cleanString.includes("//")) {
+        -           cleanString = cleanString.replace(/\/\//g, "//}").trim()
+        -        } else if (cleanString.includes("/")) {
+        -           cleanString = cleanString.replace(/\//g, "").trim()
+        -        }
         -
         -        var array = cleanString.split("}")
         -        var manaArray = []
@@ -64,9 +69,6 @@ html(lang='en')
         -
         -            manaArray[i] = mana
         -        }
-        -        console.log("cleanString="+cleanString)
-        -        console.log("array="+array)
-        -        console.log("manaArray="+manaArray)
         -        return manaArray
         -    }
 
@@ -83,6 +85,9 @@ html(lang='en')
                         .ui.form
                             .field
                                 input(type="hidden" value="true" name="web" id="web")
+                                input(type="hidden" value=displayAs name="displayAs" id="displayAs")
+                                input(type="hidden" value=sortedBy name="sortedBy" id="sortedBy")
+                                input(type="hidden" value=orderBy name="orderBy" id="orderBy")
                                 input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
                     .collapse.navbar-collapse
                         ul.nav.navbar-nav.navbar-right
