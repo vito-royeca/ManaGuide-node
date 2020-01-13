@@ -1,9 +1,56 @@
 extends layout.pug
 include mixins/_montageCardsRow
+include mixins/_imageCardsRow
+include mixins/_listCardsRow
+include mixins/_cardsSorter
 
-block content
+block title
     each set in data
-        h1.ui.header #{ set.name }
-        .ui.centered.link.cards
-            each card in set.cards
-                +tableRow(card)
+        table
+            tbody
+                tr
+                    td(rowspan=2 style="padding: 10px;")
+                        i(class='ss ss-' + set.code + ' ss-3x')
+                    td()
+                        h1.ui.header #{set.name} (#{set.code})
+                tr
+                    td(colspan=2) #{set.card_count} cards | Released on #{set.release_date}
+        p &nbsp;
+block sorters
+    +cardsSorter("set")
+block data
+    form(action=baseUrl method="get" id="set" name="set")
+        input(type="hidden" value=displayAs name="displayAs" id="set.displayAs")
+        input(type="hidden" value=sortedBy name="sortedBy" id="set.sortedBy")
+        input(type="hidden" value=orderBy name="orderBy" id="set.orderBy")
+
+    if displayAs == "montage"
+        each set in data
+            .ui.centered.link.cards
+                each card in set.cards
+                    +montageTableRow(card)
+    else if displayAs == "image"
+        each set in data
+            .ui.small.images
+                each card in set.cards
+                    +imageTableRow(card)
+    else if displayAs == "list"
+        each set in data
+            table.ui.sortable.celled.table
+                thead
+                    tr
+                        th Set
+                        th #
+                        th Name
+                        th Casting Cost
+                        th Type
+                        th Rarity
+                        th Normal
+                        th Foil
+                tbody
+                    each card in set.cards
+                        +listTableRow(card)
+                tfoot
+                    tr
+                        th(colspan='8')
+

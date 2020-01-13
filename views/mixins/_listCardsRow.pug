@@ -1,9 +1,19 @@
 mixin listTableRow(card)
+    - var foil = 0
+    - var normal = 0
+
+    each price in card.prices
+        if price.is_foil
+            - foil = price.market
+        else
+            - normal = price.market
+
     tr
         td.center.aligned
-            i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
+            i(class="ss ss-" + card.set.code + " ss-" + card.rarity.name.toLowerCase() + " ss-2x")
         td.right.aligned #{card.collector_number}
-        td #{card.language.code == 'en' ? card.name : card.printed_name}
+        td
+            a(href="/card/"+card.id+"?displayAs="+displayAs+"&sortedBy="+sortedBy+"&orderBy="+orderBy) #{card.language.code == "en" ? card.name : card.printed_name}
         td
             if card.mana_cost != null
                 .right.floated.meta
@@ -12,7 +22,13 @@ mixin listTableRow(card)
                             = mana
                         else
                             img(src="/images/mana/" + mana + ".svg" height="16")
-        td #{card.language.code == 'en' ? card.type_line : card.printed_type_line}
+        td #{card.language.code == "en" ? card.type_line : card.printed_type_line}
         td #{card.rarity.name}
-        td &nbsp;
-        td &nbsp;
+        if normal > 0
+            td.right.aligned $#{ normal }
+        else
+            td.right.aligned &#8212
+        if foil > 0
+            td.right.aligned $#{ foil }
+        else
+            td.right.aligned &#8212

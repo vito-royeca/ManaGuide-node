@@ -1,11 +1,15 @@
 extends layout.pug
 
-block content
+block title
+    each card in data
+        h1 #{card.language.code == "en" ? card.name : card.printed_name}
+block sorters
+    p &nbsp;
+block data
     .ui.items
         each card in data
-            h1 #{card.language.code == 'en' ? card.name : card.printed_name}
             .item
                 img.ui.tiny(src=card.image_uris.normal)
                 .content
-                    .meta #{card.language.code == 'en' ? card.type_line : card.printed_type_line}
-                    .description #{card.language.code == 'en' ? card.oracle_text : card.printed_text}
+                    .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
+                    .description #{card.language.code == "en" ? card.oracle_text : card.printed_text}

@@ -1,12 +1,16 @@
 extends layout.pug
 include mixins/_setsRow
 
-block content
+block title
     h1.ui.header Sets
-    table.ui.small.striped.table
+block sorters
+    p &nbsp;
+block data
+    table.ui.small.sortable.celled.table
         thead
             tr
-                th(colspan=2) Name
+                th.center.aligned Symbol
+                th Name
                 th Cards
                 th Release Date
                 th Languages

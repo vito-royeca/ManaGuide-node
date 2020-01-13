@@ -1,88 +1,84 @@
 mixin tableRow(set)
     tr
-        td
-            if (set.parent == null)
-                i(class='ss ss-'+set.code+' ss-2x')
-            else
-                i.ellipsis.vertical.icon
-                i(class='ss ss-'+set.code+' ss-2x')
+        td.center.aligned
+            i(class="ss ss-" + set.code + " ss-2x")
         td #{set.name} (#{set.code})
-        td #{set.card_count}
-        td #{set.release_date}
+        td.right.aligned #{set.card_count}
+        td.center.aligned #{set.release_date}
         td
             // EN
-            if (set.languages.some(e => e.code == 'en'))
-                a(href='/set/' + set.code + '/en?web=true')
+            if (set.languages.some(e => e.code == "en"))
+                a(href="/set/" + set.code + "/en?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button EN
             else
                 button.mini.ui.disabled.button EN
 
             // ES
-            if (set.languages.some(e => e.code == 'es'))
-                a(href='/set/' + set.code + '/es?web=true')
+            if (set.languages.some(e => e.code == "es"))
+                a(href="/set/" + set.code + "/es?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button ES
             else
                 button.mini.ui.disabled.button ES
 
             // FR
-            if (set.languages.some(e => e.code == 'fr'))
-                a(href='/set/' + set.code + '/fr?web=true')
+            if (set.languages.some(e => e.code == "fr"))
+                a(href="/set/" + set.code + "/fr?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button FR
             else
                 button.mini.ui.disabled.button FR
 
             // DE
-            if (set.languages.some(e => e.code == 'de'))
-                a(href='/set/' + set.code + '/de?web=true')
+            if (set.languages.some(e => e.code == "de"))
+                a(href="/set/" + set.code + "/de?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button DE
             else
                 button.mini.ui.disabled.button DE
 
             // IT
-            if (set.languages.some(e => e.code == 'it'))
-                a(href='/set/' + set.code + '/it?web=true')
+            if (set.languages.some(e => e.code == "it"))
+                a(href="/set/" + set.code + "/it?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button IT
             else
                 button.mini.ui.disabled.button IT
 
             // PT
-            if (set.languages.some(e => e.code == 'PT'))
-                a(href='/set/' + set.code + '/pt?web=true')
+            if (set.languages.some(e => e.code == "pt"))
+                a(href="/set/" + set.code + "/pt?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button PT
             else
                 button.mini.ui.disabled.button PT
 
             // JA
-            if (set.languages.some(e => e.code == 'ja'))
-                a(href='/set/' + set.code + '/ja?web=true')
+            if (set.languages.some(e => e.code == "ja"))
+                a(href="/set/" + set.code + "/ja?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button JA
             else
                 button.mini.ui.disabled.button JA
 
             // KO
-            if (set.languages.some(e => e.code == 'ko'))
-                a(href='/set/' + set.code + '/ko?web=true')
+            if (set.languages.some(e => e.code == "ko"))
+                a(href="/set/" + set.code + "/ko?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button KO
             else
                 button.mini.ui.disabled.button KO
 
             // RU
-            if (set.languages.some(e => e.code == 'ru'))
-                a(href='/set/' + set.code + '/ru?web=true')
+            if (set.languages.some(e => e.code == "ru"))
+                a(href="/set/" + set.code + "/ru?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button RU
             else
                 button.mini.ui.disabled.button RU
 
             // ZHS
-            if (set.languages.some(e => e.code == 'zhs'))
-                a(href='/set/' + set.code + '/zhs?web=true')
+            if (set.languages.some(e => e.code == "zhs"))
+                a(href="/set/" + set.code + "/zhs?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button 汉语
             else
                 button.mini.ui.disabled.button 汉语
 
             // ZHT
-            if (set.languages.some(e => e.code == 'zht'))
-                a(href='/set/' + set.code + '/zht?web=true')
+            if (set.languages.some(e => e.code == "zht"))
+                a(href="/set/" + set.code + "/zht?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
                     button.mini.ui.positive.button 漢語
             else
                 button.mini.ui.disabled.button 漢語
