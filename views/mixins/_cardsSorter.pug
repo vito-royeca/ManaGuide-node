@@ -4,7 +4,8 @@ mixin cardsSorter(action)
             input(type="hidden" value=query name="query" id="query")
             .three.fields
                 .field
-                    select(name="displayAs" id="displayAs" onchange="invokeSorter('"+ action +"', 'displayAs', this.value);")
+                    select(name="displayAs" id="displayAs"
+                           onchange="invokeSorter('"+ action +"', 'displayAs', this.value);")
                         option(value="") Display As
                         if displayAs == "montage"
                             option(value="montage" selected) Montage
@@ -21,17 +22,23 @@ mixin cardsSorter(action)
                         else
                             option(value="list") List
                 .field
-                    select(name="sortedBy" id="sortedBy" onchange="invokeSorter('"+ action +"', 'sortedBy', this.value);")
+                    select(name="sortedBy" id="sortedBy"
+                           onchange="invokeSorter('"+ action +"', 'sortedBy', this.value);")
                         option(value="") Sorted By
-                        if sortedBy == "set"
-                            option(value="set" selected) Set
+                        if sortedBy == "set_name"
+                            option(value="set_name" selected) Set Name
                         else
-                            option(value="set") Set
+                            option(value="set_name") Set Name
 
-                        if sortedBy == "collectorNumber"
-                            option(value="collectorNumber" selected) Collector Number
+                        if sortedBy == "set_release"
+                            option(value="set_release" selected) Set Release Date
                         else
-                            option(value="collectorNumber") Collector Number
+                            option(value="set_release") Set Release Date
+
+                        if sortedBy == "collector_number"
+                            option(value="collector_number" selected) Collector Number
+                        else
+                            option(value="collector_number") Collector Number
 
                         if sortedBy == "name"
                             option(value="name" selected) Name
@@ -53,24 +60,16 @@ mixin cardsSorter(action)
                         else
                             option(value="rarity") Rarity
 
-                        if sortedBy == "normalPrice"
-                            option(value="normalPrice" selected) Normal Price
-                        else
-                            option(value="normalPrice") Normal Price
-
-                        if sortedBy == "foilPrice"
-                            option(value="foilPrice" selected) Foil Price
-                        else
-                            option(value="foilPrice") Foil Price
                 .field
-                    select(name="orderBy" id="orderBy" onchange="invokeSorter('"+ action +"', 'orderBy', this.value);")
+                    select(name="orderBy" id="orderBy"
+                           onchange="invokeSorter('"+ action +"', 'orderBy', this.value);")
                         option(value="") Order By
-                        if orderBy == "ascending"
-                            option(value="ascending" selected) Ascending
+                        if orderBy == "asc"
+                            option(value="asc" selected) Ascending
                         else
-                            option(value="ascending") Ascending
+                            option(value="asc") Ascending
 
-                        if orderBy == "descending"
-                            option(value="descending" selected) Descending
+                        if orderBy == "desc"
+                            option(value="desc" selected) Descending
                         else
-                            option(value="descending") Descending
+                            option(value="desc") Descending

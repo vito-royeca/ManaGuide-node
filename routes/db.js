@@ -10,21 +10,21 @@ const pool = new Pool({
 })
 
 exports.executeQuery = function(req, res, next, text, parameters)  {
+    if (!req.query.displayAs || req.query.displayAs === "") {
+        req.query.displayAs = "list"
+    }
+    if (!req.query.sortedBy || req.query.sortedBy === "") {
+        req.query.sortedBy = "name"
+    }
+    if (!req.query.orderBy || req.query.orderBy === "") {
+        req.query.orderBy = "asc"
+    }
+
     pool.query(text, parameters)
         .then(queryResults => {
             if (req.query.json == "true") {
                 res.status(200).json(queryResults.rows)
             } else {
-                if (!req.query.displayAs || req.query.displayAs === "") {
-                    req.query.displayAs = "montage"
-                }
-                if (!req.query.sortedBy || req.query.sortedBy === "") {
-                    req.query.sortedBy = "name"
-                }
-                if (!req.query.orderBy || req.query.orderBy === "") {
-                    req.query.orderBy = "ascending"
-                }
-
                 res.render(req.baseUrl.substr(1), {
                     baseUrl: req.baseUrl + url.parse(req.url).pathname,
                     query: req.query.query,
@@ -38,8 +38,10 @@ exports.executeQuery = function(req, res, next, text, parameters)  {
         .catch(error => {
             console.log(error.message)
             console.log(parameters)
+
+            res.locals.message = error.message
             res.statusCode = 500
-            res.end(error.message)
+            res.render('error')
         })
 }
 

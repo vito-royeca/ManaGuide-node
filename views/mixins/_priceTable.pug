@@ -1,0 +1,86 @@
+mixin priceTable(card)
+    - var foilLow = 0
+    - var foilMedian = 0
+    - var foilHigh = 0
+    - var foilMarket = 0
+    - var foilDirectLow = 0
+    - var normalLow = 0
+    - var normalMedian = 0
+    - var normalHigh = 0
+    - var normalMarket = 0
+    - var normalDirectLow = 0
+
+    each price in card.prices
+        if price.is_foil
+            - foilLow = price.low
+            - foilMedian = price.median
+            - foilHigh = price.high
+            - foilMarket = price.market
+            - foilDirectLow = price.direct_low
+        else
+            - normalLow = price.low
+            - normalMedian = price.median
+            - normalHigh = price.high
+            - normalMarket = price.market
+            - normalDirectLow = price.direct_low
+
+    table.ui.small.sortable.celled.table
+        thead
+            tr
+                th &nbsp;
+                th Normal
+                th Foil
+        tbody
+            tr
+                td Low
+                if normalLow > 0
+                    td.right.aligned $#{ normalLow }
+                else
+                    td.right.aligned &#8212
+                if foilLow > 0
+                    td.right.aligned $#{ foilLow }
+                else
+                    td.right.aligned &#8212
+            tr
+                td Median
+                if normalMedian > 0
+                    td.right.aligned $#{ normalMedian }
+                else
+                    td.right.aligned &#8212
+                if foilMedian > 0
+                    td.right.aligned $#{ foilMedian }
+                else
+                    td.right.aligned &#8212
+            tr
+                td High
+                if normalHigh > 0
+                    td.right.aligned $#{ normalHigh }
+                else
+                    td.right.aligned &#8212
+                if foilHigh > 0
+                    td.right.aligned $#{ foilHigh }
+                else
+                    td.right.aligned &#8212
+            tr
+                td Market
+                if normalMarket > 0
+                    td.right.aligned $#{ normalMarket }
+                else
+                    td.right.aligned &#8212
+                if foilMarket > 0
+                    td.right.aligned $#{ foilMarket }
+                else
+                    td.right.aligned &#8212
+            tr
+                td Direct Low
+                if normalDirectLow > 0
+                    td.right.aligned $#{ normalDirectLow }
+                else
+                    td.right.aligned &#8212
+                if foilDirectLow > 0
+                    td.right.aligned $#{ foilDirectLow }
+                else
+                    td.right.aligned &#8212
+        tfoot
+            tr
+                th(colspan='3')

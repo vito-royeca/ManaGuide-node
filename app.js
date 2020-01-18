@@ -6,7 +6,6 @@ const logger = require('morgan');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit')
-//const { body, check } = require('express-validator')
 
 // routers
 const artistsRouter = require('./routes/artists');
@@ -33,11 +32,6 @@ const setsRouter = require('./routes/sets');
 const setBlocksRouter = require('./routes/setblocks');
 const setTypesRouter = require('./routes/settypes');
 const watermarksRouter = require('./routes/watermarks');
-
-// auth routers
-var userInViews = require('./lib/middleware/userinviews');
-var authRouter = require('./routes/auth');
-var usersRouter = require('./routes/users');
 
 const app = express();
 
@@ -69,34 +63,6 @@ if (app.get('env') === 'production') {
   // app.set('trust proxy', 1);
 }
 
-// Configure Passport to use Auth0
-var dotenv = require('dotenv');
-dotenv.config();
-var passport = require('passport');
-var Auth0Strategy = require('passport-auth0');
-var strategy = new Auth0Strategy(
-    {
-      domain: process.env.AUTH0_DOMAIN,
-      clientID: process.env.AUTH0_CLIENT_ID,
-      clientSecret: process.env.AUTH0_CLIENT_SECRET,
-      callbackURL:
-          process.env.AUTH0_CALLBACK_URL || 'http://192.168.1.182:1993/callback'
-    },
-    function (accessToken, refreshToken, extraParams, profile, done) {
-      // accessToken is the token to call Auth0 API (not needed in the most cases)
-      // extraParams.id_token has the JSON Web Token
-      // profile has all the information from the user
-      return done(null, profile);
-    }
-);
-passport.use(strategy);
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
-passport.deserializeUser(function (user, done) {
-    done(null, user);
-});
-
 // Other settings
 app.use(logger('dev'));
 app.use(express.json());
@@ -106,8 +72,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(compression());
 app.use(helmet());
 app.use(session(sess));
-app.use(passport.initialize());
-app.use(passport.session());
 //app.use(limiter)
 
 // API
@@ -136,12 +100,6 @@ app.use('/setblocks', setBlocksRouter);
 app.use('/settypes', setTypesRouter);
 app.use('/watermarks', watermarksRouter);
 
-// Auth API
-app.use(userInViews());
-app.use('/', authRouter);
-app.use('/', indexRouter);
-app.use('/', usersRouter);
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -149,13 +107,12 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  console.log(error.message)
+  console.log(parameters)
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.locals.message = error.message
+  res.statusCode = 500
+  res.render('error')
 });
 
 module.exports = app;

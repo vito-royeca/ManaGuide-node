@@ -1,0 +1,91 @@
+mixin languageButtons(card)
+    h3
+        i(class="language icon")
+        .mini.ui.buttons
+            if card.language.code == "en"
+                .ui.button.disabled EN
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "en"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button EN
+
+            if card.language.code == "es"
+                .ui.button.disabled ES
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "es"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button ES
+
+            if card.language.code == "fr"
+                .ui.button.disabled FR
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "fr"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button FR
+
+            if card.language.code == "de"
+                .ui.button.disabled DE
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "de"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button DE
+
+            if card.language.code == "it"
+                .ui.button.disabled IT
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "it"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button IT
+
+            if card.language.code == "pt"
+                .ui.button.disabled PT
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "pt"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button PT
+
+            if card.language.code == "ja"
+                .ui.button.disabled JA
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "ja"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button JA
+
+            if card.language.code == "ko"
+                .ui.button.disabled KO
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "ko"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button KO
+
+            if card.language.code == "ru"
+                .ui.button.disabled RU
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "ru"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button RU
+
+            if card.language.code == "zhs"
+                .ui.button.disabled 汉语
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "zhs"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button 汉语
+
+            if card.language.code == "zht"
+                .ui.button.disabled 漢語
+            else
+                each other_language in card.other_languages
+                    if other_language.language.code == "zht"
+                        a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            .ui.button 漢語

@@ -1,4 +1,6 @@
 CREATE OR REPLACE FUNCTION searchCards(
+    character varying,
+    character varying,
     character varying)
     RETURNS TABLE (
         id character varying,
@@ -25,8 +27,32 @@ AS
 $$
 DECLARE
     _query ALIAS FOR $1;
+    _sortedBy ALIAS FOR $2;
+    _orderBy ALIAS FOR $3;
     command character varying;
 BEGIN
+    IF lower(_sortedBy) = 'set_name' THEN
+        _sortedBy = 's.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+	IF lower(_sortedBy) = 'set_release' THEN
+        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'collector_number' THEN
+        _sortedBy = 'c.my_number_order ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'name' THEN
+        _sortedBy = 'c.name';
+    END IF;
+    IF lower(_sortedBy) = 'cmc' THEN
+        _sortedBy = 'c.cmc ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'type' THEN
+        _sortedBy = 'c.type_line ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'rarity' THEN
+        _sortedBy = 'r.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+
     command := 'SELECT
                     id,
                     collector_number,
@@ -79,7 +105,9 @@ BEGIN
                    ) AS faces ';
 
     _query := lower(_query);
-    command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code WHERE c.cmlanguage = ''en'' ';
+    command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code ';
+    command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
+    command := command || 'WHERE c.cmlanguage = ''en'' ';
     command := command || 'AND c.id NOT IN(select cmcard_face from cmcard_face) ';
     command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
     command := command || 'GROUP BY c.id,
@@ -95,8 +123,10 @@ BEGIN
                     c.type_line,
 	                c.power,
                     c.toughness,
-                    s.release_date ';
-    command := command ||  'ORDER BY s.release_date DESC, c.name ASC ';
+                    r.name,
+                    s.release_date,
+					s.name ';
+    command := command || 'ORDER BY ' || _sortedBy || '';
 
     RETURN QUERY EXECUTE command;
 END;

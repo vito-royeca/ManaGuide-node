@@ -1,5 +1,7 @@
 CREATE OR REPLACE FUNCTION selectSet(
     character varying,
+    character varying,
+    character varying,
     character varying)
     RETURNS TABLE (
         card_count      integer,
@@ -23,6 +25,8 @@ $$
 DECLARE
     _code ALIAS FOR $1;
     _language ALIAS FOR $2;
+    _sortedBy ALIAS FOR $3;
+    _orderBy ALIAS FOR $4;
     command character varying;
 BEGIN
     command := 'SELECT card_count,
@@ -56,14 +60,12 @@ BEGIN
                         ) x
 	               ) AS languages,
                    array_to_json(
-                        array(SELECT selectCards(''' || _code || ''', ''' || _language || '''))
+                        array(SELECT selectCards(''' || _code || ''', ''' || _language || ''', ''' || _sortedBy || ''', ''' || _orderBy || '''))
                    ) AS cards
-            FROM cmset s';
+            FROM cmset s ';
 
     IF _code IS NOT NULL THEN
-        command := command || ' WHERE s.code = ''' || _code || ''' ORDER BY s.name ASC';
-    ELSE
-        command := command || ' ORDER BY s.name ASC';
+        command := command || 'WHERE s.code = ''' || _code || '''';
     END IF;
 
     RETURN QUERY EXECUTE command;

@@ -4,7 +4,7 @@ const db = require('./db')
 
 // select by query
 router.get('/', function(req, res, next) {
-    const text = 'SELECT * from searchCards($1)'
+    const text = 'SELECT * from searchCards($1,$2,$3)'
     const query = req.query.query.replace(/\'/g, "''").trim()
     var message = null
 
@@ -20,7 +20,10 @@ router.get('/', function(req, res, next) {
         res.statusCode = 500
         res.end(message)
     } else {
-        const parameters = [query]
+        const parameters = [
+            query,
+            req.query.sortedBy,
+            req.query.orderBy]
 
         db.executeQuery(req, res, next, text, parameters)
     }

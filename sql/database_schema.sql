@@ -5,7 +5,7 @@
 -- Dumped from database version 12.1
 -- Dumped by pg_dump version 12.1
 
--- Started on 2020-01-13 00:10:58 EST
+-- Started on 2020-01-18 18:45:43 EST
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -65,7 +65,7 @@ $_$;
 ALTER FUNCTION public.createorupdateartist(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 269 (class 1255 OID 25626)
+-- TOC entry 268 (class 1255 OID 25626)
 -- Name: createorupdatecard(character varying, double precision, character varying, jsonb, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -504,7 +504,7 @@ $_$;
 ALTER FUNCTION public.createorupdatecard(character varying, double precision, character varying, jsonb, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer) OWNER TO managuide;
 
 --
--- TOC entry 279 (class 1255 OID 25582)
+-- TOC entry 278 (class 1255 OID 25582)
 -- Name: createorupdatecardfaces(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -545,7 +545,7 @@ $_$;
 ALTER FUNCTION public.createorupdatecardfaces(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 270 (class 1255 OID 21081)
+-- TOC entry 269 (class 1255 OID 21081)
 -- Name: createorupdatecardotherlanguages(); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -605,7 +605,7 @@ $$;
 ALTER FUNCTION public.createorupdatecardotherlanguages() OWNER TO managuide;
 
 --
--- TOC entry 281 (class 1255 OID 21082)
+-- TOC entry 280 (class 1255 OID 21082)
 -- Name: createorupdatecardotherprintings(); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -666,7 +666,7 @@ $$;
 ALTER FUNCTION public.createorupdatecardotherprintings() OWNER TO managuide;
 
 --
--- TOC entry 282 (class 1255 OID 22178)
+-- TOC entry 281 (class 1255 OID 22178)
 -- Name: createorupdatecardparts(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -713,7 +713,7 @@ $_$;
 ALTER FUNCTION public.createorupdatecardparts(character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 280 (class 1255 OID 23678)
+-- TOC entry 279 (class 1255 OID 23678)
 -- Name: createorupdatecardprice(double precision, double precision, double precision, double precision, double precision, integer, character varying, boolean); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -801,7 +801,7 @@ $_$;
 ALTER FUNCTION public.createorupdatecardprice(double precision, double precision, double precision, double precision, double precision, integer, character varying, boolean) OWNER TO managuide;
 
 --
--- TOC entry 276 (class 1255 OID 19740)
+-- TOC entry 275 (class 1255 OID 19740)
 -- Name: createorupdatecardtype(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1083,7 +1083,7 @@ $_$;
 ALTER FUNCTION public.createorupdateframe(character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 283 (class 1255 OID 19745)
+-- TOC entry 282 (class 1255 OID 19745)
 -- Name: createorupdateframeeffect(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1129,7 +1129,7 @@ $_$;
 ALTER FUNCTION public.createorupdateframeeffect(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 273 (class 1255 OID 19746)
+-- TOC entry 272 (class 1255 OID 19746)
 -- Name: createorupdatelanguage(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1186,7 +1186,7 @@ $_$;
 ALTER FUNCTION public.createorupdatelanguage(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 272 (class 1255 OID 19747)
+-- TOC entry 271 (class 1255 OID 19747)
 -- Name: createorupdatelayout(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1228,7 +1228,7 @@ $_$;
 ALTER FUNCTION public.createorupdatelayout(character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 274 (class 1255 OID 19748)
+-- TOC entry 273 (class 1255 OID 19748)
 -- Name: createorupdatelegality(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1304,7 +1304,7 @@ $_$;
 ALTER FUNCTION public.createorupdaterarity(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 278 (class 1255 OID 23292)
+-- TOC entry 277 (class 1255 OID 23292)
 -- Name: createorupdaterule(character varying, character varying, character varying, double precision, integer, integer); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1378,7 +1378,7 @@ $_$;
 ALTER FUNCTION public.createorupdaterule(character varying, character varying, character varying, double precision, integer, integer) OWNER TO managuide;
 
 --
--- TOC entry 271 (class 1255 OID 19750)
+-- TOC entry 270 (class 1255 OID 19750)
 -- Name: createorupdateruling(character varying, character varying, date); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1547,7 +1547,7 @@ $_$;
 ALTER FUNCTION public.createorupdateset(integer, character varying, boolean, boolean, character varying, character varying, character varying, character varying, character varying, character varying, integer, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 277 (class 1255 OID 19752)
+-- TOC entry 276 (class 1255 OID 19752)
 -- Name: createorupdatesetblock(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1627,7 +1627,7 @@ $_$;
 ALTER FUNCTION public.createorupdatesettype(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 275 (class 1255 OID 23673)
+-- TOC entry 274 (class 1255 OID 23673)
 -- Name: createorupdatestore(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1703,17 +1703,41 @@ $_$;
 ALTER FUNCTION public.createorupdatewatermark(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 286 (class 1255 OID 27158)
--- Name: searchcards(character varying); Type: FUNCTION; Schema: public; Owner: managuide
+-- TOC entry 285 (class 1255 OID 27939)
+-- Name: searchcards(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.searchcards(character varying) RETURNS TABLE(id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, image_uris jsonb, set json, rarity json, language json, prices json[], faces json[])
+CREATE FUNCTION public.searchcards(character varying, character varying, character varying) RETURNS TABLE(id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, image_uris jsonb, set json, rarity json, language json, prices json[], faces json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
     _query ALIAS FOR $1;
+    _sortedBy ALIAS FOR $2;
+    _orderBy ALIAS FOR $3;
     command character varying;
 BEGIN
+    IF lower(_sortedBy) = 'set_name' THEN
+        _sortedBy = 's.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+	IF lower(_sortedBy) = 'set_release' THEN
+        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'collector_number' THEN
+        _sortedBy = 'c.my_number_order ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'name' THEN
+        _sortedBy = 'c.name';
+    END IF;
+    IF lower(_sortedBy) = 'cmc' THEN
+        _sortedBy = 'c.cmc ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'type' THEN
+        _sortedBy = 'c.type_line ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'rarity' THEN
+        _sortedBy = 'r.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+
     command := 'SELECT
                     id,
                     collector_number,
@@ -1766,7 +1790,9 @@ BEGIN
                    ) AS faces ';
 
     _query := lower(_query);
-    command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code WHERE c.cmlanguage = ''en'' ';
+    command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code ';
+    command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
+    command := command || 'WHERE c.cmlanguage = ''en'' ';
     command := command || 'AND c.id NOT IN(select cmcard_face from cmcard_face) ';
     command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
     command := command || 'GROUP BY c.id,
@@ -1782,18 +1808,20 @@ BEGIN
                     c.type_line,
 	                c.power,
                     c.toughness,
-                    s.release_date ';
-    command := command ||  'ORDER BY s.release_date DESC, c.name ASC ';
+                    r.name,
+                    s.release_date,
+					s.name ';
+    command := command || 'ORDER BY ' || _sortedBy || '';
 
     RETURN QUERY EXECUTE command;
 END;
 $_$;
 
 
-ALTER FUNCTION public.searchcards(character varying) OWNER TO managuide;
+ALTER FUNCTION public.searchcards(character varying, character varying, character varying) OWNER TO postgres;
 
 --
--- TOC entry 284 (class 1255 OID 25649)
+-- TOC entry 283 (class 1255 OID 25649)
 -- Name: selectcard(character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1848,7 +1876,7 @@ BEGIN
                     c.multiverse_ids,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.code
+                            SELECT v.code, v.name
                             FROM cmset v WHERE v.code = c.cmset
                         ) x
                     ) AS set,
@@ -1861,7 +1889,7 @@ BEGIN
                     ) AS rarity,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.code
+                            SELECT v.code, v.name
                             FROM cmlanguage v
                             WHERE v.code = c.cmlanguage
                         ) x
@@ -2033,27 +2061,51 @@ $_$;
 ALTER FUNCTION public.selectcard(character varying) OWNER TO managuide;
 
 --
--- TOC entry 285 (class 1255 OID 27159)
--- Name: selectcards(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
+-- TOC entry 286 (class 1255 OID 27938)
+-- Name: selectcards(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.selectcards(character varying, character varying) RETURNS TABLE(id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, image_uris jsonb, set json, rarity json, language json, prices json[], faces json[])
+CREATE FUNCTION public.selectcards(character varying, character varying, character varying, character varying) RETURNS TABLE(id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, image_uris jsonb, set json, rarity json, language json, prices json[], faces json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
     _cmset ALIAS FOR $1;
     _cmlanguage ALIAS FOR $2;
+    _sortedBy ALIAS FOR $3;
+    _orderBy ALIAS FOR $4;
     command character varying;
 BEGIN
+    IF lower(_sortedBy) = 'set_name' THEN
+        _sortedBy = 's.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+	IF lower(_sortedBy) = 'set_release' THEN
+        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'collector_number' THEN
+        _sortedBy = 'c.my_number_order ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'name' THEN
+        _sortedBy = 'c.name';
+    END IF;
+    IF lower(_sortedBy) = 'cmc' THEN
+        _sortedBy = 'c.cmc ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'type' THEN
+        _sortedBy = 'c.type_line ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'rarity' THEN
+        _sortedBy = 'r.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+
     command := 'SELECT
                     id,
                     collector_number,
                     face_order,
                     loyalty,
                     mana_cost,
-                    my_name_section,
+                    c.my_name_section,
                     my_number_order,
-                    name,
+                    c.name,
                     printed_name,
                     printed_type_line,
                     type_line,
@@ -2096,28 +2148,32 @@ BEGIN
                         ) x
                     ) AS faces ';
 
-    command := command || 'FROM cmcard c WHERE c.cmset = ''' || _cmset || ''' ';
+    command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code ';
+	command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
+    command := command || 'WHERE c.cmset = ''' || _cmset || ''' ';
     command := command || 'AND c.cmlanguage = ''' || _cmlanguage || ''' ';
-    command := command || 'ORDER BY c.name ASC';
+    command := command || 'ORDER BY ' || _sortedBy || '';
 
     RETURN QUERY EXECUTE command;
 END;
 $_$;
 
 
-ALTER FUNCTION public.selectcards(character varying, character varying) OWNER TO managuide;
+ALTER FUNCTION public.selectcards(character varying, character varying, character varying, character varying) OWNER TO postgres;
 
 --
--- TOC entry 267 (class 1255 OID 27151)
--- Name: selectset(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
+-- TOC entry 284 (class 1255 OID 27935)
+-- Name: selectset(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.selectset(character varying, character varying) RETURNS TABLE(card_count integer, code character varying, is_foil_only boolean, is_online_only boolean, mtgo_code character varying, my_keyrune_code character varying, my_name_section character varying, my_year_section character varying, name character varying, release_date character varying, tcgplayer_id integer, set_block json, set_type json, languages json[], cards json)
+CREATE FUNCTION public.selectset(character varying, character varying, character varying, character varying) RETURNS TABLE(card_count integer, code character varying, is_foil_only boolean, is_online_only boolean, mtgo_code character varying, my_keyrune_code character varying, my_name_section character varying, my_year_section character varying, name character varying, release_date character varying, tcgplayer_id integer, set_block json, set_type json, languages json[], cards json)
     LANGUAGE plpgsql
     AS $_$
 DECLARE
     _code ALIAS FOR $1;
     _language ALIAS FOR $2;
+    _sortedBy ALIAS FOR $3;
+    _orderBy ALIAS FOR $4;
     command character varying;
 BEGIN
     command := 'SELECT card_count,
@@ -2151,16 +2207,12 @@ BEGIN
                         ) x
 	               ) AS languages,
                    array_to_json(
-                        --SELECT row_to_json(x) FROM (
-                            array(SELECT selectCards(''' || _code || ''', ''' || _language || '''))
-                        --) x
+                        array(SELECT selectCards(''' || _code || ''', ''' || _language || ''', ''' || _sortedBy || ''', ''' || _orderBy || '''))
                    ) AS cards
-            FROM cmset s';
+            FROM cmset s ';
 
     IF _code IS NOT NULL THEN
-        command := command || ' WHERE s.code = ''' || _code || ''' ORDER BY s.name ASC';
-    ELSE
-        command := command || ' ORDER BY s.name ASC';
+        command := command || 'WHERE s.code = ''' || _code || '''';
     END IF;
 
     RETURN QUERY EXECUTE command;
@@ -2168,10 +2220,10 @@ END;
 $_$;
 
 
-ALTER FUNCTION public.selectset(character varying, character varying) OWNER TO managuide;
+ALTER FUNCTION public.selectset(character varying, character varying, character varying, character varying) OWNER TO postgres;
 
 --
--- TOC entry 268 (class 1255 OID 27154)
+-- TOC entry 267 (class 1255 OID 27154)
 -- Name: selectsets(character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -3975,7 +4027,7 @@ ALTER TABLE ONLY public.cmcard
     ADD CONSTRAINT cmwatermark_fkey FOREIGN KEY (cmwatermark) REFERENCES public.cmwatermark(name) NOT VALID;
 
 
--- Completed on 2020-01-13 00:11:05 EST
+-- Completed on 2020-01-18 18:45:51 EST
 
 --
 -- PostgreSQL database dump complete

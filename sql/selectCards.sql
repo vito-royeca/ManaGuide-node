@@ -1,5 +1,7 @@
 CREATE OR REPLACE FUNCTION selectCards(
     character varying,
+    character varying,
+    character varying,
     character varying)
     RETURNS TABLE (
         id character varying,
@@ -27,17 +29,41 @@ $$
 DECLARE
     _cmset ALIAS FOR $1;
     _cmlanguage ALIAS FOR $2;
+    _sortedBy ALIAS FOR $3;
+    _orderBy ALIAS FOR $4;
     command character varying;
 BEGIN
+    IF lower(_sortedBy) = 'set_name' THEN
+        _sortedBy = 's.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+	IF lower(_sortedBy) = 'set_release' THEN
+        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'collector_number' THEN
+        _sortedBy = 'c.my_number_order ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'name' THEN
+        _sortedBy = 'c.name';
+    END IF;
+    IF lower(_sortedBy) = 'cmc' THEN
+        _sortedBy = 'c.cmc ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'type' THEN
+        _sortedBy = 'c.type_line ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+    IF lower(_sortedBy) = 'rarity' THEN
+        _sortedBy = 'r.name ' || _orderBy || ', c.name ' || _orderBy;
+    END IF;
+
     command := 'SELECT
                     id,
                     collector_number,
                     face_order,
                     loyalty,
                     mana_cost,
-                    my_name_section,
+                    c.my_name_section,
                     my_number_order,
-                    name,
+                    c.name,
                     printed_name,
                     printed_type_line,
                     type_line,
@@ -80,9 +106,11 @@ BEGIN
                         ) x
                     ) AS faces ';
 
-    command := command || 'FROM cmcard c WHERE c.cmset = ''' || _cmset || ''' ';
+    command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code ';
+	command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
+    command := command || 'WHERE c.cmset = ''' || _cmset || ''' ';
     command := command || 'AND c.cmlanguage = ''' || _cmlanguage || ''' ';
-    command := command || 'ORDER BY c.name ASC';
+    command := command || 'ORDER BY ' || _sortedBy || '';
 
     RETURN QUERY EXECUTE command;
 END;
