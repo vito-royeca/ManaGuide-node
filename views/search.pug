@@ -15,9 +15,10 @@ block data
             each card in data
                 +montageTableRow(card)
     else if displayAs == "image"
-        .ui.small.images
-            each card in data
-                +imageTableRow(card)
+        center
+            .ui.medium.images
+                each card in data
+                    +imageTableRow(card)
     else if displayAs == "list"
         table.ui.sortable.celled.table
             thead
@@ -36,4 +37,8 @@ block data
             tfoot
                 tr
                     th(colspan='8')
+    else
+        .ui.centered.link.cards
+            each card in data
+                +montageTableRow(card)
 

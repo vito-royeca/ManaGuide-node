@@ -25,15 +25,14 @@ exports.executeQuery = function(req, res, next, text, parameters)  {
                     req.query.orderBy = "ascending"
                 }
 
-                res.render(req.baseUrl.substr(1),
-                    {
-                        baseUrl: req.baseUrl + url.parse(req.url).pathname,
-                        query: req.query.query,
-                        displayAs: req.query.displayAs,
-                        sortedBy: req.query.sortedBy,
-                        orderBy: req.query.orderBy,
-                        data: queryResults.rows
-                    })
+                res.render(req.baseUrl.substr(1), {
+                    baseUrl: req.baseUrl + url.parse(req.url).pathname,
+                    query: req.query.query,
+                    displayAs: req.query.displayAs,
+                    sortedBy: req.query.sortedBy,
+                    orderBy: req.query.orderBy,
+                    data: queryResults.rows
+                })
             }
         })
         .catch(error => {

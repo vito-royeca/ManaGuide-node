@@ -11,10 +11,10 @@ mixin montageTableRow(card)
             a.header(href="/card/"+card.id+"?displayAs="+displayAs+"&sortedBy="+sortedBy+"&orderBy="+orderBy) #{card.language.code == 'en' ? card.name : card.printed_name}
             .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
         a.image(href="/card/"+card.id+"?displayAs="+displayAs+"&sortedBy="+sortedBy+"&orderBy="+orderBy)
-            if card.faces.count > 0
-                img.ui.rounded.image(src=card.faces[0].image_uris.art_crop)
+            if card.faces.length > 0
+                img.ui.rounded.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/art_crop.jpg")
             else
-                img.ui.rounded.image(src=card.image_uris.art_crop)
+                img.ui.rounded.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/art_crop.jpg")
         .content
             - var foil = 0
             - var normal = 0
@@ -41,7 +41,7 @@ mixin montageTableRow(card)
                             i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
                         td #{card.set.name}
                     tr
-                        td(colspan=2) ##{card.collector_number} | #{card.rarity.name} | #{card.language.name}
+                        td(colspan=2) ##{card.collector_number} &#x2E31; #{card.rarity.name} &#x2E31; #{card.language.name}
 
 
 

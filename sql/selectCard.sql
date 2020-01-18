@@ -112,7 +112,7 @@ BEGIN
                     c.multiverse_ids,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.code
+                            SELECT v.code, v.name
                             FROM cmset v WHERE v.code = c.cmset
                         ) x
                     ) AS set,
@@ -125,7 +125,7 @@ BEGIN
                     ) AS rarity,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.code
+                            SELECT v.code, v.name
                             FROM cmlanguage v
                             WHERE v.code = c.cmlanguage
                         ) x

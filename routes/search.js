@@ -5,7 +5,7 @@ const db = require('./db')
 // select by query
 router.get('/', function(req, res, next) {
     const text = 'SELECT * from searchCards($1)'
-    const query = req.query.query
+    const query = req.query.query.replace(/\'/g, "''").trim()
     var message = null
 
     if (query == null) {

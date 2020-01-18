@@ -1,15 +1,195 @@
 extends layout.pug
 
 block title
-    each card in data
-        h1 #{card.language.code == "en" ? card.name : card.printed_name}
+
 block sorters
-    p &nbsp;
+    each card in data
+        .right.floated.description
+            table
+                tbody
+                    tr
+                        td(rowspan=2 style="padding: 5px;")
+                            i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
+                        td #{card.set.name} (#{card.set.code})
+                    tr
+                        td(colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
 block data
     .ui.items
         each card in data
             .item
-                img.ui.tiny(src=card.image_uris.normal)
+                if card.faces.length > 0
+                    img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/normal.jpg")
+                else
+                    img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg")
                 .content
-                    .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
-                    .description #{card.language.code == "en" ? card.oracle_text : card.printed_text}
+                    if card.faces.length > 0
+                        each face in card.faces
+                            .header #{card.language.code == "en" ? face.name : face.printed_name} &nbsp;&nbsp;&nbsp;
+                                if face.mana_cost != null
+                                    each mana in  manaSymbols(face.mana_cost)
+                                        if mana == "//"
+                                            = mana
+                                        else
+                                            img(src="/images/mana/" + mana + ".svg" height="16")
+                            .meta #{card.language.code == "en" ? face.type_line : face.printed_type_line}
+                            if face.power || face.toughness
+                                .description #{face.power} / #{face.toughness}
+                            if card.language.code == "en"
+                                .description !{changeManaSymbolsInText(face.oracle_text)}
+                            else
+                                .description !{changeManaSymbolsInText(face.printed_text)}
+                            if face.flavor_text
+                                .meta
+                                    i #{ face.flavor_text }
+                            .description Illustrated by #{card.artist.name}
+                            p &nbsp;
+                    else
+                        .header #{card.language.code == "en" ? card.name : card.printed_name} &nbsp;&nbsp;&nbsp;
+                            if card.mana_cost != null
+                                each mana in  manaSymbols(card.mana_cost)
+                                    if mana == "//"
+                                        = mana
+                                    else
+                                        img(src="/images/mana/" + mana + ".svg" height="16")
+                        .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
+                        if card.power || card.toughness
+                            .description #{card.power} / #{card.toughness}
+                        if card.language.code == "en"
+                            .description !{changeManaSymbolsInText(card.oracle_text)}
+                        else
+                            .description !{changeManaSymbolsInText(card.printed_text)}
+                        if card.flavor_text
+                            .meta
+                                i #{ card.flavor_text }
+                        .description Illustrated by #{card.artist.name}
+
+                    .description
+                        - var foilLow = 0
+                        - var foilMedian = 0
+                        - var foilHigh = 0
+                        - var foilMarket = 0
+                        - var foilDirectLow = 0
+                        - var normalLow = 0
+                        - var normalMedian = 0
+                        - var normalHigh = 0
+                        - var normalMarket = 0
+                        - var normalDirectLow = 0
+
+                        each price in card.prices
+                            if price.is_foil
+                                - foilLow = price.low
+                                - foilMedian = price.median
+                                - foilHigh = price.high
+                                - foilMarket = price.market
+                                - foilDirectLow = price.direct_low
+                            else
+                                - normalLow = price.low
+                                - normalMedian = price.median
+                                - normalHigh = price.high
+                                - normalMarket = price.market
+                                - normalDirectLow = price.direct_low
+
+                        table.ui.small.sortable.celled.table
+                            thead
+                                tr
+                                    th &nbsp;
+                                    th Normal
+                                    th Foil
+                            tbody
+                                tr
+                                    td Low
+                                    if normalLow > 0
+                                        td.right.aligned $#{ normalLow }
+                                    else
+                                        td.right.aligned &#8212
+                                    if foilLow > 0
+                                        td.right.aligned $#{ foilLow }
+                                    else
+                                        td.right.aligned &#8212
+                                tr
+                                    td Median
+                                    if normalMedian > 0
+                                        td.right.aligned $#{ normalMedian }
+                                    else
+                                        td.right.aligned &#8212
+                                    if foilMedian > 0
+                                        td.right.aligned $#{ foilMedian }
+                                    else
+                                        td.right.aligned &#8212
+                                tr
+                                    td High
+                                    if normalHigh > 0
+                                        td.right.aligned $#{ normalHigh }
+                                    else
+                                        td.right.aligned &#8212
+                                    if foilHigh > 0
+                                        td.right.aligned $#{ foilHigh }
+                                    else
+                                        td.right.aligned &#8212
+                                tr
+                                    td Market
+                                    if normalMarket > 0
+                                        td.right.aligned $#{ normalMarket }
+                                    else
+                                        td.right.aligned &#8212
+                                    if foilMarket > 0
+                                        td.right.aligned $#{ foilMarket }
+                                    else
+                                        td.right.aligned &#8212
+                                tr
+                                    td Direct Low
+                                    if normalDirectLow > 0
+                                        td.right.aligned $#{ normalDirectLow }
+                                    else
+                                        td.right.aligned &#8212
+                                    if foilDirectLow > 0
+                                        td.right.aligned $#{ foilDirectLow }
+                                    else
+                                        td.right.aligned &#8212
+                            tfoot
+                                tr
+                                    th(colspan='3')
+
+            h3 Variations
+                if card.variations.length > 0
+                    p
+                    .ui.link.cards
+                        each variation in card.variations
+                            .card
+                                a.image(href="/card/" + variation.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                    if variation.faces.length > 0
+                                        img.medium.ui.image(src="/images/cards/" + variation.set.code + "/" + variation.language.code + "/" + variation.faces[0].id + "/art_crop.jpg")
+                                    else
+                                        img.medium.ui.image(src="/images/cards/" + variation.set.code + "/" + variation.language.code + "/" + variation.id + "/art_crop.jpg")
+                                .content ##{variation.collector_number} &#11825; #{variation.rarity.name}
+                else
+                    p &#8212;
+
+            h3 Other Printings
+                if card.other_printings.length > 0
+                    p
+                    each printing in card.other_printings
+                        a.image(href="/card/" + printing.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                            i(class='ss ss-' + printing.set.code + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x') &nbsp;
+                else
+                    p &#8212;
+
+            h3 Legalities
+            if card.format_legalities.length > 0
+                table.ui.small.celled.table
+                    thead
+                        tr
+                            th Format
+                            th Legality
+                    tbody
+                        each legality in card.format_legalities
+                            tr
+                                td #{legality.format.name}
+                                td #{legality.legality.name}
+                    tfoot
+                        tr
+                            th(colspan='2')
+            else
+                p &#8212;
+
+
