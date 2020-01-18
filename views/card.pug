@@ -4,23 +4,114 @@ block title
 
 block sorters
     each card in data
-        .right.floated.description
-            table
-                tbody
+        table(width="100%")
+            tbody
+                tr
+                    td(rowspan=2 width="5%")
+                        i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
+                    td(width="15%") #{card.set.name} (#{card.set.code})
+                    td(width="85%" align="right")
+                        h3
+                            i(class="language icon")
+                            .mini.ui.buttons
+                                if card.language.code == "en"
+                                    .ui.button.disabled EN
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "en"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button EN
+
+                                if card.language.code == "es"
+                                    .ui.button.disabled ES
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "es"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button ES
+
+                                if card.language.code == "fr"
+                                    .ui.button.disabled FR
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "fr"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button FR
+
+                                if card.language.code == "de"
+                                    .ui.button.disabled DE
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "de"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button DE
+
+                                if card.language.code == "it"
+                                    .ui.button.disabled IT
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "it"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button IT
+
+                                if card.language.code == "pt"
+                                    .ui.button.disabled PT
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "pt"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button PT
+
+                                if card.language.code == "ja"
+                                    .ui.button.disabled JA
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "ja"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button JA
+
+                                if card.language.code == "ko"
+                                    .ui.button.disabled KO
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "ko"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button KO
+
+                                if card.language.code == "ru"
+                                    .ui.button.disabled RU
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "ru"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button RU
+
+                                if card.language.code == "zhs"
+                                    .ui.button.disabled 汉语
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "zhs"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button 汉语
+
+                                if card.language.code == "zht"
+                                    .ui.button.disabled 漢語
+                                else
+                                    each other_language in card.other_languages
+                                        if other_language.language.code == "zht"
+                                            a(href="/card/" + other_language.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                                .ui.button 漢語
                     tr
-                        td(rowspan=2 style="padding: 5px;")
-                            i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
-                        td #{card.set.name} (#{card.set.code})
-                    tr
-                        td(colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
+                        td ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
+
 block data
     .ui.items
         each card in data
             .item
                 if card.faces.length > 0
-                    img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/normal.jpg")
+                    img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/normal.jpg" alt=card.language.code == "en" ? card.name : card.printed_name)
                 else
-                    img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg")
+                    img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg" alt=card.language.code == "en" ? card.name : card.printed_name)
                 .content
                     if card.faces.length > 0
                         each face in card.faces
@@ -55,14 +146,13 @@ block data
                         if card.power || card.toughness
                             .description #{card.power} / #{card.toughness}
                         if card.language.code == "en"
-                            .description !{changeManaSymbolsInText(card.oracle_text)}
+                            .description !{card.oracle_text != null ? changeManaSymbolsInText(card.oracle_text) : "&nbsp;"}
                         else
-                            .description !{changeManaSymbolsInText(card.printed_text)}
+                            .description !{card.printed_text != null ? changeManaSymbolsInText(card.printed_text) : "&nbsp;"}
                         if card.flavor_text
                             .meta
                                 i #{ card.flavor_text }
                         .description Illustrated by #{card.artist.name}
-
                     .description
                         - var foilLow = 0
                         - var foilMedian = 0
@@ -191,5 +281,3 @@ block data
                             th(colspan='2')
             else
                 p &#8212;
-
-
