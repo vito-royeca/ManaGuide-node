@@ -3,16 +3,19 @@ include mixins/_montageCardsRow
 include mixins/_imageCardsRow
 include mixins/_listCardsRow
 include mixins/_cardsSorter
+include mixins/_setLanguageButtons
 
 block title
     each set in data
-        table
+        table(width="100%")
             tbody
                 tr
-                    td(rowspan=2 style="padding: 10px;")
+                    td(rowspan=2 style="padding: 10px;" width="5%")
                         i(class='ss ss-' + set.code + ' ss-3x')
-                    td()
+                    td(width="30%")
                         h1.ui.header #{set.name} (#{set.code})
+                    td(width="30%" align="right")
+                        +setLanguageButtons(set)
                 tr
                     td(colspan=2) #{set.card_count} cards | Released on #{set.release_date}
         p &nbsp;

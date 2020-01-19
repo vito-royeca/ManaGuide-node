@@ -1,5 +1,5 @@
 extends layout.pug
-include mixins/_languageButtons
+include mixins/_cardLanguageButtons
 include mixins/_priceTable
 
 block title
@@ -11,11 +11,12 @@ block sorters
                 tr
                     td(rowspan=2 width="5%")
                         i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
-                    td(width="15%") #{card.set.name} (#{card.set.code})
+                    td(width="15%")
+                        a.header(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})
                     td(width="85%" align="right")
-                        +languageButtons(card)
-                    tr
-                        td ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
+                        +cardLanguageButtons(card)
+                tr
+                    td(colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
 
 block data
     .ui.items

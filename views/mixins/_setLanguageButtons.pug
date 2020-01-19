@@ -1,0 +1,80 @@
+mixin setLanguageButtons(set)
+    h3
+        i(class="language icon")
+        .mini.ui.buttons
+            if baseUrl.endsWith("en")
+                .ui.button.disabled EN
+            else
+                if set.languages.some(e => e.code == "en")
+                    a(href="/set/" + set.code + "/en?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button EN
+
+            if baseUrl.endsWith("es")
+                .ui.button.disabled ES
+            else
+                if set.languages.some(e => e.code == "es")
+                    a(href="/set/" + set.code + "/es?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button ES
+
+            if baseUrl.endsWith("fr")
+                .ui.button.disabled FR
+            else
+                if set.languages.some(e => e.code == "fr")
+                    a(href="/set/" + set.code + "/fr?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button FR
+
+            if baseUrl.endsWith("de")
+                .ui.button.disabled DE
+            else
+                if set.languages.some(e => e.code == "de")
+                    a(href="/set/" + set.code + "/de?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button DE
+
+            if baseUrl.endsWith("it")
+                .ui.button.disabled IT
+            else
+                if set.languages.some(e => e.code == "it")
+                    a(href="/set/" + set.code + "/it?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button IT
+
+            if baseUrl.endsWith("pt")
+                .ui.button.disabled PT
+            else
+                if set.languages.some(e => e.code == "pt")
+                    a(href="/set/" + set.code + "/pt?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button PT
+
+            if baseUrl.endsWith("ja")
+                .ui.button.disabled JA
+            else
+                if set.languages.some(e => e.code == "ja")
+                    a(href="/set/" + set.code + "/ja?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button JA
+
+            if baseUrl.endsWith("ko")
+                .ui.button.disabled KO
+            else
+                if set.languages.some(e => e.code == "ko")
+                    a(href="/set/" + set.code + "/ko?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button KO
+
+            if baseUrl.endsWith("ru")
+                .ui.button.disabled RU
+            else
+                if set.languages.some(e => e.code == "ru")
+                    a(href="/set/" + set.code + "/ru?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button RU
+
+            if baseUrl.endsWith("zhs")
+                .ui.button.disabled 汉语
+            else
+                if set.languages.some(e => e.code == "zhs")
+                    a(href="/set/" + set.code + "/zhs?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button 汉语
+
+            if baseUrl.endsWith("zht")
+                .ui.button.disabled 漢語
+            else
+                if set.languages.some(e => e.code == "zht")
+                    a(href="/set/" + set.code + "/zht?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        .ui.button 漢語
