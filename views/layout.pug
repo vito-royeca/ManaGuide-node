@@ -81,12 +81,16 @@ html(lang="en")
         -            if (mana.toLowerCase() == "chaos") {
         -                mana = "Chaos"
         -            }
-        -
+        -            if (mana.length == 3 && mana.includes("/")) {
+        -                mana = mana.replace(/\//g, "").trim()
+        -            }
         -            manaArray[i] = mana
         -        }
+        -        console.log("manaCost="+manaCost)
+        -        console.log("cleanString="+cleanString)
+        -        console.log("manaArray="+manaArray)
         -        return manaArray
         -    }
-        -
         -
         -    function changeManaSymbolsInText(text) {
         -        var sentinel = 0
