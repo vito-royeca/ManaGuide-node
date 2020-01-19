@@ -43,6 +43,21 @@ html(lang="en")
             table.ui.celled img { display: inline-block; }
             footer { margin: 35px 0 15px 0; text-align: center; }
 
+        // Google Analytics
+        script.
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q || []).push(arguments)},i[r].l=1 * new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-53780226-5', 'auto');
+            ga('send', 'pageview');
+
+        // Comodo SSL
+        script(type="text/javascript").
+            var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "http://www.trustlogo.com/");
+            document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
+
     body
         // template JS functions
         -    function manaSymbols(manaCost) {
@@ -144,21 +159,21 @@ html(lang="en")
                         a.navbar-brand(href="/" alt="Logo")
                             img(src="/images/logo.png")
                         a.navbar-brand(href="/search")
-                    form.navbar-brand(action="/search" method="get" id="search" name="search")
-                        .ui.form
-                            .field
+                        form.navbar-brand(action="/search" method="get" id="search" name="search")
+                            .ui.icon.input
                                 input(type="hidden" value=displayAs name="displayAs" id="search.displayAs")
                                 input(type="hidden" value=sortedBy name="sortedBy" id="search.sortedBy")
                                 input(type="hidden" value=orderBy name="orderBy" id="search.orderBy")
                                 input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
+                                i.search.icon
                     .collapse.navbar-collapse
                         ul.nav.navbar-nav.navbar-right
                             li
-                                a(href="#features") Features
+                                a(href="/#features") Features
                             li
-                                a(href="#story") Story
+                                a(href="/#story") Story
                             li
-                                a(href="#video") Video
+                                a(href="/#video") Video
                             li
                                 a(href="/sets?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) Database
 
@@ -208,6 +223,11 @@ html(lang="en")
         script(src="/js/jquery-easing/jquery.easing.1.3.js")
         script(src="/js/superslide/jquery.superslides.js")
         script(src="/js/wow/wow.min.js")
+
+        // Comodo SSL
+        script(language="JavaScript" type="text/javascript").
+            TrustLogo("https://managuideapp.com/images/comodo_secure_seal_113x59_transp.png", "CL1", "none");
+        a(href="https://ssl.comodo.com" id="comodoTL") Comodo SSL
 
         // sortable table
         // script(src="/js/tablesort.js")
