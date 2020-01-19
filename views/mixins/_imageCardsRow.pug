@@ -1,5 +1,5 @@
 mixin imageTableRow(card)
-    a.image(href="/card/" + card.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy+"&orderBy=" + orderBy)
+    a.image(href="/card/" + card.id)
         if card.faces.length > 0
             img.ui.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/normal.jpg"
                          alt=card.language.code == "en" ? card.name : card.printed_name)

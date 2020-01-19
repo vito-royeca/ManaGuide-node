@@ -78,7 +78,7 @@ block data
                     .ui.link.cards
                         each variation in card.variations
                             .card
-                                a.image(href="/card/" + variation.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                                a.image(href="/card/" + variation.id)
                                     if variation.faces.length > 0
                                         img.medium.ui.image(src="/images/cards/" + variation.set.code + "/" + variation.language.code + "/" + variation.faces[0].id + "/art_crop.jpg"
                                                             alt=card.language.code == "en" ? card.name : card.printed_name)
@@ -93,7 +93,7 @@ block data
                 if card.other_printings.length > 0
                     p
                     each printing in card.other_printings
-                        a.image(href="/card/" + printing.id + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy)
+                        a.image(href="/card/" + printing.id)
                             i(class='ss ss-' + printing.set.code + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x') &nbsp;
                 else
                     p &#8212;

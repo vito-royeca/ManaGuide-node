@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const db = require('./db')
+const errorRouter = require('./error')
 
 // select by query
 router.get('/', function(req, res, next) {
@@ -17,13 +18,12 @@ router.get('/', function(req, res, next) {
     }
 
     if (message != null) {
-        res.statusCode = 500
-        res.end(message)
+        errorRouter.handleError(400, new Error(message), req, res, req.parameters)
     } else {
         const parameters = [
             query,
-            req.query.sortedBy,
-            req.query.orderBy]
+            db.cleanSortedBy(req.query.sortedBy),
+            db.cleanOrderBy(req.query.orderBy)]
 
         db.executeQuery(req, res, next, text, parameters)
     }

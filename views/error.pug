@@ -1,9 +1,8 @@
 extends layout
 
 block title
-    h1.ui.header Status #{ error.statusCode }
+    h1.ui.header Status #{ status }
 block sorters
     p &nbsp;
 block data
-    p #{ error }
-    // pre #{error.stack}
+    pre #{ message }

@@ -13,15 +13,14 @@ mixin listTableRow(card)
             i(class="ss ss-" + card.set.code + " ss-" + card.rarity.name.toLowerCase() + " ss-2x")
         td.right.aligned #{card.collector_number}
         td
-            a(href="/card/"+card.id+"?displayAs="+displayAs+"&sortedBy="+sortedBy+"&orderBy="+orderBy) #{card.language.code == "en" ? card.name : card.printed_name}
-        td
+            a(href="/card/"+card.id) #{card.language.code == "en" ? card.name : card.printed_name}
+        td.right.aligned
             if card.mana_cost != null
-                .right.floated.meta
-                    each mana in  manaSymbols(card.mana_cost)
-                        if mana == "//"
-                            = mana
-                        else
-                            img(src="/images/mana/" + mana + ".svg" height="16")
+                each mana in  manaSymbols(card.mana_cost)
+                    if mana == "//"
+                        = mana
+                    else
+                        img(src="/images/mana/" + mana + ".svg" height="16")
         td #{card.language.code == "en" ? card.type_line : card.printed_type_line}
         td #{card.rarity.name}
         if normal > 0

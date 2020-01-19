@@ -8,9 +8,9 @@ mixin montageTableRow(card)
                             = mana
                         else
                             img(src="/images/mana/" + mana + ".svg" height="16")
-            a.header(href="/card/"+card.id+"?displayAs="+displayAs+"&sortedBy="+sortedBy+"&orderBy="+orderBy) #{card.language.code == 'en' ? card.name : card.printed_name}
+            a.header(href="/card/" + card.id) #{card.language.code == 'en' ? card.name : card.printed_name}
             .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
-        a.image(href="/card/"+card.id+"?displayAs="+displayAs+"&sortedBy="+sortedBy+"&orderBy="+orderBy)
+        a.image(href="/card/"+card.id)
             if card.faces.length > 0
                 img.ui.rounded.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/art_crop.jpg"
                                      alt=card.language.code == "en" ? card.name : card.printed_name)

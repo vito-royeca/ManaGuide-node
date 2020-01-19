@@ -1,5 +1,6 @@
 const Pool = require("pg").Pool
 const url = require("url")
+const errorRouter = require('./error')
 
 const pool = new Pool({
     user: 'user',
@@ -9,16 +10,17 @@ const pool = new Pool({
     port: 5432,
 })
 
-exports.executeQuery = function(req, res, next, text, parameters)  {
-    if (!req.query.displayAs || req.query.displayAs === "") {
-        req.query.displayAs = "list"
-    }
-    if (!req.query.sortedBy || req.query.sortedBy === "") {
-        req.query.sortedBy = "name"
-    }
-    if (!req.query.orderBy || req.query.orderBy === "") {
-        req.query.orderBy = "asc"
-    }
+const displayAsValues = ["montage", "image", "list"]
+const displayAsDefault = "list"
+const sortedByValues = ["set_name", "set_release", "collector_number", "name", "cmc", "type", "rarity"]
+const sortedByDefault = "name"
+const orderByValues = ["asc", "desc"]
+const orderByDefault = "asc"
+
+exports.executeQuery = function(req, res, next, text, parameters) {
+    const displayAs = setDefaultValue(req.query.displayAs, displayAsDefault, displayAsValues)
+    const sortedBy = setDefaultValue(req.query.sortedBy, sortedByDefault, sortedByValues)
+    const orderBy = setDefaultValue(req.query.orderBy, orderByDefault, orderByValues)
 
     pool.query(text, parameters)
         .then(queryResults => {
@@ -28,20 +30,40 @@ exports.executeQuery = function(req, res, next, text, parameters)  {
                 res.render(req.baseUrl.substr(1), {
                     baseUrl: req.baseUrl + url.parse(req.url).pathname,
                     query: req.query.query,
-                    displayAs: req.query.displayAs,
-                    sortedBy: req.query.sortedBy,
-                    orderBy: req.query.orderBy,
+                    displayAs: displayAs,
+                    sortedBy: sortedBy,
+                    orderBy: orderBy,
                     data: queryResults.rows
                 })
             }
         })
         .catch(error => {
-            console.log(error.message)
-            console.log(parameters)
-
-            res.locals.message = error.message
-            res.statusCode = 500
-            res.render('error')
+            errorRouter.handleError(500, error, req, res, parameters)
         })
 }
 
+function setDefaultValue(value, defaultValue, possibleValues) {
+    var result = value
+
+    if (!value || value === "") {
+        result = defaultValue
+    } else {
+        if (!possibleValues.includes(value.toLowerCase())) {
+            result = defaultValue
+        }
+    }
+
+    return result
+}
+
+exports.cleanDisplayAs = function(displayAs) {
+    return setDefaultValue(displayAs, displayAsDefault, displayAsValues)
+}
+
+exports.cleanSortedBy = function(sortedBy) {
+    return setDefaultValue(sortedBy, sortedByDefault, sortedByValues)
+}
+
+exports.cleanOrderBy = function(orderBy) {
+    return setDefaultValue(orderBy, orderByDefault, orderByValues)
+}

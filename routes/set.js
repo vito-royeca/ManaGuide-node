@@ -9,8 +9,8 @@ router.get('/:cmset/:cmlanguage', function(req, res, next) {
     const parameters = [
         req.params.cmset,
         req.params.cmlanguage,
-        req.query.sortedBy,
-        req.query.orderBy]
+        db.cleanSortedBy(req.query.sortedBy),
+        db.cleanOrderBy(req.query.orderBy)]
 
     db.executeQuery(req, res, next, text, parameters)
 })

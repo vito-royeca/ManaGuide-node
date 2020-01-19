@@ -16,6 +16,7 @@ const cardPartsRouter = require('./routes/cardparts');
 const cardTypesRouter = require('./routes/cardtypes');
 const colorsRouter = require('./routes/colors');
 const componentsRouter = require('./routes/components');
+const errorRouter = require('./routes/error');
 const formatsRouter = require('./routes/formats');
 const framesRouter = require('./routes/frames');
 const frameEffectsRouter = require('./routes/frameeffects');
@@ -107,12 +108,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  console.log(error.message)
-  console.log(parameters)
-
-  res.locals.message = error.message
-  res.statusCode = 500
-  res.render('error')
+  errorRouter.handleError(500, req, err, res, req.parameters)
 });
 
 module.exports = app;
