@@ -5,14 +5,14 @@ var url = require('url')
 
 // select by cmset and cmlanguage
 router.get('/:cmset/:cmlanguage', function(req, res, next) {
-    const text = 'SELECT * from selectSet($1,$2,$3,$4)'
+    const sql = 'SELECT * from selectSet($1,$2,$3,$4)'
     const parameters = [
         req.params.cmset,
         req.params.cmlanguage,
         db.cleanSortedBy(req.query.sortedBy),
         db.cleanOrderBy(req.query.orderBy)]
 
-    db.executeQuery(req, res, next, text, parameters)
+    db.executeQuery(req, res, next, sql, parameters, null)
 })
 
 module.exports = router

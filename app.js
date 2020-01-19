@@ -108,7 +108,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  errorRouter.handleError(500, req, err, res, req.parameters)
+  errorRouter.handleError(500, req, err, res)
 });
 
 module.exports = app;

@@ -5,17 +5,17 @@ var url = require('url')
 
 // select all
 router.get('/', function(req, res, next) {
-    const text = 'SELECT * from selectSets(null)'
+    const sql = 'SELECT * from selectSets(null)'
 
-    db.executeQuery(req, res, next, text, null)
+    db.executeQuery(req, res, next, sql, null, null)
 })
 
 // select by code
 router.get('/:code', function(req, res, next) {
-    const text = 'SELECT * from selectSets($1)'
+    const sql = 'SELECT * from selectSets($1)'
     const parameters = [req.params.code]
 
-    db.executeQuery(req, res, next, text, parameters)
+    db.executeQuery(req, res, next, sql, parameters, null)
 })
 
 module.exports = router

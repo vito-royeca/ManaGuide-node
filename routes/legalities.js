@@ -5,17 +5,17 @@ const pool = db.pool
 
 // select all
 router.get('/', function(req, res, next) {
-    const text = 'SELECT name, name_section FROM cmlegality ORDER BY name ASC'
+    const sql = 'SELECT name, name_section FROM cmlegality ORDER BY name ASC'
 
-    db.executeQuery(req, res, next, text, null)
+    db.executeQuery(req, res, next, sql, null, null)
 })
 
 // select by name
 router.get('/:name', function(req, res, next) {
-    const text = 'SELECT name, name_section FROM cmlegality WHERE name = $1'
+    const sql = 'SELECT name, name_section FROM cmlegality WHERE name = $1'
     const parameters = [req.params.name]
 
-    db.executeQuery(req, res, next, text, parameters)
+    db.executeQuery(req, res, next, sql, parameters, null)
 })
 
 module.exports = router

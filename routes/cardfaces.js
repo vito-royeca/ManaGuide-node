@@ -5,10 +5,10 @@ const pool = db.pool
 
 // select by name
 router.get('/:cmcard', function(req, res, next) {
-    const text = 'SELECT cmcard, cmcard_face FROM cmcard_face WHERE cmcard = $1'
+    const sql = 'SELECT cmcard, cmcard_face FROM cmcard_face WHERE cmcard = $1'
     const parameters = [req.params.cmcard]
 
-    db.executeQuery(req, res, next, text, parameters)
+    db.executeQuery(req, res, next, sql, parameters, null)
 });
 
 module.exports = router

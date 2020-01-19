@@ -23,8 +23,12 @@ block data
         each card in data
             .item
                 if card.faces.length > 0
-                    img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/normal.jpg"
-                                        alt=card.language.code == "en" ? card.name : card.printed_name)
+                    if card.faces[0].image_uris.length > 0
+                        img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/normal.jpg"
+                                            alt=card.language.code == "en" ? card.name : card.printed_name)
+                    else
+                        img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg"
+                            alt=card.language.code == "en" ? card.name : card.printed_name)
                 else
                     img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg"
                                         alt=card.language.code == "en" ? card.name : card.printed_name)

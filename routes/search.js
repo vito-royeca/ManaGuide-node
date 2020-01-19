@@ -5,7 +5,7 @@ const errorRouter = require('./error')
 
 // select by query
 router.get('/', function(req, res, next) {
-    const text = 'SELECT * from searchCards($1,$2,$3)'
+    const sql = 'SELECT * from searchCards($1,$2,$3)'
     const query = req.query.query.replace(/\'/g, "''").trim()
     var message = null
 
@@ -18,14 +18,14 @@ router.get('/', function(req, res, next) {
     }
 
     if (message != null) {
-        errorRouter.handleError(400, new Error(message), req, res, req.parameters)
+        errorRouter.handleError(400, new Error(message), req, res)
     } else {
         const parameters = [
             query,
             db.cleanSortedBy(req.query.sortedBy),
             db.cleanOrderBy(req.query.orderBy)]
 
-        db.executeQuery(req, res, next, text, parameters)
+        db.executeQuery(req, res, next, sql, parameters, null)
     }
 })
 

@@ -4,10 +4,15 @@ const db = require('./db')
 
 // select by id
 router.get('/:id', function(req, res, next) {
-    const text = 'SELECT * FROM selectCard($1)'
+    const sql = 'SELECT * FROM selectCard($1)'
     const parameters = [req.params.id]
 
-    db.executeQuery(req, res, next, text, parameters)
+    db.executeQuery(req, res, next, sql, parameters, callback)
 });
+
+function callback(req, res, dict) {
+    console.log("Callback...")
+    res.render(req.baseUrl.substr(1), dict)
+}
 
 module.exports = router

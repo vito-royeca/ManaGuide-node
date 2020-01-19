@@ -17,28 +17,35 @@ const sortedByDefault = "name"
 const orderByValues = ["asc", "desc"]
 const orderByDefault = "asc"
 
-exports.executeQuery = function(req, res, next, text, parameters) {
+exports.executeQuery = function(req, res, next, sql, parameters, callback) {
     const displayAs = setDefaultValue(req.query.displayAs, displayAsDefault, displayAsValues)
     const sortedBy = setDefaultValue(req.query.sortedBy, sortedByDefault, sortedByValues)
     const orderBy = setDefaultValue(req.query.orderBy, orderByDefault, orderByValues)
 
-    pool.query(text, parameters)
+    pool.query(sql, parameters)
         .then(queryResults => {
             if (req.query.json == "true") {
                 res.status(200).json(queryResults.rows)
             } else {
-                res.render(req.baseUrl.substr(1), {
+                const dict = {
                     baseUrl: req.baseUrl + url.parse(req.url).pathname,
                     query: req.query.query,
                     displayAs: displayAs,
                     sortedBy: sortedBy,
                     orderBy: orderBy,
                     data: queryResults.rows
-                })
+                }
+
+                if (callback != null) {
+                    callback(req, res, dict)
+                } else {
+                    res.render(req.baseUrl.substr(1), dict)
+                }
+
             }
         })
         .catch(error => {
-            errorRouter.handleError(500, error, req, res, parameters)
+            errorRouter.handleError(500, error, req, res)
         })
 }
 
