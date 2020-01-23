@@ -169,7 +169,10 @@ html(lang="en")
                 .top-menu
                     .container
                         .row
-                            .col-md-12.text-right.menu-1
+                            .col-md-2
+                                    a(href="/")
+                                        img(src="/images/logo.png")
+                            .col-md-10.text-right.menu-1
                                 ul
                                     li.active
                                         a(href="/" style="color: #000") Home
@@ -179,28 +182,22 @@ html(lang="en")
                                         a(href="/sets" style="color: #000") Sets
                                     li
                                         a(href="/rules" style="color: #000") Rules
-                        .row
-                            .col-md-2
-                                .colorlib-logo
-                                    a(href="/")
-                                        img(src="/images/logo.png")
-                            if !isIndex
-                                .col-md-offset-4
-                                    p
+                        if !isIndex
+                            .row
+                                .col-md-offset-0
                                     form(action="/search" method="get" id="search" name="search")
-                                        .ui.big.icon.input
+                                        .ui.fluid.icon.input
                                             input(type="hidden" value=displayAs name="displayAs" id="search.displayAs")
                                             input(type="hidden" value=sortedBy name="sortedBy" id="search.sortedBy")
                                             input(type="hidden" value=orderBy name="orderBy" id="search.orderBy")
-                                            input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards")
+                                            input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
                                             i.search.icon
-
+            p &nbsp;
+            p &nbsp;
             p &nbsp;
             section#content
                 .colorlib-intro
                     .container
-                        .row
-                            p &nbsp;
                         .row
                             block title
                         .row
@@ -211,12 +208,12 @@ html(lang="en")
             footer#colorlib-footer
                 .container
                     .row.row-pb-md
-                        .col-md-4.colorlib-widget
+                        .col-md-3.colorlib-widget
                             // Comodo SSL
                             script(language="JavaScript" type="text/javascript").
                                 TrustLogo("https://managuideapp.com/images/comodo_secure_seal_113x59_transp.png", "CL1", "none");
                             a.comodoTL(href="https://ssl.comodo.com") Comodo SSL
-                        .col-md-4.colorlib-widget
+                        .col-md-3.colorlib-widget
                             h4 About Mana Guide
                             p.
                                 This website and related apps contain data that is Copyright © Wizards of the Coast - All Rights Reserved<br/><br/>
@@ -233,13 +230,26 @@ html(lang="en")
                                     li
                                         a(href="https://plus.google.com/u/1/106570945096867830873")
                                             i.icon-google-plus2
-                        .col-md-4.colorlib-widget
-                            h4 Information
+                        .col-md-3.colorlib-widget
+                            h4 Links
                             p
                                 ul.colorlib-footer-links
                                     li
                                         a(href="#")
                                             i.icon-check  Home
+                                    li
+                                        a(href="/mobile")
+                                            i.icon-check  Mobile App
+                                    li
+                                        a(href="/sets")
+                                            i.icon-check  Sets
+                                    li
+                                        a(href="/rules")
+                                            i.icon-check  Rules
+                        .col-md-3.colorlib-widget
+                            h4 Information
+                            p
+                                ul.colorlib-footer-links
                                     li
                                         a(href="/privacy.html")
                                             i.icon-check  Privacy

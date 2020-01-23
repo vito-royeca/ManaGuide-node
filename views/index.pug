@@ -7,7 +7,6 @@ block data
         .container
             .row
                 .col-md-10.col-md-offset-1.text-center.colorlib-heading.animate-box
-                    h2 Mana Guide is a comprehensive database of Magic: The Gathering cards
                     script.
                         window.onload = function () {
                             document.getElementById("query").focus();
@@ -17,5 +16,5 @@ block data
                             input(type="hidden" value=displayAs name="displayAs" id="search.displayAs")
                             input(type="hidden" value=sortedBy name="sortedBy" id="search.sortedBy")
                             input(type="hidden" value=orderBy name="orderBy" id="search.orderBy")
-                            input(type="text" value=query name="query" id="query")
+                            input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
                             i.search.icon
