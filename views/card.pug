@@ -11,9 +11,9 @@ block sorters
                 tr
                     td(rowspan=2 width="5%")
                         i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
-                    td(width="15%")
+                    td(width="20%")
                         a.header(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})
-                    td(width="85%" align="right")
+                    td(width="75%" align="right")
                         +cardLanguageButtons(card)
                 tr
                     td(colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}

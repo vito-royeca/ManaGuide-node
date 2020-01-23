@@ -1,1 +1,21 @@
 extends layout.pug
+
+block title
+block sorters
+block data
+    .colorlib-intro
+        .container
+            .row
+                .col-md-10.col-md-offset-1.text-center.colorlib-heading.animate-box
+                    h2 Mana Guide is a comprehensive database of Magic: The Gathering cards
+                    script.
+                        window.onload = function () {
+                            document.getElementById("query").focus();
+                        };
+                    form(action="/search" method="get" id="search" name="search")
+                        .ui.fluid.icon.input
+                            input(type="hidden" value=displayAs name="displayAs" id="search.displayAs")
+                            input(type="hidden" value=sortedBy name="sortedBy" id="search.sortedBy")
+                            input(type="hidden" value=orderBy name="orderBy" id="search.orderBy")
+                            input(type="text" value=query name="query" id="query")
+                            i.search.icon

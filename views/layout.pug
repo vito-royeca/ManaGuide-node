@@ -4,44 +4,56 @@ html(lang="en")
         meta(charset="utf-8")
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
         meta(name="viewport" content="width=device-width, initial-scale=1")
-        // The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags
 
-        title Mana Guide database for MTG Magic: the Gathering
-        meta(name="description" content="A database app for Magic: The Gathering. Search Magic MTG cards, View Pricing of Magic MTG cards, and more, at ManaGuideApp.com")
+        title Mana Guide is a comprehensive database of Magic: The Gathering cards
+        meta(name="description" content="Mana Guide is a comprehensive database of Magic: The Gathering cards. Search Magic MTG cards, View Pricing of Magic MTG cards, and more, at ManaGuideApp.com")
         meta(name="keywords" content="MTG Magic Gathering cards game tcg pricing mobile app ios android Vito Royeca")
+        meta(name="author" content="Vito Royeca")
 
         // favicon
-        link(rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon")
-        link(rel="icon" href="/images/favicon.ico" type="image/x-icon")
-
-        // Google Raleway
-        link(rel="stylesheet" href="http://fonts.googleapis.com/css?family=Raleway:400,700"  type="text/css")
-
-        // font awesome
-        link(rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css")
-
-        // Bootstrap
-        link(rel="stylesheet" href="/css/bootstrap/bootstrap.min.css")
-        link(rel="stylesheet" href="/css/superslide/superslides.css")
-
-        link(rel="stylesheet" href="/css/fancybox/jquery.fancybox.css")
-        link(rel="stylesheet" href="/css/nivo-lightbox/nivo-lightbox.css")
-        link(rel="stylesheet" href="/css/themes/default/default.css")
-        link(rel="stylesheet" href="/css/style.css")
-        link(rel="stylesheet" href="/css/responsive.css")
-        link(rel="stylesheet" href="/css/animate/animate.css")
-        link(rel="stylesheet" href="/css/owl-carousel/owl.carousel.css")
-        link(rel="stylesheet" href="/css/owl-carousel/owl.theme.css")
-        link(rel="stylesheet" href="/css/owl-carousel/owl.transitions.css")
+        link(href="/images/favicon.ico" type="image/x-icon" rel="shortcut icon")
+        link(href="/images/favicon.ico" type="image/x-icon" rel="icon" )
 
         // keyrune
-        link(rel="stylesheet" href="//cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.css" type="text/css")
+        link(href="//cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.css" type="text/css" rel="stylesheet")
 
         // semantic style
-        link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css" type="text/css")
-        style.
-            table.ui.celled img { display: inline-block; }
-            footer { margin: 35px 0 15px 0; text-align: center; }
+        link(href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css" type="text/css" rel="stylesheet")
+
+        // Facebook and Twitter integration
+        meta(property="og:title" content="")
+        meta(property="og:image" content="")
+        meta(property="og:url" content="")
+        meta(property="og:site_name" content="")
+        meta(property="og:description" content="")
+        meta(name="twitter:title" content="")
+        meta(name="twitter:image" content="")
+        meta(name="twitter:url" content="")
+        meta(name="twitter:card" content="")
+
+        link(href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600" rel="stylesheet")
+        link(href="https://fonts.googleapis.com/css?family=Nunito:200,300,400" rel="stylesheet")
+
+        // Animate.css
+        link(href="/css/animate.css" rel="stylesheet")
+        // Icomoon Icon Fonts
+        link(href="/css/icomoon.css" rel="stylesheet")
+        // Bootstrap
+        link(href="/css/bootstrap.css" rel="stylesheet")
+        // Magnific Popup
+        link(href="/css/magnific-popup.css" rel="stylesheet")
+        // Owl Carousel
+        link(href="/css/owl.carousel.min.css" rel="stylesheet")
+        link(href="/css/owl.theme.default.min.css" rel="stylesheet")
+        // Theme style
+        link(href="/css/style.css" rel="stylesheet")
+
+        // Modernizr JS
+        // script(src="/js/modernizr-2.6.2.min.js")
+        // FOR IE9 below
+        // [if lt IE 9]>
+        script(src="/js/respond.min.js")
+        // <![endif]
 
         // Google Analytics
         script.
@@ -151,88 +163,111 @@ html(lang="en")
                 }
             }
 
-        .preloader
-            .loaded
-        header.header.navbar-static-top#home
-            .navbar.navbar-default.main-menu
+        .colorlib-loader
+        .page
+            nav.colorlib-nav(role="navigation")
+                .top-menu
+                    .container
+                        .row
+                            .col-md-12.text-right.menu-1
+                                ul
+                                    li.active
+                                        a(href="/" style="color: #000") Home
+                                    li
+                                        a(href="/mobile" style="color: #000") Mobile App
+                                    li
+                                        a(href="/sets" style="color: #000") Sets
+                                    li
+                                        a(href="/rules" style="color: #000") Rules
+                        .row
+                            .col-md-2
+                                .colorlib-logo
+                                    a(href="/")
+                                        img(src="/images/logo.png")
+                            if !isIndex
+                                .col-md-offset-4
+                                    p
+                                    form(action="/search" method="get" id="search" name="search")
+                                        .ui.big.icon.input
+                                            input(type="hidden" value=displayAs name="displayAs" id="search.displayAs")
+                                            input(type="hidden" value=sortedBy name="sortedBy" id="search.sortedBy")
+                                            input(type="hidden" value=orderBy name="orderBy" id="search.orderBy")
+                                            input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards")
+                                            i.search.icon
+
+            p &nbsp;
+            section#content
+                .colorlib-intro
+                    .container
+                        .row
+                            p &nbsp;
+                        .row
+                            block title
+                        .row
+                            block sorters
+                        .row.main_description
+                            block data
+
+            footer#colorlib-footer
                 .container
-                    .navbar-header
-                        a.navbar-brand(href="/" alt="Logo")
-                            img(src="/images/logo.png")
-                        a.navbar-brand(href="/search")
-                        form.navbar-brand(action="/search" method="get" id="search" name="search")
-                            .ui.icon.input
-                                input(type="hidden" value=displayAs name="displayAs" id="search.displayAs")
-                                input(type="hidden" value=sortedBy name="sortedBy" id="search.sortedBy")
-                                input(type="hidden" value=orderBy name="orderBy" id="search.orderBy")
-                                input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
-                                i.search.icon
-                    .collapse.navbar-collapse
-                        ul.nav.navbar-nav.navbar-right
-                            li
-                                a(href="/#features") Features
-                            li
-                                a(href="/#story") Story
-                            li
-                                a(href="/#video") Video
-                            li
-                                a(href="/sets") Database
-
-
-
-        section#content
-            .container
-                .row
-                    .row.main_description
-                        block title
-                        block sorters
-                        block data
-
-        footer.center-content#footer
-            .container
-                .row
-                    .col-md-12.col-sm-12
-                        .socail_bookmark
-                            a(href="https://twitter.com/ManaGuideApp")
-                                i.fa.fa-twitter
-                            a(href="https://www.facebook.com/managuide/")
-                                i.fa.fa-facebook
-                            a(href="https://plus.google.com/u/1/106570945096867830873")
-                                i.fa.fa-google-plus
-                    .col-md-12.col-sm-12
-                        .copyright_text
+                    .row.row-pb-md
+                        .col-md-4.colorlib-widget
+                            // Comodo SSL
+                            script(language="JavaScript" type="text/javascript").
+                                TrustLogo("https://managuideapp.com/images/comodo_secure_seal_113x59_transp.png", "CL1", "none");
+                            a.comodoTL(href="https://ssl.comodo.com") Comodo SSL
+                        .col-md-4.colorlib-widget
+                            h4 About Mana Guide
                             p.
-                                Made with <i class="fa fa-heart"></i> by <a href="http://bootstrapthemes.co">Bootstrap Themes</a> <br/><br/>
                                 This website and related apps contain data that is Copyright © Wizards of the Coast - All Rights Reserved<br/><br/>
                                 This website is not affiliated with Wizards of the Coast in any way.<br/><br/><br/>
                                 Mana Guide is maintained by: <a href="https://vitoroyeca.com"><span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Vito Royeca</span></span></a>
+                            p
+                                ul.colorlib-social-icons
+                                    li
+                                        a(href="https://twitter.com/ManaGuideApp")
+                                            i.icon-twitter2
+                                    li
+                                        a(href="https://www.facebook.com/managuide/")
+                                            i.icon-facebook2
+                                    li
+                                        a(href="https://plus.google.com/u/1/106570945096867830873")
+                                            i.icon-google-plus2
+                        .col-md-4.colorlib-widget
+                            h4 Information
+                            p
+                                ul.colorlib-footer-links
+                                    li
+                                        a(href="#")
+                                            i.icon-check  Home
+                                    li
+                                        a(href="/privacy.html")
+                                            i.icon-check  Privacy
 
-        // START SCROLL TO TOP
-        .scrollup
-            a(href="#")
-                i.fa.fa-chevron-up
+        .gototop.js-top
+            a.js-gotop(href="#")
+                i.icon-arrow-up2
 
-        // jQuery (necessary for Bootstrap's JavaScript plugins)
-        script(src="/js/jquery/jquery.js")
-        script(src="/js/script.js")
+        // jQuery
+        script(src="/js/jquery.min.js")
+        // jQuery Easing
+        script(src="/js/jquery.easing.1.3.js")
+        // Bootstrap
+        script(src="/js/bootstrap.min.js")
+        // Waypoints
+        script(src="/js/jquery.waypoints.min.js")
+        // Stellar Parallax
+        script(src="/js/jquery.stellar.min.js")
+        // YTPlayer
+        script(src="/js/jquery.mb.YTPlayer.min.js")
+        // Owl carousel
+        script(src="/js/owl.carousel.min.js")
+        // Magnific Popup
+        script(src="/js/jquery.magnific-popup.min.js")
+        script(src="/js/magnific-popup-options.js")
+        // Counters
+        script(src="/js/jquery.countTo.js")
+        // Main
+        script(src="/js/main.js")
 
-        // Include all compiled plugins (below), or include individual files as needed
-        script(src="/js/bootstrap/bootstrap.min.js")
-        script(src="/js/fancybox/jquery.fancybox.pack.js")
-        script(src="/js/nivo-lightbox/nivo-lightbox.min.js")
-        script(src="/js/owl-carousel/owl.carousel.min.js")
-        script(src="/js/jquery-easing/jquery.easing.1.3.js")
-        script(src="/js/superslide/jquery.superslides.js")
-        script(src="/js/wow/wow.min.js")
 
-        // Comodo SSL
-        script(language="JavaScript" type="text/javascript").
-            TrustLogo("https://managuideapp.com/images/comodo_secure_seal_113x59_transp.png", "CL1", "none");
-        a(href="https://ssl.comodo.com" id="comodoTL") Comodo SSL
-
-        // sortable table
-        // script(src="/js/tablesort.js")
-        // script.
-        //    (function () {
-        //        $('table').tablesort()
-        //    })();
