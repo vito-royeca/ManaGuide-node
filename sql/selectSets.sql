@@ -39,7 +39,7 @@ BEGIN
                             SELECT p.code
                             FROM cmset p WHERE p.code = s.cmset_parent
                         ) x
-                   ) AS parent,
+                    ) AS parent,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT sb.code, sb.name, sb.name_section

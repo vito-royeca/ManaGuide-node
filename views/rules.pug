@@ -1,0 +1,58 @@
+extends layout.pug
+
+block title
+    h1.ui.header Comprehensive Rules
+    p &nbsp;
+block sorters
+    form(action="/rules" method="get" id="rules" name="rules")
+        .ui.mini.icon.input
+            input(type="text" value=query name="query" id="query" placeholder="Search for Rules...")
+            i.search.icon
+    p &nbsp;
+block data
+    if data.length > 1
+        .ui.list
+            each rule in data
+                if (rule.children.length > 0)
+                    .item
+                        a(href="/rules/" + rule.id)
+                            b #{rule.term} #{rule.definition}
+                else
+                    .item
+                        b #{rule.term}
+                        p &emsp; #{rule.definition}
+
+    else
+        - var array = []
+        - var current = data[0]
+        - while (true) {
+        -     const parent = current.parent
+        -     if (parent != null) {
+        -         array.splice(0, 0, parent)
+        -         current = parent
+        -     } else {
+        -         break
+        -     }
+        - }
+
+        .ui.huge.breadcrumb
+            a(href="/rules") Home
+            i.right.chevron.icon.divider
+            each parent in array
+                a.section
+                    a(href="/rules/" + parent.id) #{parent.term} #{parent.definition}
+                i.right.chevron.icon.divider
+            .active.section #{data[0].term} #{data[0].definition}
+
+        .ui.list
+            each rule in data[0].children
+                if (rule.hasOwnProperty('children'))
+                    .item
+                        a(href="/rules/" + rule.id)
+                            b #{rule.term} #{rule.definition}
+                else
+                    .item
+                        b #{rule.term}
+                        p &emsp; #{rule.definition}
+
+

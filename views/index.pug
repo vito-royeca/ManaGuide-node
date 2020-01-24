@@ -11,10 +11,15 @@ block data
                         window.onload = function () {
                             document.getElementById("query").focus();
                         };
-                    form(action="/search" method="get" id="search" name="search")
-                        .ui.fluid.icon.input
+                    a(href="/")
+                        img(src="/images/logo.png")
+                    p
+                        form(action="/search" method="get" id="search" name="search")
                             input(type="hidden" value=displayAs name="displayAs" id="search.displayAs")
                             input(type="hidden" value=sortedBy name="sortedBy" id="search.sortedBy")
                             input(type="hidden" value=orderBy name="orderBy" id="search.orderBy")
-                            input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
-                            i.search.icon
+                            .ui.fluid.icon.input
+                                input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
+                                i.search.icon
+                    p &nbsp;
+                    p &nbsp;

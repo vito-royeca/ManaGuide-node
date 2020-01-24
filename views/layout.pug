@@ -169,9 +169,13 @@ html(lang="en")
                 .top-menu
                     .container
                         .row
-                            .col-md-2
-                                    a(href="/")
-                                        img(src="/images/logo.png")
+                            if isIndex
+                                .col-md-2 &nbsp;
+                            else
+                                .col-md-2
+                                        a(href="/")
+                                            img(src="/images/logo.png")
+
                             .col-md-10.text-right.menu-1
                                 ul
                                     li.active
@@ -186,15 +190,15 @@ html(lang="en")
                             .row
                                 .col-md-offset-0
                                     form(action="/search" method="get" id="search" name="search")
+                                        input(type="hidden" value=displayAs name="displayAs" id="search.displayAs")
+                                        input(type="hidden" value=sortedBy name="sortedBy" id="search.sortedBy")
+                                        input(type="hidden" value=orderBy name="orderBy" id="search.orderBy")
                                         .ui.fluid.icon.input
-                                            input(type="hidden" value=displayAs name="displayAs" id="search.displayAs")
-                                            input(type="hidden" value=sortedBy name="sortedBy" id="search.sortedBy")
-                                            input(type="hidden" value=orderBy name="orderBy" id="search.orderBy")
                                             input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
                                             i.search.icon
-            p &nbsp;
-            p &nbsp;
-            p &nbsp;
+            if !isIndex
+                p &nbsp;
+                p &nbsp;
             section#content
                 .colorlib-intro
                     .container
