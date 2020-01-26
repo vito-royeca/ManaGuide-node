@@ -1,0 +1,18 @@
+mixin itemTableRow(card)
+    .ui.link.items
+        .item
+            .ui.tiny.image
+                a.image(href="/card/" + card.id)
+                    if card.faces.length > 0
+                        img.ui.rounded.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/art_crop.jpg"
+                            alt=card.language.code == "en" ? card.name : card.printed_name)
+                    else
+                        img.ui.rounded.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/art_crop.jpg"
+                            alt=card.language.code == "en" ? card.name : card.printed_name)
+            .content
+                .header Mesa Pegasus
+                .description
+                    p Flying, Banding
+
+
+
