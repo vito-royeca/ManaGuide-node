@@ -1,6 +1,9 @@
 extends layout.pug
 include mixins/_cardLanguageButtons
-include mixins/_priceTable
+include mixins/_cardLegalities
+include mixins/_cardPricing
+include mixins/_cardOtherPrintings
+include mixins/_cardVariations
 
 block title
 
@@ -9,113 +12,85 @@ block sorters
         table(width="100%")
             tbody
                 tr
-                    td(rowspan=2 width="5%")
-                        i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
-                    td(width="20%")
-                        a.header(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})
-                    td(width="75%" align="right")
+                    td(width="100%" colspan="3" align="right")
                         +cardLanguageButtons(card)
                 tr
-                    td(colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
-
+                    td(rowspan=2 width="5%")
+                        i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
+                    td(width="95%")
+                        a.header(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})
+                tr
+                    td(width="95%" colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
 block data
-    .ui.items
-        each card in data
-            .item
-                if card.faces.length > 0
-                    if card.faces[0].image_uris.length > 0
-                        img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/normal.jpg"
-                                            alt=card.language.code == "en" ? card.name : card.printed_name)
-                    else
-                        img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg"
-                            alt=card.language.code == "en" ? card.name : card.printed_name)
-                else
-                    img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg"
-                                        alt=card.language.code == "en" ? card.name : card.printed_name)
-                .content
-                    if card.faces.length > 0
-                        each face in card.faces
-                            .header #{card.language.code == "en" ? face.name : face.printed_name} &nbsp;&nbsp;&nbsp;
-                                if face.mana_cost != null
-                                    each mana in  manaSymbols(face.mana_cost)
-                                        if mana == "//"
-                                            = mana
-                                        else
-                                            img(src="/images/mana/" + mana + ".svg" height="16")
-                            .meta #{card.language.code == "en" ? face.type_line : face.printed_type_line}
-                            if face.power || face.toughness
-                                .description #{face.power} / #{face.toughness}
-                            if card.language.code == "en"
-                                .description !{changeManaSymbolsInText(face.oracle_text)}
+    table(width="100%")
+        tbody
+            each card in data
+                tr
+                    td(width="30%" valign="top")
+                        if card.faces.length > 0
+                            if card.faces[0].image_uris.length > 0
+                                img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/normal.jpg"
+                                    alt=card.language.code == "en" ? card.name : card.printed_name)
                             else
-                                .description !{changeManaSymbolsInText(face.printed_text)}
-                            if face.flavor_text
-                                .meta
-                                    i #{ face.flavor_text }
-                            .description Illustrated by #{card.artist.name}
-                            p &nbsp;
-                    else
-                        .header #{card.language.code == "en" ? card.name : card.printed_name} &nbsp;&nbsp;&nbsp;
-                            if card.mana_cost != null
-                                each mana in  manaSymbols(card.mana_cost)
-                                    if mana == "//"
-                                        = mana
-                                    else
-                                        img(src="/images/mana/" + mana + ".svg" height="16")
-                        .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
-                        if card.power || card.toughness
-                            .description #{card.power} / #{card.toughness}
-                        if card.language.code == "en"
-                            .description !{card.oracle_text != null ? changeManaSymbolsInText(card.oracle_text) : "&nbsp;"}
+                                img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg"
+                                    alt=card.language.code == "en" ? card.name : card.printed_name)
                         else
-                            .description !{card.printed_text != null ? changeManaSymbolsInText(card.printed_text) : "&nbsp;"}
-                        if card.flavor_text
-                            .meta
-                                i #{ card.flavor_text }
-                        .description Illustrated by #{card.artist.name}
-                    .description
-                        +priceTable(card)
-
-            h3 Variations
-                if card.variations.length > 0
-                    p
-                    .ui.link.cards
-                        each variation in card.variations
-                            .card
-                                a.image(href="/card/" + variation.id)
-                                    if variation.faces.length > 0
-                                        img.medium.ui.image(src="/images/cards/" + variation.set.code + "/" + variation.language.code + "/" + variation.faces[0].id + "/art_crop.jpg"
-                                                            alt=card.language.code == "en" ? card.name : card.printed_name)
+                            img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg"
+                                alt=card.language.code == "en" ? card.name : card.printed_name)
+                        P &nbsp;
+                        h3 Variations
+                            +cardVariations(card)
+                        P &nbsp;
+                        h3 Other Printings
+                            +cardOtherPrintings(card)
+                    td(width="50%" valign="top")
+                        .ui.items
+                            .item
+                                .content
+                                    if card.faces.length > 0
+                                        each face in card.faces
+                                            .header #{card.language.code == "en" ? face.name : face.printed_name} &nbsp;&nbsp;&nbsp;
+                                                if face.mana_cost != null
+                                                    each mana in  manaSymbols(face.mana_cost)
+                                                        if mana == "//"
+                                                            = mana
+                                                        else
+                                                            img(src="/images/mana/" + mana + ".svg" height="16")
+                                            .meta #{card.language.code == "en" ? face.type_line : face.printed_type_line}
+                                            if face.power || face.toughness
+                                                .description #{face.power} / #{face.toughness}
+                                            if card.language.code == "en"
+                                                .description !{changeManaSymbolsInText(face.oracle_text)}
+                                            else
+                                                .description !{changeManaSymbolsInText(face.printed_text)}
+                                            if face.flavor_text
+                                                .meta
+                                                    i #{ face.flavor_text }
+                                            .description Illustrated by #{card.artist.name}
+                                            p &nbsp;
                                     else
-                                        img.medium.ui.image(src="/images/cards/" + variation.set.code + "/" + variation.language.code + "/" + variation.id + "/art_crop.jpg"
-                                                            alt=card.language.code == "en" ? card.name : card.printed_name)
-                                .content ##{variation.collector_number} &#11825; #{variation.rarity.name}
-                else
-                    p &#8212;
+                                        .header #{card.language.code == "en" ? card.name : card.printed_name} &nbsp;&nbsp;&nbsp;
+                                            if card.mana_cost != null
+                                                each mana in  manaSymbols(card.mana_cost)
+                                                    if mana == "//"
+                                                        = mana
+                                                    else
+                                                        img(src="/images/mana/" + mana + ".svg" height="16")
+                                        .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
+                                        if card.power || card.toughness
+                                            .description #{card.power} / #{card.toughness}
+                                        if card.language.code == "en"
+                                            .description !{card.oracle_text != null ? changeManaSymbolsInText(card.oracle_text) : "&nbsp;"}
+                                        else
+                                            .description !{card.printed_text != null ? changeManaSymbolsInText(card.printed_text) : "&nbsp;"}
+                                        if card.flavor_text
+                                            .meta
+                                                i #{ card.flavor_text }
+                                        .description Illustrated by #{card.artist.name}
 
-            h3 Other Printings
-                if card.other_printings.length > 0
-                    p
-                    each printing in card.other_printings
-                        a.image(href="/card/" + printing.id)
-                            i(class='ss ss-' + printing.set.code + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x') &nbsp;
-                else
-                    p &#8212;
+                    td(width="20%" valign="top")
+                        h3 Pricing
+                        +cardPricing(card)
+                        h3 Legalities
+                        +cardLegalities(card)
 
-            h3 Legalities
-            if card.format_legalities.length > 0
-                table.ui.small.celled.table
-                    thead
-                        tr
-                            th Format
-                            th Legality
-                    tbody
-                        each legality in card.format_legalities
-                            tr
-                                td #{legality.format.name}
-                                td #{legality.legality.name}
-                    tfoot
-                        tr
-                            th(colspan='2')
-            else
-                p &#8212;

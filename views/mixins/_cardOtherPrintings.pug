@@ -1,0 +1,8 @@
+mixin cardOtherPrintings(card)
+    if card.other_printings.length > 0
+        p
+        each printing in card.other_printings
+            a.image(href="/card/" + printing.id)
+                i(class='ss ss-' + printing.set.code + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x') &nbsp;
+    else
+        p &#8212;

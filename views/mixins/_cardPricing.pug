@@ -1,4 +1,4 @@
-mixin priceTable(card)
+mixin cardPricing(card)
     - var foilLow = 0
     - var foilMedian = 0
     - var foilHigh = 0
@@ -24,7 +24,7 @@ mixin priceTable(card)
             - normalMarket = price.market
             - normalDirectLow = price.direct_low
 
-    table.ui.small.sortable.celled.table
+    table.ui.small.table
         thead
             tr
                 th &nbsp;
