@@ -1,0 +1,10 @@
+mixin cardRulings(card)
+    if card.rulings.length > 0
+        each ruling in card.rulings
+            .meta
+                p <i>#{ruling.date_published}</i> <br/>
+            .description
+                p #{ruling.text}
+            p &nbsp;
+    else
+        p &#8212;

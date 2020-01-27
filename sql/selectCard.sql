@@ -60,7 +60,8 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         frame_effects json[],
         subtypes json[],
         supertypes json[],
-        prices json[]
+        prices json[],
+		rulings json[]
     )
 AS
 $$
@@ -286,6 +287,16 @@ BEGIN
                         WHERE v.cmcard = c.id
                     ) x
                 ) AS prices ';
+
+	-- Rulings
+    command := command ||
+               ', array(
+                    SELECT row_to_json(x) FROM (
+                        SELECT v.id, v.date_published, v.text
+                        FROM cmruling v
+                        WHERE v.oracle_id = c.oracle_id
+                    ) x
+                ) AS rulings ';
 
     command := command || 'FROM cmcard c WHERE c.id = ''' || _id || '''';
 
