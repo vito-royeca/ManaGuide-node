@@ -31,7 +31,7 @@ block data
 
     if rules_query != null
         .ui.huge.breadcrumb
-            a.section(href="/rules") Home
+            a.section(href="/rules") Table of Contents
             i.right.chevron.icon.divider
             .active.section #{data != null ? data.length : 0} results
         if data.length > 1
@@ -41,7 +41,7 @@ block data
             +rulesList(data)
         else
             .ui.huge.breadcrumb
-                a.section(href="/rules") Home
+                a.section(href="/rules") Table of Contents
                 i.right.chevron.icon.divider
                 each parent in split(data)
                     a.section(href="/rules/" + parent.id) #{parent.term} #{parent.definition}

@@ -7,4 +7,4 @@ mixin rulesList(rules)
                 .item
                     .header #{rule.term}
                     if rule.definition != null
-                        p &emsp; !{changeManaSymbolsInText(rule.definition)}
+                        .description &emsp; !{changeManaSymbolsInText(rule.definition)}
