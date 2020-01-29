@@ -1,5 +1,5 @@
-CREATE OR REPLACE FUNCTION selectRules(
-    integer)
+CREATE OR REPLACE FUNCTION searchRules(
+    character varying)
     RETURNS TABLE (
         id              integer,
         term            character varying,
@@ -12,9 +12,11 @@ CREATE OR REPLACE FUNCTION selectRules(
 AS
 $$
 DECLARE
-    _id ALIAS FOR $1;
+    _query ALIAS FOR $1;
     command character varying;
 BEGIN
+    _query := lower(_query);
+
     command := 'SELECT id,
                     term,
                     term_section,
@@ -37,11 +39,8 @@ BEGIN
                         ') x
                     ) AS children FROM cmrule s';
 
-    IF _id IS NOT NULL THEN
-        command := command || ' WHERE s.id = ' || _id || '';
-    ELSE
-	    command := command || ' WHERE s.cmrule_parent IS NULL';
-    END IF;
+    command := command || ' WHERE lower(s.term) LIKE ''%' || _query || '%'' ';
+    command := command || ' OR lower(s.definition) LIKE ''%' || _query || '%'' ';
 
     command := command || ' ORDER BY s.order ASC';
 

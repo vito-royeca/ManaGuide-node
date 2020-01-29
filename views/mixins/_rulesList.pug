@@ -1,0 +1,10 @@
+mixin rulesList(rules)
+    .ui.list
+        each rule in rules
+            if (rule.children.length > 0)
+                a.item(href="/rules/" + rule.id) #{rule.term} #{rule.definition}
+            else
+                .item
+                    .header #{rule.term}
+                    if rule.definition != null
+                        p &emsp; !{changeManaSymbolsInText(rule.definition)}

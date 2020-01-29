@@ -31,6 +31,7 @@ DECLARE
     _orderBy ALIAS FOR $3;
     command character varying;
 BEGIN
+    _query := lower(query);
     IF lower(_sortedBy) = 'set_name' THEN
         _sortedBy = 's.name ' || _orderBy || ', c.name ' || _orderBy;
     END IF;

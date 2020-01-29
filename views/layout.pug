@@ -47,6 +47,8 @@ html(lang="en")
         link(href="/css/owl.theme.default.min.css" rel="stylesheet")
         // Theme style
         link(href="/css/style.css" rel="stylesheet")
+        // My style
+        link(href="/css/my.css" rel="stylesheet")
 
         // Modernizr JS
         // script(src="/js/modernizr-2.6.2.min.js")
@@ -119,7 +121,7 @@ html(lang="en")
         -                manaEnd = i+1
 
         -                const manaCost = text.substring(manaStart, manaEnd)
-        -                const manaString = manaCost.replace(/{/g, "").replace(/}/g, "")
+        -                const manaString = manaCost.replace(/{/g, "").replace(/}/g, "").replace(/\//g, "")
         -                const manaSymbol = "<img src=\'/images/mana/" + manaString + ".svg\' height=\'16\' />"
         -
         -                leftString = text.substring(sentinel, manaStart)
@@ -141,6 +143,7 @@ html(lang="en")
         -        return newText
         -    }
         -
+        -    console.log("{W/P}="+changeManaSymbolsInText("{W/P}"))
 
         // page JS functions
         script.
@@ -177,7 +180,6 @@ html(lang="en")
                                             img(src="/images/logo.png")
 
                             .col-md-10.text-right.menu-1
-                                - console.log("baseUrl="+baseUrl)
                                 ul
                                     li
                                         if baseUrl == "/"
@@ -212,6 +214,8 @@ html(lang="en")
             if baseUrl != "/" || baseUrl == undefined
                 p &nbsp;
                 p &nbsp;
+
+
             section#content
                 .colorlib-intro
                     .container

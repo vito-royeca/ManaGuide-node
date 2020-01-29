@@ -13,7 +13,7 @@ mixin listTableRow(card)
             i(class="ss ss-" + card.set.code + " ss-" + card.rarity.name.toLowerCase() + " ss-2x")
         td.right.aligned #{card.collector_number}
         td
-            a(href="/card/"+card.id) #{card.language.code == "en" ? card.name : card.printed_name}
+            a.header(href="/card/"+card.id) #{card.language.code == "en" ? card.name : card.printed_name}
         td.right.aligned
             if card.mana_cost != null
                 each mana in  manaSymbols(card.mana_cost)
