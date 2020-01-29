@@ -142,8 +142,6 @@ html(lang="en")
         -        newText = newText.replace(/\n/g, "<br/>").trim()
         -        return newText
         -    }
-        -
-        -    console.log("{W/P}="+changeManaSymbolsInText("{W/P}"))
 
         // page JS functions
         script.
@@ -183,14 +181,14 @@ html(lang="en")
                                 ul
                                     li
                                         if baseUrl == "/"
-                                            <i class="icon-home"></i> Home
+                                            <i class="home icon"></i> Home
                                         else
-                                            a(href="/" style="color: #000") <i class="icon-home"></i> Home
+                                            a(href="/" style="color: #000") <i class="home icon"></i> Home
                                     li
                                         if baseUrl == "/mobile/"
-                                            <i class="icon-mobile"></i> Mobile App
+                                            <i class="mobile icon"></i> Mobile App
                                         else
-                                            a(href="/mobile" style="color: #000") <i class="icon-mobile"></i> Mobile App
+                                            a(href="/mobile" style="color: #000") <i class="mobile icon"></i> Mobile App
                                     li
                                         if baseUrl == "/sets/"
                                             <i class="ss ss-leg"></i> Sets
@@ -198,9 +196,9 @@ html(lang="en")
                                             a(href="/sets" style="color: #000") <i class="ss ss-leg"></i> Sets
                                     li
                                         if baseUrl == "/rules/"
-                                            <i class="icon-books"></i> Rules
+                                            <i class="book icon"></i> Rules
                                         else
-                                            a(href="/rules" style="color: #000") <i class="icon-books"></i> Rules
+                                            a(href="/rules" style="color: #000") <i class="book icon"></i> Rules
                         if baseUrl != "/" || baseUrl == undefined
                             .row
                                 .col-md-offset-0
@@ -239,7 +237,7 @@ html(lang="en")
                             p.
                                 This website and related apps contain data that is Copyright © Wizards of the Coast - All Rights Reserved<br/><br/>
                                 This website is not affiliated with Wizards of the Coast in any way.<br/><br/><br/>
-                                Mana Guide is maintained by: <br/> <a href="https://vitoroyeca.com"><span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Vito Royeca</span></span></a>
+                                Mana Guide is maintained by: <h3><a href="https://vitoroyeca.com"><span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Vito Royeca</span></span></a></h3>
                             p
                                 ul.colorlib-social-icons
                                     li
@@ -256,19 +254,19 @@ html(lang="en")
                             p
                                 ul.colorlib-footer-links
                                     li
-                                        a(href="/") <i class="icon-home"></i> Home
+                                        a(href="/") <i class="home icon"></i> Home
                                     li
-                                        a(href="/mobile") <i class="icon-mobile"></i> Mobile App
+                                        a(href="/mobile") <i class="mobile icon"></i> Mobile App
                                     li
                                         a(href="/sets") <i class="ss ss-leg"></i> Sets
                                     li
-                                        a(href="/rules") <i class="icon-books"></i> Rules
+                                        a(href="/rules") <i class="book icon"></i> Rules
                         .col-md-3.colorlib-widget
                             h4 Information
                             p
                                 ul.colorlib-footer-links
                                     li
-                                        a(href="/privacy.html") <i class="icon-briefcase"></i>  Privacy
+                                        a(href="/privacy.html") <i class="briefcase icon"></i>  Privacy
 
         .gototop.js-top
             a.js-gotop(href="#")

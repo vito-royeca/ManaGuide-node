@@ -1,12 +1,12 @@
 extends layout.pug
-include mixins/_setsRow
+include mixins/_listSetsRow
 
 block title
     h1.ui.header Sets
 block sorters
     p &nbsp;
 block data
-    table.ui.small.celled.table
+    table.ui.small.table
         thead
             tr
                 th.center.aligned Symbol
@@ -16,7 +16,7 @@ block data
                 th Languages
         tbody
             each set in data
-                +tableRow(set)
+                +listSetsRow(set)
         tfoot
             tr
                 th(colspan='5')

@@ -43,12 +43,12 @@ body {
       content: ""; }
 
 a {
-  color: #4aca85;
+  color: #1e70bf;
   -webkit-transition: 0.5s;
   -o-transition: 0.5s;
   transition: 0.5s; }
   a:hover, a:active, a:focus {
-    color: #4aca85;
+    color: #1e70bf;
     outline: none;
     text-decoration: none; }
 
@@ -1054,7 +1054,7 @@ input[type="text"] {
       display: inline-block;
       zoom: 1;
       *display: inline;
-      color: #4aca85;
+      color: #1e70bf;
       padding-left: 10px;
       padding-right: 10px; }
       .colorlib-social-icons li a i {

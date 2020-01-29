@@ -13,14 +13,14 @@ block data
     if displayAs == "montage"
         .ui.centered.link.cards
             each card in data
-                +montageTableRow(card)
+                +montageCardsRow(card)
     else if displayAs == "image"
         center
             .ui.medium.images
                 each card in data
-                    +imageTableRow(card)
+                    +imageCardsRow(card)
     else if displayAs == "list"
-        table.ui.small.celled.table
+        table.ui.small.table
             thead
                 tr
                     th Set
@@ -33,12 +33,12 @@ block data
                     th Foil
             tbody
                 each card in data
-                    +listTableRow(card)
+                    +listCardsRow(card)
             tfoot
                 tr
                     th(colspan='8')
     else
         .ui.centered.link.cards
             each card in data
-                +montageTableRow(card)
+                +montageCardsRow(card)
 
