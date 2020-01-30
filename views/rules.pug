@@ -1,7 +1,9 @@
 extends layout.pug
 include mixins/_rulesList
 
-block title
+block pageTitle
+    title Comprehensive Rules - #{defaultPageTitle}
+block headline
     h1.ui.header Comprehensive Rules
     p &nbsp;
 block sorters
@@ -11,24 +13,6 @@ block sorters
             i.search.icon
     p &nbsp;
 block data
-    - function split(data) {
-    -     var array = []
-    -
-    -     if (data.length > 0) {
-    -         var current = data[0]
-    -         while (true) {
-    -             const parent = current.parent
-    -             if (parent != null) {
-    -                 array.splice(0, 0, parent)
-    -                 current = parent
-    -             } else {
-    -                 break
-    -             }
-    -         }
-    -     }
-    -     return array
-    - }
-
     if rules_query != null
         .ui.huge.breadcrumb
             a.section(href="/rules") Table of Contents
@@ -43,7 +27,7 @@ block data
             .ui.huge.breadcrumb
                 a.section(href="/rules") Table of Contents
                 i.right.chevron.icon.divider
-                each parent in split(data)
+                each parent in splitRule(data)
                     a.section(href="/rules/" + parent.id) #{parent.term} #{parent.definition}
                     i.right.chevron.icon.divider
                 .active.section #{data[0].term} #{data[0].definition}

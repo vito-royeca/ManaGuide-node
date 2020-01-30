@@ -72,7 +72,7 @@ BEGIN
                     image_uris,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT s.code, s.name
+                            SELECT s.code, s.name, s.keyrune_class
                             FROM cmset s WHERE s.code = c.cmset
                         ) x
                     ) AS set,

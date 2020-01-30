@@ -5,7 +5,10 @@ include mixins/_listCardsRow
 include mixins/_cardsSorter
 include mixins/_setLanguageButtons
 
-block title
+block pageTitle
+    each set in data
+        title #{set.name} (#{set.code}) - #{defaultPageTitle}
+block headline
     each set in data
         table(width="100%")
             tbody
@@ -14,7 +17,7 @@ block title
                         +setLanguageButtons(set)
                 tr
                     td(rowspan=2 style="padding: 10px;" width="5%")
-                        i(class='ss ss-' + set.code + ' ss-3x')
+                        i(class='ss ss-' + set.keyrune_class + ' ss-3x ss-common')
                     td(width="95%")
                         h1.ui.header #{set.name} (#{set.code})
                 tr

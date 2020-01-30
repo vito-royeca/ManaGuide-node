@@ -1,7 +1,9 @@
 extends layout.pug
 include mixins/_listSetsRow
 
-block title
+block pageTitle
+    title Sets - #{defaultPageTitle}
+block headline
     h1.ui.header Sets
 block sorters
     p &nbsp;

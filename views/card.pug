@@ -7,8 +7,10 @@ include mixins/_cardParts
 include mixins/_cardVariations
 include mixins/_cardRulings
 
-block title
-
+block pageTitle
+    each card in data
+        title #{card.language.code == "en" ? card.name : card.printed_name} (#{card.set.code}) - #{defaultPageTitle}
+block headline
 block sorters
     if data.length == 0
         .ui.error.message
@@ -22,7 +24,7 @@ block sorters
                             +cardLanguageButtons(card)
                     tr
                         td(rowspan=2 width="5%")
-                            i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
+                            i(class='ss ss-' + card.set.keyrune_class + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
                         td(width="95%")
                             h2.ui.header
                                 a(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})

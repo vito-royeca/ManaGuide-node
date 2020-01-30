@@ -1,3 +1,4 @@
+include js/constants
 include js/functions
 
 doctype html
@@ -7,10 +8,10 @@ html(lang="en")
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
         meta(name="viewport" content="width=device-width, initial-scale=1")
 
-        title Mana Guide is a comprehensive database of Magic: The Gathering cards
-        meta(name="description" content="Mana Guide is a comprehensive database of Magic: The Gathering cards. Search Magic MTG cards, View Pricing of Magic MTG cards, and more, at ManaGuideApp.com")
-        meta(name="keywords" content="MTG Magic Gathering cards game tcg pricing mobile app ios android Vito Royeca")
-        meta(name="author" content="Vito Royeca")
+        block pageTitle
+        meta(name="description" content=defaultPageDescription)
+        meta(name="keywords" content=defaultPageKeywords)
+        meta(name="author" content=defaultPageAuthor)
 
         // favicon
         link(href="/images/favicon.ico" type="image/x-icon" rel="shortcut icon")
@@ -69,14 +70,14 @@ html(lang="en")
             ga('create', 'UA-53780226-5', 'auto');
             ga('send', 'pageview');
 
+        // Google AdSense
+        script(data-ad-client="ca-pub-6077338541353770"
+               async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
+
         // Comodo SSL
         script(type="text/javascript").
             var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "http://www.trustlogo.com/");
             document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
-
-        // Google AdSense
-        script(data-ad-client="ca-pub-6077338541353770"
-               async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
 
     body
         // page JS functions
@@ -154,7 +155,7 @@ html(lang="en")
                 .colorlib-intro
                     .container
                         .row
-                            block title
+                            block headline
                         .row
                             block sorters
                         .row.main_description

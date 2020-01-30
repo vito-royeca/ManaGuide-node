@@ -1,4 +1,4 @@
-// template JS functions
+-
 -    function manaCost2Html(manaCost) {
 -        if (manaCost == null || manaCost.length == 0) {
 -            return ""
@@ -101,4 +101,22 @@
 -                return "/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + (isCrop ? "/art_crop.jpg" : "/normal.jpg")
 -            }
 -        }
+-    }
+-
+-    function splitRule(data) {
+-        var array = []
+-
+-        if (data.length > 0) {
+-            var current = data[0]
+-            while (true) {
+-                const parent = current.parent
+-                if (parent != null) {
+-                    array.splice(0, 0, parent)
+-                    current = parent
+-                } else {
+-                    break
+-                }
+-            }
+-        }
+-        return array
 -    }

@@ -113,7 +113,7 @@ BEGIN
                     c.multiverse_ids,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.code, v.name
+                            SELECT v.code, v.name, v.keyrune_class
                             FROM cmset v WHERE v.code = c.cmset
                         ) x
                     ) AS set,

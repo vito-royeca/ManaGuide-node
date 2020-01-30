@@ -31,7 +31,7 @@ mixin montageCardsRow(card)
                 tbody
                     tr()
                         td(rowspan=2 style="padding: 5px;")
-                            i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
+                            i(class='ss ss-' + card.set.keyrune_class + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
                         td #{card.set.name}
                     tr
                         td(colspan=2) ##{card.collector_number} &#x2E31; #{card.rarity.name} &#x2E31; #{card.language.name}

@@ -3,6 +3,6 @@ mixin cardOtherPrintings(card)
         p
         each printing in card.other_printings
             a.image(href="/card/" + printing.id)
-                i(class='ss ss-' + printing.set.code + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x') &nbsp;
+                i(class='ss ss-' + printing.set.keyrune_class + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x') &nbsp;
     else
         p &#8212;

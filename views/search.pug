@@ -4,7 +4,9 @@ include mixins/_imageCardsRow
 include mixins/_listCardsRow
 include mixins/_cardsSorter
 
-block title
+block pageTitle
+    title Search - #{defaultPageTitle}
+block headline
     h1.ui.header Search Results: #{ data.length }
     p &nbsp;
 block sorters
