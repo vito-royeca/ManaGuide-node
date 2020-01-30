@@ -179,20 +179,38 @@ BEGIN
                             FROM cmcard_colorindicator v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.id
                         ) x
-                    ) AS color_indicators,
-                    array(
+                    ) AS color_indicators ';
+
+    -- Component Parts
+	command := command ||
+					', array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name, w.name_section
+							SELECT (SELECT row_to_json(a) FROM (select w.name, w.name_section) a) AS component,
+                            (SELECT row_to_json(b) FROM (select x.id, x.name, x.printed_name, ''{}''::json[] as faces,
+								(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT y.code
+                                        FROM cmset y
+                                        WHERE y.code = x.cmset
+                                    ) x
+                                ) AS set,
+								(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT z.code
+                                        FROM cmlanguage z
+                                        WHERE z.code = x.cmlanguage
+                                    ) x
+                                ) AS language
+							) b) AS card
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
+							left join cmcard x on v.cmcard_part = x.id
                             WHERE v.cmcard = c.id
                         ) x
                     ) AS component_parts ';
-
     -- Faces
     command := command ||
                     ', array(
-                        SELECT row_to_json(x) FROM (' ||
-                            command ||
+                        SELECT row_to_json(x) FROM (' || command ||
                             'FROM cmcard c left join cmcard_face w on w.cmcard_face = c.id
                             WHERE w.cmcard = ''' || _id || '''' ||
                         ') x
@@ -201,8 +219,7 @@ BEGIN
     -- Other Languages
     command := command ||
                     ', array(
-                        SELECT row_to_json(x) FROM (' ||
-                            command ||
+                        SELECT row_to_json(x) FROM (' || command ||
                             'FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.id
                             left join cmset y on y.code = c.cmset
@@ -214,8 +231,7 @@ BEGIN
     -- Other Printings
     command := command ||
                     ', array(
-                        SELECT row_to_json(x) FROM (' ||
-                            command ||
+                        SELECT row_to_json(x) FROM (' || command ||
                             'FROM cmcard c
                             left join cmcard_otherprinting w on w.cmcard_otherprinting = c.id
                             left join cmset y on y.code = c.cmset
@@ -227,8 +243,7 @@ BEGIN
     -- Variations
     command := command ||
                 ', array(
-                    SELECT row_to_json(x) FROM (' ||
-                        command ||
+                    SELECT row_to_json(x) FROM (' || command ||
                         'FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.id
                         left join cmset y on y.code = c.cmset
                         WHERE w.cmcard = ''' || _id || '''' ||

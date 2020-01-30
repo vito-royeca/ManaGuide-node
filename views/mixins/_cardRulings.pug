@@ -4,7 +4,7 @@ mixin cardRulings(card)
             .meta
                 p <i>#{ruling.date_published}</i> <br/>
             .description
-                p #{ruling.text}
+                p !{changeManaSymbolsInText(ruling.text)}
             p &nbsp;
     else
         p &#8212;

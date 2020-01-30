@@ -11,7 +11,6 @@ router.get('/:id', function(req, res, next) {
 });
 
 function callback(req, res, dict) {
-    console.log("Callback...")
     res.render(req.baseUrl.substr(1), dict)
 }
 

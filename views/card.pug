@@ -3,6 +3,7 @@ include mixins/_cardLanguageButtons
 include mixins/_cardLegalities
 include mixins/_cardPricing
 include mixins/_cardOtherPrintings
+include mixins/_cardParts
 include mixins/_cardVariations
 include mixins/_cardRulings
 
@@ -23,7 +24,8 @@ block sorters
                         td(rowspan=2 width="5%")
                             i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
                         td(width="95%")
-                            a.header(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})
+                            h2.ui.header
+                                a(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})
                     tr
                         td(width="95%" colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
 block data
@@ -36,9 +38,13 @@ block data
                                             alt=card.language.code == "en" ? card.name : card.printed_name)
                         P &nbsp;
                         h2.ui.header Variations
+                        p
                             +cardVariations(card)
-                        P &nbsp;
+                        h2.ui.header Parts
+                        p
+                            +cardParts(card)
                         h2.ui.header Other Printings
+                        p
                             +cardOtherPrintings(card)
                     td(width="50%" style="padding: 10px; vertical-align: top;")
                         .ui.items
@@ -56,8 +62,11 @@ block data
                                                 .description !{changeManaSymbolsInText(face.printed_text)}
                                             if face.flavor_text
                                                 .meta
+                                                    p &nbsp;
                                                     i #{ face.flavor_text }
-                                            .description Illustrated by #{card.artist.name}
+                                            .description
+                                                p &nbsp;
+                                                p Illustrated by #{card.artist.name}
                                             p &nbsp;
                                     else
                                         .header #{card.language.code == "en" ? card.name : card.printed_name} &nbsp;&nbsp;&nbsp; !{manaCost2Html(card.mana_cost)}
@@ -65,13 +74,15 @@ block data
                                         if card.power || card.toughness
                                             .description #{card.power} / #{card.toughness}
                                         if card.language.code == "en"
-                                            .description !{card.oracle_text != null ? changeManaSymbolsInText(card.oracle_text) : "&nbsp;"}
+                                            .description !{changeManaSymbolsInText(card.oracle_text)}
                                         else
-                                            .description !{card.printed_text != null ? changeManaSymbolsInText(card.printed_text) : "&nbsp;"}
+                                            .description !{changeManaSymbolsInText(card.printed_text)}
                                         if card.flavor_text
                                             .meta
+                                                p &nbsp;
                                                 i #{ card.flavor_text }
                                         .description
+                                            p &nbsp;
                                             p Illustrated by #{card.artist.name}
 
                                     .description

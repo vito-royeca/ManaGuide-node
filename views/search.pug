@@ -8,37 +8,39 @@ block title
     h1.ui.header Search Results: #{ data.length }
     p &nbsp;
 block sorters
-    +cardsSorter("search")
+    if data.length > 0
+        +cardsSorter("search")
 block data
-    if displayAs == "montage"
-        .ui.centered.link.cards
-            each card in data
-                +montageCardsRow(card)
-    else if displayAs == "image"
-        center
-            .ui.medium.images
+    if data.length > 0
+        if displayAs == "montage"
+            .ui.centered.link.cards
                 each card in data
-                    +imageCardsRow(card)
-    else if displayAs == "list"
-        table.ui.small.table
-            thead
-                tr
-                    th Set
-                    th #
-                    th Name
-                    th Casting Cost
-                    th Type
-                    th Rarity
-                    th Normal
-                    th Foil
-            tbody
+                    +montageCardsRow(card)
+        else if displayAs == "image"
+            center
+                .ui.medium.images
+                    each card in data
+                        +imageCardsRow(card)
+        else if displayAs == "list"
+            table.ui.small.table
+                thead
+                    tr
+                        th Set
+                        th #
+                        th Name
+                        th Casting Cost
+                        th Type
+                        th Rarity
+                        th Normal
+                        th Foil
+                tbody
+                    each card in data
+                        +listCardsRow(card)
+                tfoot
+                    tr
+                        th(colspan='8')
+        else
+            .ui.centered.link.cards
                 each card in data
-                    +listCardsRow(card)
-            tfoot
-                tr
-                    th(colspan='8')
-    else
-        .ui.centered.link.cards
-            each card in data
-                +montageCardsRow(card)
+                    +montageCardsRow(card)
 

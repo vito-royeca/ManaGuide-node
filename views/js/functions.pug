@@ -66,7 +66,10 @@
 -                manaEnd = i+1
 
 -                const manaCost = text.substring(manaStart, manaEnd)
--                const manaString = manaCost.replace(/{/g, "").replace(/}/g, "").replace(/\//g, "")
+-                var manaString = manaCost.replace(/{/g, "").replace(/}/g, "").replace(/\//g, "")
+-                if (manaString.toLowerCase() == "chaos") {
+-                    manaString = "Chaos"
+-                }
 -                const manaSymbol = "<img src=\'/images/mana/" + manaString + ".svg\' height=\'16\' />"
 -
 -                leftString = text.substring(sentinel, manaStart)
@@ -89,10 +92,13 @@
 -    }
 -
 -    function cardImageUrl(card, isCrop) {
--        if (card.faces.length > 0) {
--            return "/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + (isCrop ? "/art_crop.jpg" : "/normal.jpg")
--        } else {
+-        if (card.image_uris != undefined && Object.keys(card.image_uris).length > 0) {
 -            return "/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + (isCrop ? "/art_crop.jpg" : "/normal.jpg")
+-        } else {
+-            if (card.faces.length > 0) {
+-                return "/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + (isCrop ? "/art_crop.jpg" : "/normal.jpg")
+-            } else {
+-                return "/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + (isCrop ? "/art_crop.jpg" : "/normal.jpg")
+-            }
 -        }
--
 -    }

@@ -1,6 +1,5 @@
 mixin cardVariations(card)
     if card.variations.length > 0
-        p &nbsp;
         .ui.link.items
             each variation in card.variations
                 .item
@@ -9,6 +8,6 @@ mixin cardVariations(card)
                             img.medium.ui.image(src=cardImageUrl(variation, true)
                                                 alt=card.language.code == "en" ? card.name : card.printed_name)
                     .content
-                        .extra ##{variation.collector_number} &#11825; #{variation.rarity.name}
+                        .description ##{variation.collector_number} &#11825; #{variation.rarity.name}
     else
         p &#8212;

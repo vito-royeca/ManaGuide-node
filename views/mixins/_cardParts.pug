@@ -1,0 +1,15 @@
+mixin cardParts(card)
+    if card.component_parts.length > 0
+        .ui.link.items
+            each part in card.component_parts
+                .item
+                    .ui.tiny.image
+                        a.image(href="/card/" + part.card.id)
+                            img.medium.ui.image(src=cardImageUrl(part.card, true)
+                                alt=part.card.language.code == "en" ? part.card.name : part.card.printed_name)
+                    .content
+                        .description #{part.card.name}
+                        .meta #{part.component.name}
+
+    else
+        p &#8212;
