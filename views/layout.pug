@@ -174,7 +174,7 @@ html(lang="en")
                 .top-menu
                     .container
                         .row
-                            if baseUrl == "/"
+                            if baseUrl != null && baseUrl == "/"
                                 .col-md-2 &nbsp;
                             else
                                 .col-md-2
@@ -184,26 +184,26 @@ html(lang="en")
                             .col-md-10.text-right.menu-1
                                 ul
                                     li
-                                        if baseUrl == "/"
+                                        if baseUrl != null && baseUrl == "/"
                                             <i class="home icon"></i> Home
                                         else
                                             a(href="/" style="color: #000") <i class="home icon"></i> Home
                                     li
-                                        if baseUrl == "/mobile/"
+                                        if baseUrl != null && baseUrl == "/mobile/"
                                             <i class="mobile icon"></i> Mobile App
                                         else
                                             a(href="/mobile" style="color: #000") <i class="mobile icon"></i> Mobile App
                                     li
-                                        if baseUrl == "/sets/"
+                                        if baseUrl != null && baseUrl == "/sets/"
                                             <i class="ss ss-leg"></i> Sets
                                         else
                                             a(href="/sets" style="color: #000") <i class="ss ss-leg"></i> Sets
                                     li
-                                        if baseUrl.includes("/rules")
+                                        if baseUrl != null && baseUrl.includes("/rules")
                                             <i class="book icon"></i> Rules
                                         else
                                             a(href="/rules" style="color: #000") <i class="book icon"></i> Rules
-                        if baseUrl != "/" || baseUrl == undefined
+                        if baseUrl == undefined || baseUrl != "/"
                             .row
                                 .col-md-offset-0
                                     form(action="/search" method="get" id="search" name="search")
@@ -213,7 +213,7 @@ html(lang="en")
                                         .ui.fluid.icon.input
                                             input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
                                             i.search.icon
-            if baseUrl != "/" || baseUrl == undefined
+            if baseUrl == undefined || baseUrl != "/"
                 p &nbsp;
                 p &nbsp;
 
@@ -270,7 +270,7 @@ html(lang="en")
                             p
                                 ul.colorlib-footer-links
                                     li
-                                        a(href="/privacy.html") <i class="briefcase icon"></i>  Privacy
+                                        a(href="/privacy.html") <i class="briefcase icon"></i>  Privacy Policy
 
         .gototop.js-top
             a.js-gotop(href="#")

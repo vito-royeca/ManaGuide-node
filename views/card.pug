@@ -9,19 +9,23 @@ include mixins/_cardRulings
 block title
 
 block sorters
-    each card in data
-        table(width="100%")
-            tbody
-                tr
-                    td(width="100%" colspan="3" align="right")
-                        +cardLanguageButtons(card)
-                tr
-                    td(rowspan=2 width="5%")
-                        i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
-                    td(width="95%")
-                        a.header(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})
-                tr
-                    td(width="95%" colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
+    if data.length == 0
+        .ui.error.message
+            .header Card not found.
+    else
+        each card in data
+            table(width="100%")
+                tbody
+                    tr
+                        td(width="100%" colspan="3" align="right")
+                            +cardLanguageButtons(card)
+                    tr
+                        td(rowspan=2 width="5%")
+                            i(class='ss ss-' + card.set.code + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
+                        td(width="95%")
+                            a.header(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})
+                    tr
+                        td(width="95%" colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
 block data
     table(width="100%")
         tbody
@@ -100,4 +104,6 @@ block data
                         +cardPricing(card)
                         h2.ui.header Legalities
                         +cardLegalities(card)
+
+
 
