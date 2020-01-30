@@ -6,12 +6,8 @@ mixin cardVariations(card)
                 .item
                     .ui.tiny.image
                         a.image(href="/card/" + variation.id)
-                            if variation.faces.length > 0
-                                img.medium.ui.image(src="/images/cards/" + variation.set.code + "/" + variation.language.code + "/" + variation.faces[0].id + "/art_crop.jpg"
-                                    alt=card.language.code == "en" ? card.name : card.printed_name)
-                            else
-                                img.medium.ui.image(src="/images/cards/" + variation.set.code + "/" + variation.language.code + "/" + variation.id + "/art_crop.jpg"
-                                    alt=card.language.code == "en" ? card.name : card.printed_name)
+                            img.medium.ui.image(src=cardImageUrl(variation, true)
+                                                alt=card.language.code == "en" ? card.name : card.printed_name)
                     .content
                         .extra ##{variation.collector_number} &#11825; #{variation.rarity.name}
     else

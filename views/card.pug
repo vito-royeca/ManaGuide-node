@@ -32,16 +32,8 @@ block data
             each card in data
                 tr
                     td(width="30%" style="padding: 10px; vertical-align: top;")
-                        if card.faces.length > 0
-                            if card.faces[0].image_uris.length > 0
-                                img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/normal.jpg"
-                                    alt=card.language.code == "en" ? card.name : card.printed_name)
-                            else
-                                img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg"
-                                    alt=card.language.code == "en" ? card.name : card.printed_name)
-                        else
-                            img.ui.medium.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/normal.jpg"
-                                alt=card.language.code == "en" ? card.name : card.printed_name)
+                        img.ui.medium.image(src=cardImageUrl(card, false)
+                                            alt=card.language.code == "en" ? card.name : card.printed_name)
                         P &nbsp;
                         h2.ui.header Variations
                             +cardVariations(card)
@@ -54,13 +46,7 @@ block data
                                 .content
                                     if card.faces.length > 0
                                         each face in card.faces
-                                            .header #{card.language.code == "en" ? face.name : face.printed_name} &nbsp;&nbsp;&nbsp;
-                                                if face.mana_cost != null
-                                                    each mana in  manaSymbols(face.mana_cost)
-                                                        if mana == "//"
-                                                            = mana
-                                                        else
-                                                            img(src="/images/mana/" + mana + ".svg" height="16")
+                                            .header #{card.language.code == "en" ? face.name : face.printed_name} &nbsp;&nbsp;&nbsp; !{manaCost2Html(face.mana_cost)}
                                             .meta #{card.language.code == "en" ? face.type_line : face.printed_type_line}
                                             if face.power || face.toughness
                                                 .description #{face.power} / #{face.toughness}
@@ -74,13 +60,7 @@ block data
                                             .description Illustrated by #{card.artist.name}
                                             p &nbsp;
                                     else
-                                        .header #{card.language.code == "en" ? card.name : card.printed_name} &nbsp;&nbsp;&nbsp;
-                                            if card.mana_cost != null
-                                                each mana in  manaSymbols(card.mana_cost)
-                                                    if mana == "//"
-                                                        = mana
-                                                    else
-                                                        img(src="/images/mana/" + mana + ".svg" height="16")
+                                        .header #{card.language.code == "en" ? card.name : card.printed_name} &nbsp;&nbsp;&nbsp; !{manaCost2Html(card.mana_cost)}
                                         .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
                                         if card.power || card.toughness
                                             .description #{card.power} / #{card.toughness}

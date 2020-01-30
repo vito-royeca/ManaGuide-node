@@ -1,22 +1,13 @@
 mixin montageCardsRow(card)
     .ui.card
         .content
-            if card.mana_cost != null
-                .right.floated.meta
-                    each mana in  manaSymbols(card.mana_cost)
-                        if mana == "//"
-                            = mana
-                        else
-                            img(src="/images/mana/" + mana + ".svg" height="16")
+            .right.floated.meta
+                p !{manaCost2Html(card.mana_cost)}
             a.header(href="/card/" + card.id) #{card.language.code == 'en' ? card.name : card.printed_name}
             .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
         a.image(href="/card/"+card.id)
-            if card.faces.length > 0
-                img.ui.rounded.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + "/art_crop.jpg"
-                                     alt=card.language.code == "en" ? card.name : card.printed_name)
-            else
-                img.ui.rounded.image(src="/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + "/art_crop.jpg"
-                                     alt=card.language.code == "en" ? card.name : card.printed_name)
+            img.ui.rounded.image(src=cardImageUrl(card, true)
+                                 alt=card.language.code == "en" ? card.name : card.printed_name)
         .content
             - var foil = 0
             - var normal = 0

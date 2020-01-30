@@ -1,3 +1,5 @@
+include js/functions
+
 doctype html
 html(lang="en")
     head
@@ -77,76 +79,6 @@ html(lang="en")
                async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
 
     body
-        // template JS functions
-        -    function manaSymbols(manaCost) {
-        -        if (manaCost == null) {
-        -            return null
-        -        }
-        -
-        -        var cleanString = manaCost.replace(/{/g, "").trim()
-        -        cleanString = cleanString.replace(/ /g, "").trim()
-        -        if (cleanString.includes("//")) {
-        -           cleanString = cleanString.replace(/\/\//g, "//}").trim()
-        -        } else if (cleanString.includes("/")) {
-        -           cleanString = cleanString.replace(/\//g, "").trim()
-        -        }
-        -
-        -        var array = cleanString.split("}")
-        -        var manaArray = []
-        -
-        -        for (var i = 0; i < array.length-1; i++) {
-        -            var mana = array[i]
-        -            if (mana.toLowerCase() == "chaos") {
-        -                mana = "Chaos"
-        -            }
-        -            if (mana.length == 3 && mana.includes("/")) {
-        -                mana = mana.replace(/\//g, "").trim()
-        -            }
-        -            manaArray[i] = mana
-        -        }
-        -        return manaArray
-        -    }
-        -
-        -    function changeManaSymbolsInText(text) {
-        -        var sentinel = 0
-        -        var manaStart = -1
-        -        var manaEnd = -1
-        -        var newText = ""
-        -        var leftString = ""
-        -        var rightString = ""
-        -
-        -       for (var i = 0; i < text.length; i++) {
-        -            const charAt = text.charAt(i)
-        -
-        -            if (charAt == '{') {
-        -                manaStart = i
-        -            }
-        -            if (charAt == '}' && manaStart != -1) {
-        -                manaEnd = i+1
-
-        -                const manaCost = text.substring(manaStart, manaEnd)
-        -                const manaString = manaCost.replace(/{/g, "").replace(/}/g, "").replace(/\//g, "")
-        -                const manaSymbol = "<img src=\'/images/mana/" + manaString + ".svg\' height=\'16\' />"
-        -
-        -                leftString = text.substring(sentinel, manaStart)
-        -                rightString = text.substring(manaEnd)
-        -                newText = newText + leftString + manaSymbol
-        -                sentinel = manaEnd
-        -            }
-        -
-        -            if (i == text.length - 1) {
-        -                if (manaStart == -1 || manaEnd == 1) {
-        -                    newText = text
-        -                } else {
-        -                    newText = newText + rightString
-        -                }
-        -            }
-        -        }
-        -
-        -        newText = newText.replace(/\n/g, "<br/>").trim()
-        -        return newText
-        -    }
-
         // page JS functions
         script.
             function invokeSorter(action, target, value) {

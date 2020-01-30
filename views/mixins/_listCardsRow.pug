@@ -14,13 +14,7 @@ mixin listCardsRow(card)
         td.right.aligned #{card.collector_number}
         td
             a(href="/card/"+card.id) #{card.language.code == "en" ? card.name : card.printed_name}
-        td.right.aligned
-            if card.mana_cost != null
-                each mana in  manaSymbols(card.mana_cost)
-                    if mana == "//"
-                        = mana
-                    else
-                        img(src="/images/mana/" + mana + ".svg" height="16")
+        td.right.aligned !{manaCost2Html(card.mana_cost)}
         td #{card.language.code == "en" ? card.type_line : card.printed_type_line}
         td #{card.rarity.name}
         if normal > 0

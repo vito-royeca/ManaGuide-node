@@ -101,7 +101,7 @@ BEGIN
                     ', array(
                         SELECT row_to_json(x) FROM (' ||
                             command ||
-                            'FROM cmcard c left join cmcard_face w on w.cmcard_face = c.id
+                            'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.id
                             WHERE w.cmcard = c.id
                         ) x
                     ) AS faces ';
