@@ -62,68 +62,67 @@ $_$;
 ALTER FUNCTION public.createorupdateartist(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- Name: createorupdatecard(character varying, double precision, character varying, jsonb, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer); Type: FUNCTION; Schema: public; Owner: managuide
+-- Name: createorupdatecard(character varying, double precision, character varying, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.createorupdatecard(character varying, double precision, character varying, jsonb, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer) RETURNS character varying
+CREATE FUNCTION public.createorupdatecard(character varying, double precision, character varying, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer) RETURNS character varying
     LANGUAGE plpgsql
     AS $_$
 DECLARE
     _collector_number ALIAS FOR $1;
     _cmc ALIAS FOR $2;
     _flavor_text ALIAS FOR $3;
-    _image_uris ALIAS FOR $4;
-    _is_foil ALIAS FOR $5;
-    _is_full_art ALIAS FOR $6;
-    _is_highres_image ALIAS FOR $7;
-    _is_nonfoil ALIAS FOR $8;
-    _is_oversized ALIAS FOR $9;
-    _is_reserved ALIAS FOR $10;
-    _is_story_spotlight ALIAS FOR $11;
-    _loyalty ALIAS FOR $12;
-    _mana_cost ALIAS FOR $13;
-    _multiverse_ids ALIAS FOR $14;
-    _my_name_section ALIAS FOR $15;
-    _my_number_order ALIAS FOR $16;
-    _name ALIAS FOR $17;
-    _oracle_text ALIAS FOR $18;
-    _power ALIAS FOR $19;
-    _printed_name ALIAS FOR $20;
-    _printed_text ALIAS FOR $21;
-    _toughness ALIAS FOR $22;
-    _arena_id ALIAS FOR $23;
-    _mtgo_id ALIAS FOR $24;
-    _tcgplayer_id ALIAS FOR $25;
-    _hand_modifier ALIAS FOR $26;
-    _life_modifier ALIAS FOR $27;
-    _is_booster ALIAS FOR $28;
-    _is_digital ALIAS FOR $29;
-    _is_promo ALIAS FOR $30;
-    _released_at ALIAS FOR $31;
-    _is_textless ALIAS FOR $32;
-    _mtgo_foil_id ALIAS FOR $33;
-    _is_reprint ALIAS FOR $34;
-    _id ALIAS FOR $35;
-    _card_back_id ALIAS FOR $36;
-    _oracle_id ALIAS FOR $37;
-    _illustration_id ALIAS FOR $38;
-    _cmartist ALIAS FOR $39;
-    _cmset ALIAS FOR $40;
-    _cmrarity ALIAS FOR $41;
-    _cmlanguage ALIAS FOR $42;
-    _cmlayout ALIAS FOR $43;
-    _cmwatermark ALIAS FOR $44;
-    _cmframe ALIAS FOR $45;
-    _cmframeeffects ALIAS FOR $46;
-    _cmcolors ALIAS FOR $47;
-    _cmcolor_identities ALIAS FOR $48;
-    _cmcolor_indicators ALIAS FOR $49;
-    _cmlegalities ALIAS FOR $50;
-    _type_line ALIAS FOR $51;
-    _printed_type_line ALIAS FOR $52;
-    _cmcardtype_subtypes ALIAS FOR $53;
-    _cmcardtype_supertypes ALIAS FOR $54;
-    _face_order ALIAS FOR $55;
+    _is_foil ALIAS FOR $4;
+    _is_full_art ALIAS FOR $5;
+    _is_highres_image ALIAS FOR $6;
+    _is_nonfoil ALIAS FOR $7;
+    _is_oversized ALIAS FOR $8;
+    _is_reserved ALIAS FOR $9;
+    _is_story_spotlight ALIAS FOR $10;
+    _loyalty ALIAS FOR $11;
+    _mana_cost ALIAS FOR $12;
+    _multiverse_ids ALIAS FOR $13;
+    _my_name_section ALIAS FOR $14;
+    _my_number_order ALIAS FOR $15;
+    _name ALIAS FOR $16;
+    _oracle_text ALIAS FOR $17;
+    _power ALIAS FOR $18;
+    _printed_name ALIAS FOR $19;
+    _printed_text ALIAS FOR $20;
+    _toughness ALIAS FOR $21;
+    _arena_id ALIAS FOR $22;
+    _mtgo_id ALIAS FOR $23;
+    _tcgplayer_id ALIAS FOR $24;
+    _hand_modifier ALIAS FOR $25;
+    _life_modifier ALIAS FOR $26;
+    _is_booster ALIAS FOR $27;
+    _is_digital ALIAS FOR $28;
+    _is_promo ALIAS FOR $29;
+    _released_at ALIAS FOR $30;
+    _is_textless ALIAS FOR $31;
+    _mtgo_foil_id ALIAS FOR $32;
+    _is_reprint ALIAS FOR $33;
+    _id ALIAS FOR $34;
+    _card_back_id ALIAS FOR $35;
+    _oracle_id ALIAS FOR $36;
+    _illustration_id ALIAS FOR $37;
+    _cmartist ALIAS FOR $38;
+    _cmset ALIAS FOR $39;
+    _cmrarity ALIAS FOR $40;
+    _cmlanguage ALIAS FOR $41;
+    _cmlayout ALIAS FOR $42;
+    _cmwatermark ALIAS FOR $43;
+    _cmframe ALIAS FOR $44;
+    _cmframeeffects ALIAS FOR $45;
+    _cmcolors ALIAS FOR $46;
+    _cmcolor_identities ALIAS FOR $47;
+    _cmcolor_indicators ALIAS FOR $48;
+    _cmlegalities ALIAS FOR $49;
+    _type_line ALIAS FOR $50;
+    _printed_type_line ALIAS FOR $51;
+    _cmcardtype_subtypes ALIAS FOR $52;
+    _cmcardtype_supertypes ALIAS FOR $53;
+    _face_order ALIAS FOR $54;
 
     pkey character varying;
     pkey2 character varying;
@@ -232,7 +231,6 @@ BEGIN
             collector_number,
             cmc,
             flavor_text,
-            image_uris,
             is_foil,
             is_full_art,
             is_highres_image,
@@ -281,7 +279,6 @@ BEGIN
             _collector_number,
             _cmc,
             _flavor_text,
-            _image_uris::jsonb,
             _is_foil,
             _is_full_art,
             _is_highres_image,
@@ -331,7 +328,6 @@ BEGIN
             collector_number = _collector_number,
             cmc = _cmc,
             flavor_text = _flavor_text,
-            image_uris = _image_uris,
             is_foil = _is_foil,
             is_full_art = _is_full_art,
             is_highres_image = _is_highres_image,
@@ -497,7 +493,7 @@ END;
 $_$;
 
 
-ALTER FUNCTION public.createorupdatecard(character varying, double precision, character varying, jsonb, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer) OWNER TO managuide;
+ALTER FUNCTION public.createorupdatecard(character varying, double precision, character varying, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer) OWNER TO postgres;
 
 --
 -- Name: createorupdatecardfaces(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
@@ -1690,7 +1686,7 @@ ALTER FUNCTION public.createorupdatewatermark(character varying, character varyi
 -- Name: searchcards(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.searchcards(character varying, character varying, character varying) RETURNS TABLE(id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, image_uris jsonb, set json, rarity json, language json, prices json[], faces json[])
+CREATE FUNCTION public.searchcards(character varying, character varying, character varying) RETURNS TABLE(id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, set json, rarity json, language json, prices json[], faces json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
@@ -1736,7 +1732,6 @@ BEGIN
                     type_line,
 	                power,
                     toughness,
-                    image_uris,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class
@@ -1855,7 +1850,7 @@ ALTER FUNCTION public.searchrules(character varying) OWNER TO postgres;
 -- Name: selectcard(character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.selectcard(character varying) RETURNS TABLE(collector_number character varying, cmc double precision, face_order integer, flavor_text character varying, is_foil boolean, is_full_art boolean, is_highres_image boolean, is_nonfoil boolean, is_oversized boolean, is_reserved boolean, is_story_spotlight boolean, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, oracle_text character varying, power character varying, printed_name character varying, printed_text character varying, toughness character varying, arena_id integer, mtgo_id integer, tcgplayer_id integer, hand_modifier character varying, life_modifier character varying, is_booster boolean, is_digital boolean, is_promo boolean, released_at date, is_textless boolean, mtgo_foil_id integer, is_reprint boolean, id character varying, card_back_id character varying, oracle_id character varying, illustration_id character varying, printed_type_line character varying, type_line character varying, image_uris jsonb, multiverse_ids integer[], set json, rarity json, language json, layout json, watermark json, frame json, artist json, colors json[], color_identities json[], color_indicators json[], component_parts json[], faces json[], other_languages json[], other_printings json[], variations json[], format_legalities json[], frame_effects json[], subtypes json[], supertypes json[], prices json[], rulings json[])
+CREATE FUNCTION public.selectcard(character varying) RETURNS TABLE(collector_number character varying, cmc double precision, face_order integer, flavor_text character varying, is_foil boolean, is_full_art boolean, is_highres_image boolean, is_nonfoil boolean, is_oversized boolean, is_reserved boolean, is_story_spotlight boolean, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, oracle_text character varying, power character varying, printed_name character varying, printed_text character varying, toughness character varying, arena_id integer, mtgo_id integer, tcgplayer_id integer, hand_modifier character varying, life_modifier character varying, is_booster boolean, is_digital boolean, is_promo boolean, released_at date, is_textless boolean, mtgo_foil_id integer, is_reprint boolean, id character varying, card_back_id character varying, oracle_id character varying, illustration_id character varying, printed_type_line character varying, type_line character varying, multiverse_ids integer[], set json, rarity json, language json, layout json, watermark json, frame json, artist json, colors json[], color_identities json[], color_indicators json[], component_parts json[], faces json[], other_languages json[], other_printings json[], variations json[], format_legalities json[], frame_effects json[], subtypes json[], supertypes json[], prices json[], rulings json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
@@ -1902,7 +1897,6 @@ BEGIN
                     c.illustration_id,
                     c.printed_type_line,
                     c.type_line,
-                    c.image_uris,
                     c.multiverse_ids,
                     (
                         SELECT row_to_json(x) FROM (
@@ -1978,23 +1972,38 @@ BEGIN
 	command := command ||
 					', array(
                         SELECT row_to_json(x) FROM (
-							SELECT (SELECT row_to_json(a) FROM (select w.name, w.name_section) a) AS component,
-                            (SELECT row_to_json(b) FROM (select x.id, x.name, x.printed_name, ''{}''::json[] as faces,
-								(
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT y.code
-                                        FROM cmset y
-                                        WHERE y.code = x.cmset
-                                    ) x
-                                ) AS set,
-								(
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT z.code
-                                        FROM cmlanguage z
-                                        WHERE z.code = x.cmlanguage
-                                    ) x
-                                ) AS language
-							) b) AS card
+							SELECT
+							(
+								SELECT row_to_json(a) FROM (select w.name, w.name_section)
+							a) AS component,
+                            (
+								SELECT row_to_json(b) FROM (
+                                	select x.id,
+                                	x.name,
+                                	x.printed_name,
+							    	(
+                                    	SELECT row_to_json(x) FROM (
+                                        	SELECT v.name
+                                        	FROM cmrarity v
+                                        	WHERE v.name = x.cmrarity
+                                    	) x
+                                	) AS rarity,
+									(
+                                    	SELECT row_to_json(x) FROM (
+                                        	SELECT y.code, y.keyrune_class
+                                        	FROM cmset y
+                                        	WHERE y.code = x.cmset
+                                    	) x
+                                	) AS set,
+									(
+                                    	SELECT row_to_json(x) FROM (
+                                        	SELECT z.code
+                                        	FROM cmlanguage z
+                                        	WHERE z.code = x.cmlanguage
+                                    	) x
+                                	) AS language
+								)
+							b) AS card
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
 							left join cmcard x on v.cmcard_part = x.id
                             WHERE v.cmcard = c.id
@@ -2012,8 +2021,32 @@ BEGIN
     -- Other Languages
     command := command ||
                     ', array(
-                        SELECT row_to_json(x) FROM (' || command ||
-                            'FROM cmcard c left join cmlanguage w on w.code = cmlanguage
+                        SELECT row_to_json(x) FROM (
+                            SELECT c.id,
+                                c.name,
+                                c.printed_name,
+							    (
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT v.name
+                                        FROM cmrarity v
+                                        WHERE v.name = c.cmrarity
+                                    ) x
+                                ) AS rarity,
+								(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT y.code, y.keyrune_class
+                                        FROM cmset y
+                                        WHERE y.code = c.cmset
+                                    ) x
+                                ) AS set,
+								(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT z.code
+                                        FROM cmlanguage z
+                                        WHERE z.code = c.cmlanguage
+                                    ) x
+                                ) AS language
+                            FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.id
                             left join cmset y on y.code = c.cmset
                             WHERE x.cmcard = ''' || _id || '''' ||
@@ -2024,8 +2057,32 @@ BEGIN
     -- Other Printings
     command := command ||
                     ', array(
-                        SELECT row_to_json(x) FROM (' || command ||
-                            'FROM cmcard c
+                        SELECT row_to_json(x) FROM (
+						    SELECT c.id,
+                                c.name,
+                                c.printed_name,
+								(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT v.name
+                                        FROM cmrarity v
+                                        WHERE v.name = c.cmrarity
+                                    ) x
+                                ) AS rarity,
+								(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT y.code, y.keyrune_class
+                                        FROM cmset y
+                                        WHERE y.code = c.cmset
+                                    ) x
+                                ) AS set,
+								(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT z.code
+                                        FROM cmlanguage z
+                                        WHERE z.code = c.cmlanguage
+                                    ) x
+                                ) AS language
+                            FROM cmcard c
                             left join cmcard_otherprinting w on w.cmcard_otherprinting = c.id
                             left join cmset y on y.code = c.cmset
                             WHERE w.cmcard = ''' || _id || '''' ||
@@ -2036,8 +2093,32 @@ BEGIN
     -- Variations
     command := command ||
                 ', array(
-                    SELECT row_to_json(x) FROM (' || command ||
-                        'FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.id
+                    SELECT row_to_json(x) FROM (
+						SELECT c.id,
+                            c.name,
+                            c.printed_name,
+							(
+                                SELECT row_to_json(x) FROM (
+                                    SELECT v.name
+                                    FROM cmrarity v
+                                    WHERE v.name = c.cmrarity
+                                ) x
+                            ) AS rarity,
+							(
+                                SELECT row_to_json(x) FROM (
+                                    SELECT y.code, y.keyrune_class
+                                    FROM cmset y
+                                    WHERE y.code = c.cmset
+                                ) x
+                            ) AS set,
+							(
+                                SELECT row_to_json(x) FROM (
+                                    SELECT z.code
+                                    FROM cmlanguage z
+                                    WHERE z.code = c.cmlanguage
+                                ) x
+                            ) AS language
+                        FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.id
                         left join cmset y on y.code = c.cmset
                         WHERE w.cmcard = ''' || _id || '''' ||
                         ' order by y.release_date desc
@@ -2119,7 +2200,7 @@ ALTER FUNCTION public.selectcard(character varying) OWNER TO postgres;
 -- Name: selectcards(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.selectcards(character varying, character varying, character varying, character varying) RETURNS TABLE(id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, image_uris jsonb, set json, rarity json, language json, prices json[], faces json[])
+CREATE FUNCTION public.selectcards(character varying, character varying, character varying, character varying) RETURNS TABLE(id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, set json, rarity json, language json, prices json[], faces json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
@@ -2165,7 +2246,6 @@ BEGIN
                     type_line,
 	                power,
                     toughness,
-                    image_uris,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class
@@ -2442,7 +2522,6 @@ CREATE TABLE public.cmcard (
     cmc double precision,
     face_order integer,
     flavor_text character varying,
-    image_uris jsonb,
     is_foil boolean,
     is_full_art boolean,
     is_highres_image boolean,

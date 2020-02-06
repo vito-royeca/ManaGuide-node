@@ -39,7 +39,6 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         illustration_id character varying,
         printed_type_line character varying,
         type_line character varying,
-        image_uris jsonb,
         multiverse_ids integer[],
         set json,
         rarity json,
@@ -109,7 +108,6 @@ BEGIN
                     c.illustration_id,
                     c.printed_type_line,
                     c.type_line,
-                    c.image_uris,
                     c.multiverse_ids,
                     (
                         SELECT row_to_json(x) FROM (

@@ -16,7 +16,6 @@ CREATE OR REPLACE FUNCTION searchCards(
         type_line character varying,
         power character varying,
         toughness character varying,
-        image_uris jsonb,
         set json,
         rarity json,
         language json,
@@ -68,7 +67,6 @@ BEGIN
                     type_line,
 	                power,
                     toughness,
-                    image_uris,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class
