@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const db = require('./db')
+const my = require('./my')
 var url = require('url')
 
 // select by cmset and cmlanguage
@@ -12,7 +13,28 @@ router.get('/:cmset/:cmlanguage', function(req, res, next) {
         db.cleanSortedBy(req.query.sortedBy),
         db.cleanOrderBy(req.query.orderBy)]
 
-    db.executeQuery(req, res, next, sql, parameters, null)
+    db.executeQuery(req, res, next, sql, parameters, callback)
 })
+
+function callback(req, res, queryResults) {
+    const data = queryResults.rows[0].cards
+    var newData = []
+
+    for (var i=0; i<data.length; i++) {
+        newData.push(my.updateCardImageUrls(data[i]))
+    }
+
+    var newQueryResults = queryResults.rows
+    newQueryResults[0].cards = newData
+
+    if (req.query.json == "true") {
+        res.status(200).json(newQueryResults)
+    } else {
+        var dict = db.defaultResponse(req, res)
+        dict["data"] = newQueryResults
+
+        res.render(req.baseUrl.substr(1), dict)
+    }
+}
 
 module.exports = router

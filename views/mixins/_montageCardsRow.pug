@@ -6,7 +6,7 @@ mixin montageCardsRow(card)
             a.header(href="/card/" + card.id) #{card.language.code == 'en' ? card.name : card.printed_name}
             .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
         a.image(href="/card/"+card.id)
-            img.ui.rounded.image(src=cardImageUrl(card, true)
+            img.ui.rounded.image(src=cardImageUrl(card, true, 0)
                                  alt=card.language.code == "en" ? card.name : card.printed_name)
         .content
             - var foil = 0

@@ -31,14 +31,56 @@ block sorters
                     tr
                         td(width="95%" colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
 block data
+    script.
+        function transformCard(cardId, image1, image2) {
+            const img = document.getElementById(cardId)
+
+            if (img.name == image1) {
+                img.src = image2
+                img.name = image2
+            } else {
+                img.src = image1
+                img.name = image1
+            }
+        }
+
+        function flipCard(cardId) {
+            const img = document.getElementById(cardId)
+
+
+        }
+
     table(width="100%")
         tbody
             each card in data
+                - const image1 = cardImageUrl(card, false, 0)
+                - var image2 = card.image_uris.length > 1 ? cardImageUrl(card, false, 1) : ""
+
                 tr
                     td(width="30%" style="padding: 10px; vertical-align: top;")
-                        img.ui.medium.image(src=cardImageUrl(card, false)
+                        img.ui.medium.image(src=image1
+                                            name=image1
+                                            id=card.id
                                             alt=card.language.code == "en" ? card.name : card.printed_name)
-                        P &nbsp;
+                        if card.layout.name == "Split"
+                            button.ui.basic.button(onclick="rotateCard('" + card.id + "')").
+                                <i class="icon redo"></i> Rotate
+                        if card.layout.name == "Planar"
+                            button.ui.basic.button(onclick="rotateCard('" + card.id + "')").
+                                <i class="icon redo"></i> Rotate
+                        if card.layout.name == "Flip"
+                            button.ui.basic.button(onclick="flipCard('" + card.id + "')").
+                                <i class="icon redo"></i> Flip
+                        if card.layout.name == "Transform"
+                            button.ui.basic.button(onclick="transformCard('" + card.id + "', '" + image1 + "', '" + image2 + "')").
+                                <i class="icon sync"></i> Transform
+                        if card.layout.name == "Double Faced Token"
+                            button.ui.basic.button(onclick="transformCard('" + card.id + "', '" + image1 + "', '" + image2 + "')").
+                                <i class="icon sync"></i> Turn Over
+                        if card.layout.name == "Art Series"
+                            button.ui.basic.button(onclick="transformCard('" + card.id + "', '" + image1 + "', '" + image2 + "')").
+                                <i class="icon sync"></i> Turn Over
+                        p &nbsp;
                         h2.ui.header Variations
                         p
                             +cardVariations(card)

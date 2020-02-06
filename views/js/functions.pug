@@ -91,15 +91,11 @@
 -        return newText
 -    }
 -
--    function cardImageUrl(card, isCrop) {
--        if (card.image_uris != undefined && Object.keys(card.image_uris).length > 0) {
--            return "/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + (isCrop ? "/art_crop.jpg" : "/normal.jpg")
+-    function cardImageUrl(card, isCrop, index) {
+-        if (card.image_uris != undefined && card.image_uris.length > 0) {
+-            return isCrop ? card.image_uris[index].art_crop : card.image_uris[index].normal
 -        } else {
--            if (card.faces.length > 0) {
--                return "/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.faces[0].id + (isCrop ? "/art_crop.jpg" : "/normal.jpg")
--            } else {
--                return "/images/cards/" + card.set.code + "/" + card.language.code + "/" + card.id + (isCrop ? "/art_crop.jpg" : "/normal.jpg")
--            }
+-            return ""
 -        }
 -    }
 -
@@ -120,3 +116,5 @@
 -        }
 -        return array
 -    }
+
+

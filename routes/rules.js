@@ -29,17 +29,21 @@ router.get('/search/', function(req, res, next) {
 })
 
 router.get('/:id', function(req, res, next) {
-    console.log("Are we here?"+ req.params.id)
     const sql = 'SELECT * from selectRules($1)'
     const parameters = [req.params.id]
 
     db.executeQuery(req, res, next, sql, parameters, null)
 });
 
-function callback(req, res, dict) {
-    dict.rules_query = req.query.rules_query.replace(/\'/g, "''").trim()
-    delete dict.query
-    res.render(req.baseUrl.substr(1), dict)
+function callback(req, res, queryResults) {
+    queryResults.rules_query = req.query.rules_query.replace(/\'/g, "''").trim()
+    delete queryResults.query
+
+    if (req.query.json == "true") {
+        res.status(200).json(queryResults)
+    } else {
+        res.render(req.baseUrl.substr(1), queryResults)
+    }
 }
 
 module.exports = router

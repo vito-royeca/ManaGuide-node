@@ -5,7 +5,7 @@ mixin cardParts(card)
                 .item
                     .ui.tiny.image
                         a.image(href="/card/" + part.card.id)
-                            img.medium.ui.image(src=cardImageUrl(part.card, true)
+                            img.medium.ui.image(src=cardImageUrl(part.card, true, 0)
                                 alt=part.card.language.code == "en" ? part.card.name : part.card.printed_name)
                     .content
                         .description #{part.card.name}
