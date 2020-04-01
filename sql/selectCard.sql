@@ -307,6 +307,7 @@ BEGIN
                     SELECT row_to_json(x) FROM (
 						SELECT c.id,
                             c.name,
+                            c.collector_number,
                             c.printed_name,
 							(
                                 SELECT row_to_json(x) FROM (

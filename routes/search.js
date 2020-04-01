@@ -8,7 +8,7 @@ const errorRouter = require('./error')
 router.get('/', function(req, res, next) {
     const sql = 'SELECT * from searchCards($1,$2,$3)'
     const query = req.query.query.replace(/\'/g, "''").trim()
-    var message = null
+    let message = null
 
     if (query == null) {
         message = "Search query is empty"
@@ -32,7 +32,7 @@ router.get('/', function(req, res, next) {
 
 function callback(req, res, queryResults) {
     const data = queryResults.rows
-    var newData = []
+    let newData = []
 
     for (var i=0; i<data.length; i++) {
         newData.push(my.updateCardImageUrls(data[i]))

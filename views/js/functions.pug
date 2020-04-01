@@ -1,10 +1,11 @@
+-    const ImageTypeEnum = { "art_crop": 1, "normal": 2, "png": 3 }
 -
 -    function manaCost2Html(manaCost) {
 -        if (manaCost == null || manaCost.length == 0) {
 -            return ""
 -        }
 -        const symbols = manaSymbols(manaCost)
--        var htmlString = ""
+-        let htmlString = ""
 -
 -        for (var i=0; i<symbols.length; i++) {
 -            const mana = symbols[i]
@@ -23,7 +24,7 @@
 -            return null
 -        }
 -
--        var cleanString = manaCost.replace(/{/g, "").trim()
+-        let cleanString = manaCost.replace(/{/g, "").trim()
 -        cleanString = cleanString.replace(/ /g, "").trim()
 -        if (cleanString.includes("//")) {
 -           cleanString = cleanString.replace(/\/\//g, "//}").trim()
@@ -31,11 +32,11 @@
 -           cleanString = cleanString.replace(/\//g, "").trim()
 -        }
 -
--        var array = cleanString.split("}")
--        var manaArray = []
+-        let array = cleanString.split("}")
+-        let manaArray = []
 -
 -        for (var i = 0; i < array.length-1; i++) {
--            var mana = array[i]
+-            let mana = array[i]
 -
 -            if (mana.toLowerCase() == "chaos") {
 -                mana = "Chaos"
@@ -49,12 +50,16 @@
 -    }
 -
 -    function changeManaSymbolsInText(text) {
--        var sentinel = 0
--        var manaStart = -1
--        var manaEnd = -1
--        var newText = ""
--        var leftString = ""
--        var rightString = ""
+-        if (text == null) {
+-            return ""
+-        }
+-
+-        let sentinel = 0
+-        let manaStart = -1
+-        let manaEnd = -1
+-        let newText = ""
+-        let leftString = ""
+-        let rightString = ""
 -
 -       for (var i = 0; i < text.length; i++) {
 -            const charAt = text.charAt(i)
@@ -66,7 +71,7 @@
 -                manaEnd = i+1
 
 -                const manaCost = text.substring(manaStart, manaEnd)
--                var manaString = manaCost.replace(/{/g, "").replace(/}/g, "").replace(/\//g, "")
+-                let manaString = manaCost.replace(/{/g, "").replace(/}/g, "").replace(/\//g, "")
 -                if (manaString.toLowerCase() == "chaos") {
 -                    manaString = "Chaos"
 -                }
@@ -91,19 +96,25 @@
 -        return newText
 -    }
 -
--    function cardImageUrl(card, isCrop, index) {
+-    function cardImageUrl(card, imageTypeType, index) {
 -        if (card.image_uris != undefined && card.image_uris.length > 0) {
--            return isCrop ? card.image_uris[index].art_crop : card.image_uris[index].normal
+-            if (imageTypeType == ImageTypeEnum.art_crop) {
+-                return card.image_uris[index].art_crop
+-            } else if (imageTypeType == ImageTypeEnum.normal) {
+-                return card.image_uris[index].normal
+-            } else if (imageTypeType == ImageTypeEnum.png) {
+-                return card.image_uris[index].png
+-            }
 -        } else {
 -            return ""
 -        }
 -    }
 -
 -    function splitRule(data) {
--        var array = []
+-        let array = []
 -
 -        if (data.length > 0) {
--            var current = data[0]
+-            let current = data[0]
 -            while (true) {
 -                const parent = current.parent
 -                if (parent != null) {

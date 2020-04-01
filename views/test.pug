@@ -1,0 +1,16 @@
+extends layout
+
+block pageTitle
+    title Unit Tests - #{defaultPageTitle}
+block headline
+    h1.ui.header Unit Tests
+block sorters
+    p &nbsp;
+block data
+    h2.ui.header TCGPlayer authentication
+    p &nbsp;
+        if tcgplayerToken == null
+            form(action="/test/tcgplayerAuthenticate" method="post" id="tcgplayerAuthenticate" name="tcgplayerAuthenticate")
+                button.ui.button(type="submit") Submit
+        else
+            #{tcgplayerToken}

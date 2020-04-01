@@ -13,7 +13,7 @@ router.get('/:id', function(req, res, next) {
 
 function callback(req, res, queryResults) {
     const data = queryResults.rows
-    var newData = []
+    let newData = []
 
     for (var i=0; i<data.length; i++) {
         newData.push(my.updateCardImageUrls(data[i]))
@@ -22,7 +22,7 @@ function callback(req, res, queryResults) {
     if (req.query.json == "true") {
         res.status(200).json(newData)
     } else {
-        var dict = db.defaultResponse(req, res)
+        let dict = db.defaultResponse(req, res);
         dict["data"] = newData
 
         res.render(req.baseUrl.substr(1), dict)

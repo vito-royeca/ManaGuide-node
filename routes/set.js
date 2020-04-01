@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const db = require('./db')
 const my = require('./my')
-var url = require('url')
 
 // select by cmset and cmlanguage
 router.get('/:cmset/:cmlanguage', function(req, res, next) {
@@ -18,19 +17,19 @@ router.get('/:cmset/:cmlanguage', function(req, res, next) {
 
 function callback(req, res, queryResults) {
     const data = queryResults.rows[0].cards
-    var newData = []
+    let newData = []
 
     for (var i=0; i<data.length; i++) {
         newData.push(my.updateCardImageUrls(data[i]))
     }
 
-    var newQueryResults = queryResults.rows
+    let newQueryResults = queryResults.rows
     newQueryResults[0].cards = newData
 
     if (req.query.json == "true") {
         res.status(200).json(newQueryResults)
     } else {
-        var dict = db.defaultResponse(req, res)
+        let dict = db.defaultResponse(req, res)
         dict["data"] = newQueryResults
 
         res.render(req.baseUrl.substr(1), dict)

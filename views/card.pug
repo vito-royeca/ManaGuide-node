@@ -46,15 +46,13 @@ block data
 
         function flipCard(cardId) {
             const img = document.getElementById(cardId)
-
-
         }
 
     table(width="100%")
         tbody
             each card in data
-                - const image1 = cardImageUrl(card, false, 0)
-                - var image2 = card.image_uris.length > 1 ? cardImageUrl(card, false, 1) : ""
+                - const image1 = cardImageUrl(card, ImageTypeEnum.normal, 0)
+                - let image2 = card.image_uris.length > 1 ? cardImageUrl(card, ImageTypeEnum.normal, 1) : ""
 
                 tr
                     td(width="30%" style="padding: 10px; vertical-align: top;")
@@ -130,7 +128,6 @@ block data
                                             p Illustrated by #{card.artist.name}
 
                                     .description
-                                        p &nbsp;
                                         h2.ui.header Rulings
                                         +cardRulings(card)
 

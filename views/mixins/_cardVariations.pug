@@ -5,7 +5,7 @@ mixin cardVariations(card)
                 .item
                     .ui.tiny.image
                         a.image(href="/card/" + variation.id)
-                            img.medium.ui.image(src=cardImageUrl(variation, true, 0)
+                            img.medium.ui.image(src=cardImageUrl(variation, ImageTypeEnum.art_crop, 0)
                                                 alt=card.language.code == "en" ? card.name : card.printed_name)
                     .content
                         .description ##{variation.collector_number} &#11825; #{variation.rarity.name}

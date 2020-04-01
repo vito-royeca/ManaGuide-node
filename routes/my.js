@@ -1,10 +1,10 @@
 const fs = require('fs')
 
 exports.updateCardImageUrls = function(card) {
-    var set = card.set.code
-    var language = card.language.code
-    var id = card.id
-    var faces = card.faces
+    let set = card.set.code
+    let language = card.language.code
+    let id = card.id
+    let faces = card.faces
     card.image_uris = buildCardImageUrls(set, language, id, faces)
 
     if (card.component_parts != undefined) {
@@ -33,27 +33,31 @@ exports.updateCardImageUrls = function(card) {
 }
 
 function buildCardImageUrls(set, language, id, faces) {
-    var imageUris = []
-    var artCropUrl = "/images/cards/" + set + "/" + language + "/" + id + "/art_crop.jpg"
-    var normalUrl = "/images/cards/" + set + "/" + language + "/" + id + "/normal.jpg"
+    let imageUris = []
+    let artCropUrl = "/images/cards/" + set + "/" + language + "/" + id + "/art_crop.jpg"
+    let normalUrl  = "/images/cards/" + set + "/" + language + "/" + id + "/normal.jpg"
+    let pngUrl     = "/images/cards/" + set + "/" + language + "/" + id + "/png.png"
 
     try {
         if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
             imageUris.push({
                 "art_crop" : artCropUrl,
-                "normal": normalUrl
+                "normal": normalUrl,
+                "png": pngUrl
             })
         }
 
         if (faces != null && faces.length > 0) {
             for (var i=0; i<faces.length; i++) {
                 artCropUrl = "/images/cards/" + set + "/" + language + "/" + faces[i].id + "/art_crop.jpg"
-                normalUrl = "/images/cards/" + set + "/" + language + "/" + faces[i].id + "/normal.jpg"
+                normalUrl  = "/images/cards/" + set + "/" + language + "/" + faces[i].id + "/normal.jpg"
+                pngUrl     = "/images/cards/" + set + "/" + language + "/" + faces[i].id + "/png.png"
 
                 if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
                     imageUris.push({
                         "art_crop" : artCropUrl,
-                        "normal": normalUrl
+                        "normal": normalUrl,
+                        "png": pngUrl
                     })
                 }
             }

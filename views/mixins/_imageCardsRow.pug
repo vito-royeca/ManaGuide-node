@@ -1,4 +1,6 @@
 mixin imageCardsRow(card)
     a.image(href="/card/" + card.id)
-        img.ui.image(src=cardImageUrl(card, false, 0)
-                     alt=card.language.code == "en" ? card.name : card.printed_name)
+        img.ui.image(src=cardImageUrl(card, ImageTypeEnum.normal, 0)
+            alt=card.language.code == "en" ? card.name : card.printed_name)
+
+

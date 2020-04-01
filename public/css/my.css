@@ -1,5 +1,40 @@
-#rounded.image {
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
-    border-radius: 15px;
+.card-profile {
+    padding: 15px 2.5%;
+    background-color: #F5F6FA;
+    border-bottom: 1px dashed #CDCDCD;
+    -webkit-perspective: 2000px;
+    perspective: 2000px;
+}
+
+.card-profile .inner-flex {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-flow: row nowrap;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -webkit-box-pack: start;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+
+.card-image {
+    margin: 0;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 336px;
+    -ms-flex: 0 0 336px;
+    flex: 0 0 336px;
+}
+
+.card-image-front, .card-image-back {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.card-image .card {
+    width: 100%;
+    -webkit-box-shadow: 1px 1px 8px rgba(0,0,0,0.5);
+    box-shadow: 1px 1px 8px rgba(0,0,0,0.5);
 }
