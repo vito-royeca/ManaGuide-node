@@ -1,6 +1,9 @@
-mixin imageCardsRow(card)
+mixin imageCardsRow(card, imageType)
     a.image(href="/card/" + card.id)
-        img.ui.image(src=cardImageUrl(card, ImageTypeEnum.normal, 0)
-            alt=card.language.code == "en" ? card.name : card.printed_name)
+        img.ui.rounded.image.lazyload(data-sizes="auto"
+                                      data-src=cardImageUrl(card, imageType, 0)
+                                      alt=card.language.code == "en" ? card.name : card.printed_name)
+
+
 
 

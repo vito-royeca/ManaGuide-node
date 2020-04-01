@@ -5,9 +5,8 @@ mixin montageCardsRow(card)
                 p !{manaCost2Html(card.mana_cost)}
             a.header(href="/card/" + card.id) #{card.language.code == 'en' ? card.name : card.printed_name}
             .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
-        a.image(href="/card/"+card.id)
-            img.ui.rounded.image(src=cardImageUrl(card, ImageTypeEnum.art_crop, 0)
-                                 alt=card.language.code == "en" ? card.name : card.printed_name)
+        +imageCardsRow(card, ImageTypeEnum.art_crop)
+
         .content
             - var foil = 0
             - var normal = 0
