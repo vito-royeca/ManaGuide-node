@@ -8,6 +8,7 @@ const compression = require('compression')
 const rateLimit = require('express-rate-limit')
 
 // routers
+const advanceSearchRouter = require('./routes/advancesearch')
 const artistsRouter = require('./routes/artists')
 const cardRouter = require('./routes/card')
 const cardsRouter = require('./routes/cards')
@@ -80,6 +81,7 @@ app.use(session(sess))
 
 // API
 app.use('/', indexRouter)
+app.use('/advancesearch', advanceSearchRouter)
 app.use('/artists', artistsRouter)
 app.use('/card', cardRouter)
 app.use('/cards', cardsRouter)

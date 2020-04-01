@@ -77,32 +77,16 @@ html(lang="en")
         // lazysizes
         script(src="/js/lazysizes.min.js")
 
+        // My Scripts
+        script(src="/scripts/advancesearch.js")
+        script(src="/scripts/utilities.js")
+
         // Comodo SSL
         script(type="text/javascript").
             var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "http://www.trustlogo.com/");
             document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
 
     body
-        script.
-            function invokeSorter(action, target, value) {
-                document.getElementById(action + "." + target).value = value
-                var notEmpty = true
-
-                const elements = document.getElementById(action).elements
-                for (var i = 0; i < elements.length; i++) {
-                    const item = elements.item(i)
-
-                    if (item.value == null || item.value.length <= 0) {
-                        notEmpty = false
-                        break
-                    }
-                }
-
-                if (notEmpty) {
-                    document.getElementById(action).submit();
-                }
-            }
-
         .colorlib-loader
         .page
             nav.colorlib-nav(role="navigation")
@@ -124,10 +108,10 @@ html(lang="en")
                                         else
                                             a(href="/" style="color: #000") <i class="home icon"></i> Home
                                     li
-                                        if baseUrl != null && baseUrl == "/mobile/"
-                                            <i class="mobile icon"></i> Mobile App
+                                        if baseUrl != null && baseUrl == "/advancesearch/"
+                                            <i class="search icon"></i> Advance Search
                                         else
-                                            a(href="/mobile" style="color: #000") <i class="mobile icon"></i> Mobile App
+                                            a(href="/advancesearch" style="color: #000") <i class="search icon"></i> Advance Search
                                     li
                                         if baseUrl != null && baseUrl == "/sets/"
                                             <i class="ss ss-leg"></i> Sets
@@ -138,7 +122,12 @@ html(lang="en")
                                             <i class="book icon"></i> Rules
                                         else
                                             a(href="/rules" style="color: #000") <i class="book icon"></i> Rules
-                        if baseUrl == undefined || baseUrl != "/"
+                                    li
+                                        if baseUrl != null && baseUrl == "/mobile/"
+                                            <i class="mobile icon"></i> Mobile App
+                                        else
+                                            a(href="/mobile" style="color: #000") <i class="mobile icon"></i> Mobile App
+                        if (baseUrl == undefined || baseUrl != "/") && baseUrl != "/advancesearch/"
                             .row
                                 .col-md-offset-0
                                     form(action="/search" method="get" id="search" name="search")
@@ -148,7 +137,7 @@ html(lang="en")
                                         .ui.fluid.icon.input
                                             input(type="text" value=query name="query" id="query" placeholder="Search for Magic cards...")
                                             i.search.icon
-            if baseUrl == undefined || baseUrl != "/"
+            if (baseUrl == undefined || baseUrl != "/") && baseUrl != "/advancesearch/"
                 p &nbsp;
                 p &nbsp;
 
@@ -190,11 +179,13 @@ html(lang="en")
                                     li
                                         a(href="/") <i class="home icon"></i> Home
                                     li
-                                        a(href="/mobile") <i class="mobile icon"></i> Mobile App
+                                        a(href="/advancesearch") <i class="search icon"></i> Advance Search
                                     li
                                         a(href="/sets") <i class="ss ss-leg"></i> Sets
                                     li
                                         a(href="/rules") <i class="book icon"></i> Rules
+                                    li
+                                        a(href="/mobile") <i class="mobile icon"></i> Mobile App
                         .col-md-3.colorlib-widget
                             h4 Information
                             p

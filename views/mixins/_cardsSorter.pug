@@ -5,7 +5,7 @@ mixin cardsSorter(action)
             .three.fields
                 .field
                     select(name="displayAs" id="displayAs"
-                           onchange="invokeSorter('"+ action +"', 'displayAs', this.value);")
+                           onchange="invokeSorter('"+ action +"', 'displayAs', this.value)")
                         option(value="") Display As
                         if displayAs == "montage"
                             option(value="montage" selected) Montage
@@ -23,7 +23,7 @@ mixin cardsSorter(action)
                             option(value="list") List
                 .field
                     select(name="sortedBy" id="sortedBy"
-                           onchange="invokeSorter('"+ action +"', 'sortedBy', this.value);")
+                           onchange="invokeSorter('"+ action +"', 'sortedBy', this.value)")
                         option(value="") Sorted By
                         if sortedBy == "set_name"
                             option(value="set_name" selected) Set Name
@@ -62,7 +62,7 @@ mixin cardsSorter(action)
 
                 .field
                     select(name="orderBy" id="orderBy"
-                           onchange="invokeSorter('"+ action +"', 'orderBy', this.value);")
+                           onchange="invokeSorter('"+ action +"', 'orderBy', this.value)")
                         option(value="") Order By
                         if orderBy == "asc"
                             option(value="asc" selected) Ascending

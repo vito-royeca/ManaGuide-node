@@ -1,0 +1,40 @@
+extends layout.pug
+include mixins/_montageCardsRow
+include mixins/_imageCardsRow
+include mixins/_listCardsRow
+include mixins/_cardsSorter
+
+block pageTitle
+    title Advance Search - #{defaultPageTitle}
+block headline
+    p &nbsp;
+block sorters
+    p &nbsp;
+block data
+    form.ui.form(action=action method="get" id="advancesearch-form" name="advancesearch-form")
+        h4.ui.dividing.header Filters
+        .field
+            .fields
+                .twelve.wide.field
+                    select(name="filter" id="filter")
+                        option(value="name") Name
+                        option(value="type") Type
+                        option(value="text") Text
+                        option(value="colors") Colors
+                        option(value="manaCost") Mana Cost
+                        option(value="stats") Stats
+                        option(value="format") Format
+                        option(value="set") Set
+                        option(value="block") Block
+                        option(value="rarity") Rarity
+                        option(value="artist") Artist
+                        option(value="flavorText") Flavor Text
+                        option(value="language") Language
+                .four.wide.field
+                    button.ui.button(type="button" onclick="addFilter(document.getElementById('filter').options[document.getElementById('filter').selectedIndex].text, document.getElementById('filter').value)") Add
+        h4.ui.dividing.header Query
+        span(id="queryFields")
+        h4 &nbsp;
+        button.ui.button(type="submit") Submit
+
+
