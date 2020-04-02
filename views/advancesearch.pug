@@ -35,9 +35,11 @@ block data
                             .item(data-value="flavorText") Flavor Text
                             .item(data-value="language") Language
                 .four.wide.field
-                    button.ui.button(type="button" onclick="addFilter($('.select-filter').dropdown('get text'), $('.select-filter').dropdown('get value'))") Add
+                    button.ui.button(type="button"
+                                     onclick="addFilter($('.select-filter').dropdown('get text'), $('.select-filter').dropdown('get value'))") Add
         h4.ui.dividing.header Query
         span(id="queryFields")
         h4 &nbsp;
-        button.ui.button(type="submit") Submit
+        button.ui.disabled.button.button-filter(type="submit" name="submit" id="submit") Submit
+
 

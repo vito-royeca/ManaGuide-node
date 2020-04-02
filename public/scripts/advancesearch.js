@@ -1,9 +1,11 @@
 let index = 0 // Track the filters
+let submitEnabled = false
 
 function addFilter(label, value) {
     let filterID = value + "_" + index;
     let removeFilterID = filterID + "_remove";
     let filter = createFilter(value, filterID, removeFilterID);
+    let submitEnabledStatus = submitEnabled
 
     if (filter != null) {
         let queryFields = document.getElementById("queryFields");
@@ -18,7 +20,13 @@ function addFilter(label, value) {
         div.appendChild(labelDiv);
         div.appendChild(filter);
 
+
+        submitEnabled = true
         index++;
+    }
+
+    if (submitEnabledStatus != submitEnabled) {
+        $('.button-filter').toggleClass('disabled');
     }
 }
 
@@ -134,6 +142,12 @@ function removeFilter(id) {
                 }
             });
         });
+    }
+
+    let submitEnabledStatus = submitEnabled;
+    submitEnabled = queryFields.children.length >= 1;
+    if (submitEnabledStatus != submitEnabled) {
+        $('.button-filter').toggleClass('disabled');
     }
 }
 
