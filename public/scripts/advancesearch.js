@@ -1,51 +1,169 @@
-let i = 0; // query fields sentinel
+let index = 0 // Track the filters
 
 function addFilter(label, value) {
-    let queryFields = document.getElementById("queryFields")
-    let id = "Filter_" + i
+    let filterID = value + "_" + index;
+    let removeFilterID = filterID + "_remove";
+    let filter = createFilter(value, filterID, removeFilterID);
 
-    let field = document.createElement("div")
-    field.setAttribute("class", "field")
-    field.setAttribute("id", id)
-    queryFields.appendChild(field)
+    if (filter != null) {
+        let queryFields = document.getElementById("queryFields");
 
-    let fields = document.createElement("div")
-    fields.setAttribute("class", "fields")
-    field.appendChild(fields)
+        let div = document.createElement("div");
+        div.setAttribute("class", "field");
+        div.setAttribute("id", removeFilterID);
+        queryFields.appendChild(div);
 
-    let wideField = document.createElement("div")
-    wideField.setAttribute("class", "twelve wide field")
-    fields.appendChild(wideField)
+        let labelDiv = document.createElement("label");
+        labelDiv.innerHTML = label;
+        div.appendChild(labelDiv);
+        div.appendChild(filter);
 
-    let filter = document.createElement("input")
-    filter.setAttribute("type", "text")
-    filter.setAttribute("Placeholder", label + "_" + i)
-    filter.setAttribute("id", label + "_" + i)
-    wideField.appendChild(filter)
+        index++;
+    }
+}
 
-    wideField = document.createElement("div")
-    wideField.setAttribute("class", "four wide field")
-    fields.appendChild(wideField)
+function createFilter(value, filterID, removeFilterID) {
+    let filter = null;
 
-    let button = document.createElement("input")
-    button.setAttribute("class", "ui button")
-    button.setAttribute("type", "button")
-    button.setAttribute("value", "Remove")
-    button.setAttribute("onclick", "removeFilter('" + id + "')")
-    wideField.appendChild(button)
+    switch (value) {
+        case "name":
+            filter = createNameFilter(filterID);
+            break;
+        case "type":
+            break;
+        case "text":
+            break;
+        case "colors":
+            break;
+        case "manaCost":
+            break;
+        case "stats":
+            break;
+        case "format":
+            break;
+        case "set":
+            break;
+        case "block":
+            break;
+        case "rarity":
+            break;
+        case "artist":
+            break;
+        case "flavorText":
+            break;
+        case "language":
+            break;
+        default:
+            break;
+    }
 
-    i++;
+    if (filter != null) {
+        let queryFields = document.getElementById("queryFields");
+        let removeButton = createRemoveButton(removeFilterID);
+
+        let fieldsDiv = document.createElement("div");
+        fieldsDiv.setAttribute("class", "fields");
+
+        let div = document.createElement("div");
+
+        if (queryFields.children.length >= 1) {
+            div.setAttribute("class", "two wide field");
+            div.setAttribute("id", filterID + "_boolean_div");
+            div.appendChild(createBooleanFilterOp(filterID + "_boolean"));
+            fieldsDiv.appendChild(div);
+
+            div = document.createElement("div");
+            div.setAttribute("class", "ten wide field");
+            div.setAttribute("id", filterID + "_filter_div");
+            div.appendChild(filter);
+            fieldsDiv.appendChild(div);
+        } else {
+            div.setAttribute("class", "twelve wide field");
+            div.appendChild(filter);
+            fieldsDiv.appendChild(div);
+        }
+
+        div = document.createElement("div");
+        div.setAttribute("class", "four wide field");
+        div.appendChild(removeButton);
+        fieldsDiv.appendChild(div);
+
+        return fieldsDiv;
+    } else {
+        return null;
+    }
+}
+
+function createNameFilter(id) {
+    let filter = document.createElement("input");
+    filter.setAttribute("type", "text");
+    filter.setAttribute("Placeholder", "Any word in the Card name");
+    filter.setAttribute("id", id);
+
+    return filter;
 }
 
 function removeFilter(id) {
-    let queryFields = document.getElementById("queryFields")
-    let child = document.getElementById(id)
+    let child = document.getElementById(id);
+    child.remove();
 
-    //queryFields.removeChild(child)
+    // check the first filter if there is boolean select dropdown.
+    // remove the dropdown and adjust the filter's width
+    let queryFields = document.getElementById("queryFields");
+    if (queryFields.children.length >= 1) {
+        let isBooleanDone = false;
+        let isFilterDone = false;
 
+        $(function(){
+            $('#queryFields *').each(function () {
+                let id = $(this).attr('id');
 
-    for (var i=0; i<child.children.length; i++) {
-        child.children[i].remove()
+                if (id != undefined) {
+                    if (!isBooleanDone && id.endsWith("_boolean_div")) {
+                        child = document.getElementById(id);
+                        child.remove();
+                        isBooleanDone = true;
+                    }
+                    else if (!isFilterDone && id.endsWith("_filter_div")) {
+                        child = document.getElementById(id);
+                        child.setAttribute("class", "twelve wide field");
+                        isFilterDone = true;
+                    }
+                }
+            });
+        });
     }
-    child.remove()
+}
+
+function createRemoveButton(id) {
+    let button = document.createElement("input");
+    button.setAttribute("class", "ui button");
+    button.setAttribute("type", "button");
+    button.setAttribute("value", "Remove");
+    button.setAttribute("onclick", "removeFilter('" + id + "')");
+
+    return button;
+}
+
+function createBooleanFilterOp(id) {
+    let filter = document.createElement("select");
+    filter.setAttribute("class", "ui dropdown");
+    filter.setAttribute("name", id);
+    filter.setAttribute("id", id);
+
+    let option = document.createElement("option");
+    option.setAttribute("value", "and");
+    option.text= "And";
+    filter.appendChild(option);
+
+    option = document.createElement("option");
+    option.setAttribute("value", "or");
+    option.text= "Or";
+    filter.appendChild(option);
+
+    option = document.createElement("option");
+    option.text= "Not";
+    filter.appendChild(option);
+
+    return filter;
 }

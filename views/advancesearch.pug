@@ -16,7 +16,7 @@ block data
         .field
             .fields
                 .twelve.wide.field
-                    select(name="filter" id="filter")
+                    select.ui.dropdown(name="filter" id="filter")
                         option(value="name") Name
                         option(value="type") Type
                         option(value="text") Text
@@ -36,5 +36,7 @@ block data
         span(id="queryFields")
         h4 &nbsp;
         button.ui.button(type="submit") Submit
+
+
 
 
