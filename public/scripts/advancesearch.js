@@ -26,12 +26,12 @@ function createFilter(value, filterID, removeFilterID) {
     let filter = null;
 
     switch (value) {
-        case "name":
+        case "cardName":
             filter = createNameFilter(filterID);
             break;
-        case "type":
+        case "cardType":
             break;
-        case "text":
+        case "cardText":
             break;
         case "colors":
             break;
@@ -79,6 +79,7 @@ function createFilter(value, filterID, removeFilterID) {
             fieldsDiv.appendChild(div);
         } else {
             div.setAttribute("class", "twelve wide field");
+            div.setAttribute("id", filterID + "_filter_div");
             div.appendChild(filter);
             fieldsDiv.appendChild(div);
         }
@@ -119,15 +120,16 @@ function removeFilter(id) {
                 let id = $(this).attr('id');
 
                 if (id != undefined) {
-                    if (!isBooleanDone && id.endsWith("_boolean_div")) {
-                        child = document.getElementById(id);
-                        child.remove();
-                        isBooleanDone = true;
-                    }
-                    else if (!isFilterDone && id.endsWith("_filter_div")) {
+                    if (!isFilterDone && id.endsWith("_filter_div")) {
                         child = document.getElementById(id);
                         child.setAttribute("class", "twelve wide field");
                         isFilterDone = true;
+                        isBooleanDone = true;
+                    }
+                    else if (!isBooleanDone && id.endsWith("_boolean_div")) {
+                        child = document.getElementById(id);
+                        child.remove();
+                        isBooleanDone = true;
                     }
                 }
             });
@@ -167,3 +169,4 @@ function createBooleanFilterOp(id) {
 
     return filter;
 }
+

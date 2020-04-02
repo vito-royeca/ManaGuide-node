@@ -7,7 +7,7 @@ include mixins/_cardsSorter
 block pageTitle
     title Advance Search - #{defaultPageTitle}
 block headline
-    p &nbsp;
+    h1.ui.header Advance Search
 block sorters
     p &nbsp;
 block data
@@ -16,27 +16,28 @@ block data
         .field
             .fields
                 .twelve.wide.field
-                    select.ui.dropdown(name="filter" id="filter")
-                        option(value="name") Name
-                        option(value="type") Type
-                        option(value="text") Text
-                        option(value="colors") Colors
-                        option(value="manaCost") Mana Cost
-                        option(value="stats") Stats
-                        option(value="format") Format
-                        option(value="set") Set
-                        option(value="block") Block
-                        option(value="rarity") Rarity
-                        option(value="artist") Artist
-                        option(value="flavorText") Flavor Text
-                        option(value="language") Language
+                    .ui.selection.dropdown.select-filter
+                        input(type="hidden" name="filter" id="filter")
+                        i.dropdown.icon
+                        .default.text Select Filter
+                        .menu
+                            .item(data-value="cardName") Name
+                            .item(data-value="cardType") Type
+                            .item(data-value="cardText") Text
+                            .item(data-value="colors") Colors
+                            .item(data-value="manaCost") Mana Cost
+                            .item(data-value="stats") Stats
+                            .item(data-value="format") Format
+                            .item(data-value="set") Set
+                            .item(data-value="block") Block
+                            .item(data-value="rarity") Rarity
+                            .item(data-value="artist") Artist
+                            .item(data-value="flavorText") Flavor Text
+                            .item(data-value="language") Language
                 .four.wide.field
-                    button.ui.button(type="button" onclick="addFilter(document.getElementById('filter').options[document.getElementById('filter').selectedIndex].text, document.getElementById('filter').value)") Add
+                    button.ui.button(type="button" onclick="addFilter($('.select-filter').dropdown('get text'), $('.select-filter').dropdown('get value'))") Add
         h4.ui.dividing.header Query
         span(id="queryFields")
         h4 &nbsp;
         button.ui.button(type="submit") Submit
-
-
-
 
