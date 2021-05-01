@@ -1,30 +1,23 @@
-CREATE OR REPLACE FUNCTION selectSets(
-    character varying)
-    RETURNS TABLE (
-        card_count      integer,
-        code            character varying,
-        is_foil_only    boolean,
-        is_online_only  boolean,
-        mtgo_code       character varying,
-        keyrune_unicode character varying,
-        keyrune_class character varying,
-        my_name_section character varying,
-        my_year_section character varying,
-        name            character varying,
-        release_date    character varying,
-        tcgplayer_id    integer,
-        parent          json,
-        set_block       json,
-        set_type        json,
-        languages       json[]
-    )
+CREATE OR REPLACE FUNCTION selectSets(character varying,
+                                      integer,
+                                      integer)
+    RETURNS TABLE(
+        page       integer,
+        page_limit integer,
+        page_count integer,
+        row_count  integer,
+        data       json[])
 AS
 $$
 DECLARE
     _code ALIAS FOR $1;
-    command character varying;
+    _page ALIAS FOR $2;
+    _page_limit ALIAS FOR $3;
+    dataCommand character varying;
+    pageCommand character varying;
+    command     character varying;
 BEGIN
-    command := 'SELECT card_count,
+    dataCommand := 'SELECT card_count,
                     code,
                     is_foil_only,
                     is_online_only,
@@ -61,13 +54,27 @@ BEGIN
                             WHERE sl.cmset = s.code
                         ) x
 	               ) AS languages
-            FROM cmset s';
+            FROM cmset s WHERE s.card_count > 0 ';
+
+    IF _page = 1 THEN
+        pageCommand := 'LIMIT ' || _page_limit;
+    ELSE
+        pageCommand := 'OFFSET ' || (_page - 1) * _page_limit || ' LIMIT ' || _page_limit;
+    END IF;
 
     IF _code IS NOT NULL THEN
-        command := command || ' WHERE s.code = ''' || _code || ''' ORDER BY s.name ASC';
+        dataCommand := dataCommand || ' AND s.code = ''' || _code || ''' ORDER BY s.name ASC ' || pageCommand;
     ELSE
-        command := command || ' ORDER BY s.release_date DESC, s.name ASC';
+        dataCommand := dataCommand || ' ORDER BY s.release_date DESC, s.name ASC ' || pageCommand;
     END IF;
+
+
+    command := 'SELECT ' || _page || ',' || _page_limit ||
+           ', (count(*)::integer / 100) + (CASE WHEN (count(*)::integer / 100) > 0 THEN 1 ELSE 0 END),
+           count(*)::integer,
+           array(SELECT row_to_json(x) FROM (' || dataCommand || ') x) AS data
+           FROM cmset
+           WHERE card_count > 0 ';
 
     RETURN QUERY EXECUTE command;
 END;

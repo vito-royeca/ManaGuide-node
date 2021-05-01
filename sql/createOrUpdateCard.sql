@@ -52,7 +52,8 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying,
     character varying[],
     character varying[],
-    integer) RETURNS varchar AS $$
+    integer,
+    character varying) RETURNS varchar AS $$
 DECLARE
     _collector_number ALIAS FOR $1;
     _cmc ALIAS FOR $2;
@@ -108,6 +109,7 @@ DECLARE
     _cmcardtype_subtypes ALIAS FOR $52;
     _cmcardtype_supertypes ALIAS FOR $53;
     _face_order ALIAS FOR $54;
+    _new_id ALIAS FOR $55;
 
     pkey character varying;
     pkey2 character varying;
@@ -208,6 +210,9 @@ BEGIN
     IF lower(_printed_type_line) = 'null' THEN
         _printed_type_line := NULL;
     END IF;
+    IF lower(_new_id) = 'null' THEN
+        _new_id := NULL;
+    END IF;
 
     SELECT id INTO pkey FROM cmcard WHERE id = _id;
 
@@ -259,7 +264,8 @@ BEGIN
             cmframe,
             type_line,
             printed_type_line,
-            face_order)
+            face_order,
+            new_id)
         VALUES(
             _collector_number,
             _cmc,
@@ -307,7 +313,8 @@ BEGIN
             _cmframe,
             _type_line,
             _printed_type_line,
-            _face_order);
+            _face_order,
+            _new_id);
     ELSE
         UPDATE cmcard SET
             collector_number = _collector_number,
@@ -357,6 +364,7 @@ BEGIN
             type_line = _type_line,
             printed_type_line = _printed_type_line,
             face_order = _face_order,
+            new_id = _new_id,
             date_updated = now()
         WHERE id = _id;
     END IF;

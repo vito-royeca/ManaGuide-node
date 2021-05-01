@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION searchCards(
     character varying)
     RETURNS TABLE (
         id character varying,
+        new_id character varying,
         collector_number character varying,
         face_order integer,
         loyalty character varying,
@@ -55,6 +56,7 @@ BEGIN
 
     command := 'SELECT
                     id,
+                    new_id,
                     collector_number,
                     face_order,
                     loyalty,
@@ -110,6 +112,7 @@ BEGIN
     command := command || 'AND c.id NOT IN(select cmcard_face from cmcard_face) ';
     command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
     command := command || 'GROUP BY c.id,
+                    c.new_id,
                     c.collector_number,
                     c.face_order,
                     c.loyalty,

@@ -11,7 +11,7 @@ DECLARE
 
     pkey character varying;
 BEGIN
-    SELECT name INTO pkey FROM cmframeeffect WHERE name = _name;
+    SELECT name INTO pkey FROM cmframeeffect WHERE id = _id;
 
     IF NOT FOUND THEN
         INSERT INTO cmframeeffect(
@@ -31,10 +31,10 @@ BEGIN
             name_section = _name_section,
             description = _description,
             date_updated = now()
-        WHERE name = _name;
+        WHERE id = _id;
     END IF;
 
-    RETURN _name;
+    RETURN _id;
 END;
 $$ LANGUAGE plpgsql;
 

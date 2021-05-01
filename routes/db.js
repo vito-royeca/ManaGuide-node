@@ -3,10 +3,10 @@ const url = require("url")
 const errorRouter = require('./error')
 
 const pool = new Pool({
-    user: 'user',
-    host: 'localhost',
-    database: 'database',
-    password: 'password',
+    user: 'managuide',
+    host: '192.168.1.182',
+    database: 'managuide_dev',
+    password: 'DarkC0nfidant',
     port: 5432,
 })
 
@@ -39,8 +39,8 @@ function defaultCallback(req, res, queryResults) {
         const sortedBy = setDefaultValue(req.query.sortedBy, sortedByDefault, sortedByValues)
         const orderBy = setDefaultValue(req.query.orderBy, orderByDefault, orderByValues)
 
-        var dict = defaultResponse(req, res)
-        dict["data"] = queryResults.rows
+        var dict = defaultResponse(req, res);
+        dict["results"] = queryResults.rows
 
         res.render(req.baseUrl.substr(1), dict)
     }

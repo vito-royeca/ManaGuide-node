@@ -5,6 +5,7 @@ CREATE OR REPLACE FUNCTION selectCards(
     character varying)
     RETURNS TABLE (
         id character varying,
+        new_id character varying,
         collector_number character varying,
         face_order integer,
         loyalty character varying,
@@ -56,6 +57,7 @@ BEGIN
 
     command := 'SELECT
                     id,
+                    new_id,
                     collector_number,
                     face_order,
                     loyalty,

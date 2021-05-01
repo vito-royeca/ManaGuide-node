@@ -62,7 +62,10 @@ html(lang="en")
         link(href="//cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.css" type="text/css" rel="stylesheet")
 
         // Semantic UI
-        link(href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css" type="text/css" rel="stylesheet")
+        //link(href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css" type="text/css" rel="stylesheet")
+        link(async href="//cdn.jsdelivr.net/npm/semantic-ui@2.4/dist/semantic.min.css" type="text/css" rel="stylesheet")
+        script(async src="//cdn.jsdelivr.net/npm/semantic-ui@2.4/dist/semantic.min.js")
+
 
         // Comodo SSL
         script(type="text/javascript").
@@ -206,6 +209,7 @@ html(lang="en")
         script(src="/js/semantic.min.js")
         script.
             $('.ui.selection.dropdown').dropdown();
+            $('ui.mini.right.labeled.input').dropdown();
 
 
 
