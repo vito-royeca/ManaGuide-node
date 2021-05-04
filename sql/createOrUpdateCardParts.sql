@@ -8,11 +8,15 @@ DECLARE
     _cmcard_part ALIAS FOR $3;
 
     pkey character varying;
+    cmcard_part_new_id character varying;
 BEGIN
+    SELECT new_id INTO cmcard_part_new_id FROM cmcard
+    WHERE id = _cmcard_part;
+
     SELECT cmcard INTO pkey FROM cmcard_component_part
     WHERE cmcard = _cmcard
       AND cmcomponent = _cmcomponent
-      AND cmcard_part = _cmcard_part;
+      AND cmcard_part = cmcard_part_new_id;
 
     IF NOT FOUND THEN
         INSERT INTO cmcard_component_part(
@@ -22,16 +26,16 @@ BEGIN
         VALUES(
             _cmcard,
             _cmcomponent,
-            _cmcard_part);
+            cmcard_part_new_id);
     ELSE
         UPDATE cmcard_component_part SET
             cmcard = _cmcard,
             cmcomponent = _cmcomponent,
-            cmcard_part = _cmcard_part,
+            cmcard_part = cmcard_part_new_id,
             date_updated = now()
         WHERE cmcard = _cmcard
           AND cmcomponent = _cmcomponent
-          AND cmcard_part = _cmcard_part;
+          AND cmcard_part = cmcard_part_new_id;
     END IF;
 
     RETURN _cmcard;

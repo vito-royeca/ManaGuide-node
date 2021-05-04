@@ -4,7 +4,6 @@ CREATE OR REPLACE FUNCTION selectCards(
     character varying,
     character varying)
     RETURNS TABLE (
-        id character varying,
         new_id character varying,
         collector_number character varying,
         face_order integer,
@@ -56,7 +55,6 @@ BEGIN
     END IF;
 
     command := 'SELECT
-                    id,
                     new_id,
                     collector_number,
                     face_order,
@@ -92,7 +90,7 @@ BEGIN
                         SELECT row_to_json(x) FROM (
                             SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created
                             FROM cmcardprice v
-                            WHERE v.cmcard = c.id
+                            WHERE v.cmcard = c.new_id
                         ) x
                     ) AS prices ';
 
@@ -101,8 +99,8 @@ BEGIN
                     ', array(
                         SELECT row_to_json(x) FROM (' ||
                             command ||
-                            'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.id
-                            WHERE w.cmcard = c.id
+                            'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
+                            WHERE w.cmcard = c.new_id
                         ) x
                     ) AS faces ';
 

@@ -210,11 +210,8 @@ BEGIN
     IF lower(_printed_type_line) = 'null' THEN
         _printed_type_line := NULL;
     END IF;
-    IF lower(_new_id) = 'null' THEN
-        _new_id := NULL;
-    END IF;
 
-    SELECT id INTO pkey FROM cmcard WHERE id = _id;
+    SELECT new_id INTO pkey FROM cmcard WHERE new_id = _new_id;
 
     IF NOT FOUND THEN
         INSERT INTO cmcard(
@@ -366,7 +363,7 @@ BEGIN
             face_order = _face_order,
             new_id = _new_id,
             date_updated = now()
-        WHERE id = _id;
+        WHERE new_id = _new_id;
     END IF;
 
     -- set and language
@@ -382,63 +379,63 @@ BEGIN
     END IF;
 
     -- frame effects
-    DELETE FROM cmcard_frameeffect WHERE cmcard = _id;
+    DELETE FROM cmcard_frameeffect WHERE cmcard = _new_id OR cmcard = _id;
     IF _cmframeeffects IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmframeeffects LOOP
             INSERT INTO cmcard_frameeffect(
                 cmcard,
                 cmframeeffect
             ) VALUES (
-                _id,
+                _new_id,
                 pkey
             );
         END LOOP;
     END IF;
 
     -- colors
-    DELETE FROM cmcard_color WHERE cmcard = _id;
+    DELETE FROM cmcard_color WHERE cmcard = _new_id OR cmcard = _id;
     IF _cmcolors IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolors LOOP
             INSERT INTO cmcard_color(
                 cmcard,
                 cmcolor
             ) VALUES (
-                _id,
+                _new_id,
                 pkey
             );
         END LOOP;
     END IF;
 
     -- color identities
-    DELETE FROM cmcard_coloridentity WHERE cmcard = _id;
+    DELETE FROM cmcard_coloridentity WHERE cmcard = _new_id OR cmcard = _id;
     IF _cmcolor_identities IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_identities LOOP
             INSERT INTO cmcard_coloridentity(
                 cmcard,
                 cmcolor
             ) VALUES (
-                _id,
+                _new_id,
                 pkey
             );
         END LOOP;
     END IF;
 
     -- color indicators
-    DELETE FROM cmcard_colorindicator WHERE cmcard = _id;
+    DELETE FROM cmcard_colorindicator WHERE cmcard = _new_id OR cmcard = _id;
     IF _cmcolor_indicators IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_indicators LOOP
             INSERT INTO cmcard_colorindicator(
                 cmcard,
                 cmcolor
             ) VALUES (
-                _id,
+                _new_id,
                 pkey
             );
         END LOOP;
     END IF;
 
     -- legalities
-    DELETE FROM cmcard_format_legality WHERE cmcard = _id;
+    DELETE FROM cmcard_format_legality WHERE cmcard = _new_id OR cmcard = _id;
     IF _cmlegalities IS NOT NULL THEN
         FOR pkey2, pkey3 IN SELECT * FROM jsonb_each_text(_cmlegalities) LOOP
             INSERT INTO cmcard_format_legality(
@@ -446,7 +443,7 @@ BEGIN
                 cmformat,
                 cmlegality
             ) VALUES (
-                _id,
+                _new_id,
                 pkey2,
                 pkey3
             );
@@ -454,34 +451,34 @@ BEGIN
     END IF;
 
     -- subtypes
-    DELETE FROM cmcard_subtype WHERE cmcard = _id;
+    DELETE FROM cmcard_subtype WHERE cmcard = _new_id OR cmcard = _id;
     IF _cmcardtype_subtypes IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcardtype_subtypes LOOP
             INSERT INTO cmcard_subtype(
                 cmcard,
                 cmcardtype
             ) VALUES (
-                _id,
+                _new_id,
                 pkey
             );
         END LOOP;
     END IF;
 
     -- supertypes
-    DELETE FROM cmcard_supertype WHERE cmcard = _id;
+    DELETE FROM cmcard_supertype WHERE cmcard = _new_id OR cmcard = _id;
     IF _cmcardtype_subtypes IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcardtype_supertypes LOOP
             INSERT INTO cmcard_supertype(
                 cmcard,
                 cmcardtype
             ) VALUES (
-                _id,
+                _new_id,
                 pkey
             );
         END LOOP;
     END IF;
 
-    RETURN _id;
+    RETURN _new_id;
 END;
 $$ LANGUAGE plpgsql;
 

@@ -33,10 +33,7 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         is_textless boolean,
         mtgo_foil_id integer,
         is_reprint boolean,
-        id character varying,
         new_id character varying,
-        card_back_id character varying,
-        oracle_id character varying,
         illustration_id character varying,
         printed_type_line character varying,
         type_line character varying,
@@ -66,7 +63,7 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
 AS
 $$
 DECLARE
-    _id ALIAS FOR $1;
+    _new_id ALIAS FOR $1;
     command character varying;
 BEGIN
     command := 'SELECT
@@ -103,10 +100,7 @@ BEGIN
                     c.is_textless,
                     c.mtgo_foil_id,
                     c.is_reprint,
-                    c.id,
                     c.new_id,
-                    c.card_back_id,
-                    c.oracle_id,
                     c.illustration_id,
                     c.printed_type_line,
                     c.type_line,
@@ -163,21 +157,21 @@ BEGIN
                         SELECT row_to_json(x) FROM (
                             SELECT w.name, w.name_section, w.symbol, w.is_mana_color
                             FROM cmcard_color v left join cmcolor w on v.cmcolor = w.symbol
-                            WHERE v.cmcard = c.id
+                            WHERE v.cmcard = c.new_id
                         ) x
                     ) AS colors,
                     array(
                         SELECT row_to_json(x) FROM (
                             SELECT w.name, w.name_section, w.symbol, w.is_mana_color
                             FROM cmcard_coloridentity v left join cmcolor w on v.cmcolor = w.symbol
-                            WHERE v.cmcard = c.id
+                            WHERE v.cmcard = c.new_id
                         ) x
                     ) AS color_identities,
                     array(
                         SELECT row_to_json(x) FROM (
                             SELECT w.name, w.name_section, w.symbol, w.is_mana_color
                             FROM cmcard_colorindicator v left join cmcolor w on v.cmcolor = w.symbol
-                            WHERE v.cmcard = c.id
+                            WHERE v.cmcard = c.new_id
                         ) x
                     ) AS color_indicators ';
 
@@ -191,7 +185,7 @@ BEGIN
 							a) AS component,
                             (
 								SELECT row_to_json(b) FROM (
-                                	select x.id,
+                                	select x.new_id,
                                 	x.name,
                                 	x.printed_name,
 							    	(
@@ -218,16 +212,16 @@ BEGIN
 								)
 							b) AS card
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
-							left join cmcard x on v.cmcard_part = x.id
-                            WHERE v.cmcard = c.id
+							left join cmcard x on v.cmcard_part = x.new_id
+                            WHERE v.cmcard = c.new_id
                         ) x
                     ) AS component_parts ';
     -- Faces
     command := command ||
                     ', array(
                         SELECT row_to_json(x) FROM (' || command ||
-                            'FROM cmcard c left join cmcard_face w on w.cmcard_face = c.id
-                            WHERE w.cmcard = ''' || _id || '''' ||
+                            'FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
+                            WHERE w.cmcard = ''' || _new_id || '''' ||
                         ') x
                     ) AS faces ';
 
@@ -235,7 +229,7 @@ BEGIN
     command := command ||
                     ', array(
                         SELECT row_to_json(x) FROM (
-                            SELECT c.id,
+                            SELECT c.new_id,
                                 c.name,
                                 c.printed_name,
 							    (
@@ -260,9 +254,9 @@ BEGIN
                                     ) x
                                 ) AS language
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
-                            left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.id
+                            left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.new_id
                             left join cmset y on y.code = c.cmset
-                            WHERE x.cmcard = ''' || _id || '''' ||
+                            WHERE x.cmcard = ''' || _new_id || '''' ||
                             ' order by y.release_date desc
                         ) x
                     ) AS other_languages ';
@@ -271,7 +265,7 @@ BEGIN
     command := command ||
                     ', array(
                         SELECT row_to_json(x) FROM (
-						    SELECT c.id,
+						    SELECT c.new_id,
                                 c.name,
                                 c.printed_name,
 								(
@@ -296,9 +290,9 @@ BEGIN
                                     ) x
                                 ) AS language
                             FROM cmcard c
-                            left join cmcard_otherprinting w on w.cmcard_otherprinting = c.id
+                            left join cmcard_otherprinting w on w.cmcard_otherprinting = c.new_id
                             left join cmset y on y.code = c.cmset
-                            WHERE w.cmcard = ''' || _id || '''' ||
+                            WHERE w.cmcard = ''' || _new_id || '''' ||
                             ' order by y.release_date desc
                         ) x
                     ) AS other_printings ';
@@ -307,7 +301,7 @@ BEGIN
     command := command ||
                 ', array(
                     SELECT row_to_json(x) FROM (
-						SELECT c.id,
+						SELECT c.new_id,
                             c.name,
                             c.collector_number,
                             c.printed_name,
@@ -332,9 +326,9 @@ BEGIN
                                     WHERE z.code = c.cmlanguage
                                 ) x
                             ) AS language
-                        FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.id
+                        FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.new_id
                         left join cmset y on y.code = c.cmset
-                        WHERE w.cmcard = ''' || _id || '''' ||
+                        WHERE w.cmcard = ''' || _new_id || '''' ||
                         ' order by y.release_date desc
                     ) x
                 ) AS variations ';
@@ -347,7 +341,7 @@ BEGIN
                             (SELECT row_to_json(b) FROM (select x.name, x.name_section) b) AS legality
                         FROM cmcard_format_legality v left join cmformat w on v.cmformat = w.name
                         left join cmlegality x on v.cmlegality = x.name
-                        WHERE v.cmcard = c.id
+                        WHERE v.cmcard = c.new_id
                     ) x
                 ) AS format_legalities ';
 
@@ -357,7 +351,7 @@ BEGIN
                     SELECT row_to_json(x) FROM (
                         SELECT w.id, w.name, w.name_section, w.description
                         FROM cmcard_frameeffect v left join cmframeeffect w on v.cmframeeffect = w.id
-                        WHERE v.cmcard = c.id
+                        WHERE v.cmcard = c.new_id
                     ) x
                 ) AS frame_effects ';
 
@@ -367,7 +361,7 @@ BEGIN
                     SELECT row_to_json(x) FROM (
                         SELECT w.name, w.name_section, w.cmcardtype_parent AS parent
                         FROM cmcard_subtype v left join cmcardtype w on v.cmcardtype = w.name
-                        WHERE v.cmcard = c.id
+                        WHERE v.cmcard = c.new_id
                     ) x
                 ) AS subtypes ';
 
@@ -377,7 +371,7 @@ BEGIN
                     SELECT row_to_json(x) FROM (
                         SELECT w.name, w.name_section, w.cmcardtype_parent AS parent
                         FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
-                        WHERE v.cmcard = c.id
+                        WHERE v.cmcard = c.new_id
                     ) x
                 ) AS supertypes ';
 
@@ -387,7 +381,7 @@ BEGIN
                     SELECT row_to_json(x) FROM (
                         SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created
                         FROM cmcardprice v
-                        WHERE v.cmcard = c.id
+                        WHERE v.cmcard = c.new_id
                     ) x
                 ) AS prices ';
 
@@ -401,7 +395,7 @@ BEGIN
                     ) x
                 ) AS rulings ';
 
-    command := command || 'FROM cmcard c WHERE c.id = ''' || _id || '''';
+    command := command || 'FROM cmcard c WHERE c.new_id = ''' || _new_id || '''';
 
     RETURN QUERY EXECUTE command;
 END;

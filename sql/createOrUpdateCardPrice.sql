@@ -37,7 +37,7 @@ BEGIN
         _direct_low := NULL;
     END IF;
 
-    SELECT id INTO _cmcard FROM cmcard WHERE tcgplayer_id = _tcgplayer_id;
+    SELECT new_id INTO _cmcard FROM cmcard WHERE tcgplayer_id = _tcgplayer_id;
 
     IF FOUND THEN
         SELECT id INTO _pkey FROM cmcardprice

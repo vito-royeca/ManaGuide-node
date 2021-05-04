@@ -4,9 +4,9 @@ const db = require('./db')
 const my = require('./my')
 
 // select by id
-router.get('/:id', function(req, res, next) {
+router.get('/:new_id', function(req, res, next) {
     const sql = 'SELECT * FROM selectCard($1)'
-    const parameters = [req.params.id]
+    const parameters = [req.params.new_id]
 
     db.executeQuery(req, res, next, sql, parameters, callback)
 });

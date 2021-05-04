@@ -3,7 +3,7 @@ mixin montageCardsRow(card)
         .content
             .right.floated.meta
                 p !{manaCost2Html(card.mana_cost)}
-            a.header(href="/card/" + card.id) #{card.language.code == 'en' ? card.name : card.printed_name}
+            a.header(href="/card/" + card.new_id) #{card.language.code == 'en' ? card.name : card.printed_name}
             .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
         +imageCardsRow(card, ImageTypeEnum.art_crop)
 

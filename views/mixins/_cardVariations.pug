@@ -4,7 +4,7 @@ mixin cardVariations(card)
             each variation in card.variations
                 .item
                     .ui.tiny.image
-                        a.image(href="/card/" + variation.id)
+                        a.image(href="/card/" + variation.new_id)
                             img.medium.ui.image(src=cardImageUrl(variation, ImageTypeEnum.art_crop, 0)
                                                 alt=card.language.code == "en" ? card.name : card.printed_name)
                     .content

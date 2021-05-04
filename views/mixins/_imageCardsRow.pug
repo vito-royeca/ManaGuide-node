@@ -1,5 +1,5 @@
 mixin imageCardsRow(card, imageType)
-    a.image(href="/card/" + card.id)
+    a.image(href="/card/" + card.new_id)
         img.ui.rounded.image.lazyload(data-sizes="auto"
                                       data-src=cardImageUrl(card, imageType, 0)
                                       alt=card.language.code == "en" ? card.name : card.printed_name)
