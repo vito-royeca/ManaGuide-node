@@ -31,6 +31,7 @@ function buildCardImageUrls(new_id, faces) {
     let artCropUrl = "/images/cards/" + newId2Path(new_id) + "/art_crop.jpg"
     let normalUrl  = "/images/cards/" + newId2Path(new_id) + "/normal.jpg"
     let pngUrl     = "/images/cards/" + newId2Path(new_id) + "/png.png"
+    let soonUrl    = "/images/cards/soon.jpg"
 
     try {
         if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
@@ -38,6 +39,12 @@ function buildCardImageUrls(new_id, faces) {
                 "art_crop" : artCropUrl,
                 "normal": normalUrl,
                 "png": pngUrl
+            })
+        } else {
+            imageUris.push({
+                "art_crop" : soonUrl,
+                "normal": soonUrl,
+                "png": soonUrl
             })
         }
 
@@ -52,6 +59,12 @@ function buildCardImageUrls(new_id, faces) {
                         "art_crop" : artCropUrl,
                         "normal": normalUrl,
                         "png": pngUrl
+                    })
+                } else {
+                    imageUris.push({
+                        "art_crop" : soonUrl,
+                        "normal": soonUrl,
+                        "png": soonUrl
                     })
                 }
             }
