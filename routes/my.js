@@ -34,20 +34,6 @@ function buildCardImageUrls(new_id, faces) {
     let soonUrl    = "/images/cards/soon.jpg"
 
     try {
-        if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
-            imageUris.push({
-                "art_crop" : artCropUrl,
-                "normal": normalUrl,
-                "png": pngUrl
-            })
-        } else {
-            imageUris.push({
-                "art_crop" : soonUrl,
-                "normal": soonUrl,
-                "png": soonUrl
-            })
-        }
-
         if (faces != null && faces.length > 0) {
             for (var i=0; i<faces.length; i++) {
                 artCropUrl = "/images/cards/" + newId2Path(faces[i].new_id) + "/art_crop.jpg"
@@ -68,7 +54,22 @@ function buildCardImageUrls(new_id, faces) {
                     })
                 }
             }
+        } else {
+            if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
+                imageUris.push({
+                    "art_crop" : artCropUrl,
+                    "normal": normalUrl,
+                    "png": pngUrl
+                })
+            } else {
+                imageUris.push({
+                    "art_crop" : soonUrl,
+                    "normal": soonUrl,
+                    "png": soonUrl
+                })
+            }
         }
+        
     } catch(err) {
         console.error(err)
     }
