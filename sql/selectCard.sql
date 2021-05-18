@@ -277,7 +277,7 @@ BEGIN
                                 ) AS rarity,
 								(
                                     SELECT row_to_json(x) FROM (
-                                        SELECT y.code, y.keyrune_class
+                                        SELECT y.code, y.keyrune_class, y.name
                                         FROM cmset y
                                         WHERE y.code = c.cmset
                                     ) x
@@ -288,7 +288,14 @@ BEGIN
                                         FROM cmlanguage z
                                         WHERE z.code = c.cmlanguage
                                     ) x
-                                ) AS language
+                                ) AS language,
+                                array(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT v.market, v.is_foil
+                                        FROM cmcardprice v
+                                        WHERE v.cmcard = c.new_id
+                                    ) x
+                                ) AS prices
                             FROM cmcard c
                             left join cmcard_otherprinting w on w.cmcard_otherprinting = c.new_id
                             left join cmset y on y.code = c.cmset

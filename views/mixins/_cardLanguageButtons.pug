@@ -7,7 +7,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "en"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button EN
 
             if card.language.code == "es"
@@ -15,7 +15,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "es"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button ES
 
             if card.language.code == "fr"
@@ -23,7 +23,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "fr"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button FR
 
             if card.language.code == "de"
@@ -31,7 +31,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "de"
-                        a(href="/card/" + other_language.id )
+                        a(href="/card/" + other_language.new_id)
                             .ui.button DE
 
             if card.language.code == "it"
@@ -39,7 +39,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "it"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button IT
 
             if card.language.code == "pt"
@@ -47,7 +47,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "pt"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button PT
 
             if card.language.code == "ja"
@@ -55,7 +55,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "ja"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button JA
 
             if card.language.code == "ko"
@@ -63,7 +63,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "ko"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button KO
 
             if card.language.code == "ru"
@@ -71,7 +71,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "ru"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button RU
 
             if card.language.code == "zhs"
@@ -79,7 +79,7 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "zhs"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button 汉语
 
             if card.language.code == "zht"
@@ -87,5 +87,5 @@ mixin cardLanguageButtons(card)
             else
                 each other_language in card.other_languages
                     if other_language.language.code == "zht"
-                        a(href="/card/" + other_language.id)
+                        a(href="/card/" + other_language.new_id)
                             .ui.button 漢語

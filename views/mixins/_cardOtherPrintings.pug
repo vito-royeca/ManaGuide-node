@@ -1,8 +1,40 @@
 mixin cardOtherPrintings(card)
     if card.other_printings.length > 0
+        - var foilMarket = 0
+        - var normalMarket = 0
+
         p
-        each printing in card.other_printings
-            a.image(href="/card/" + printing.new_id)
-                i(class='ss ss-' + printing.set.keyrune_class + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x') &nbsp;
+        table.ui.small.table
+            thead
+                tr
+                    th(colspan='2') &nbsp;
+                    th.right.aligned Normal
+                    th.right.aligned Foil
+            tbody
+            each printing in card.other_printings
+                each price in printing.prices
+                    if price.is_foil
+                        - foilMarket = price.market
+                    else
+                        - normalMarket = price.market
+
+                tr
+                    td
+                        a.image(href="/card/" + printing.new_id)
+                            i(class='ss ss-' + printing.set.keyrune_class + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x')
+                    td #{ printing.set.name }
+                    if normalMarket > 0
+                        td.right.aligned $#{ normalMarket }
+                    else
+                        td.right.aligned &#8212
+                    if foilMarket > 0
+                        td.right.aligned $#{ foilMarket }
+                    else
+                        td.right.aligned &#8212
+
+            tfoot
+                tr
+                    th(colspan='4')
+
     else
         p &#8212;
