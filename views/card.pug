@@ -56,10 +56,11 @@ block data
 
                 tr
                     td(width="30%" style="padding: 10px; vertical-align: top;")
-                        img.ui.medium.image(src=image1
-                                            name=image1
-                                            id=card.new_id
-                                            alt=card.language.code == "en" ? card.name : card.printed_name)
+                        img.card(style="--width: 300px"
+                                 src=image1
+                                 name=image1
+                                 id=card.new_id
+                                 alt=card.language.code == "en" ? card.name : card.printed_name)
                         if card.layout.name == "Split"
                             button.ui.basic.button(onclick="rotateCard('" + card.new_id + "')").
                                 <i class="icon redo"></i> Rotate
