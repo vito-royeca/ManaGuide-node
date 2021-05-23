@@ -1,17 +1,25 @@
 mixin cardLegalities(card)
     if card.format_legalities.length > 0
-        table.ui.small.table
-            thead
-                tr
-                    th Format
-                    th Legality
-            tbody
-                each legality in card.format_legalities
-                    tr
-                        td #{legality.format.name}
-                        td #{legality.legality.name}
-            tfoot
-                tr
-                    th(colspan='2')
+        - var format_legalities = card.format_legalities
+        - var dict = {}
+
+        - for (i = 0; i < format_legalities.length; i++) {
+        -    var array = dict[format_legalities[i].legality.name]
+        -    if (array != null) {
+        -        array.push(format_legalities[i].format.name)        
+        -    } else {
+        -        var newArray = [format_legalities[i].format.name]
+        -        dict[format_legalities[i].legality.name] = newArray
+        -    }
+        - }
+
+        each val, key in dict
+            h5.ui.header #{key}
+            .ui.celled.horizontal.list
+                each format in val
+                    .item
+                        .content #{format}
+
     else
         p &#8212;
+

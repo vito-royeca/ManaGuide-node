@@ -80,22 +80,20 @@ block data
                             button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')").
                                 <i class="icon sync"></i> Turn Over
                         p &nbsp;
-                        h2.ui.header Variations
+                        h3.ui.header Variations
                         p
                             +cardVariations(card)
-                        h2.ui.header Parts
+                        h3.ui.header Parts
                         p
                             +cardParts(card)
-                        h2.ui.header Legalities
-                        p
-                            +cardLegalities(card)
                     td(width="50%" style="padding: 10px; vertical-align: top;")
                         .ui.items
                             .item
                                 .content
                                     if card.faces.length > 0
                                         each face in card.faces
-                                            .header #{card.language.code == "en" ? face.name : face.printed_name} &nbsp;&nbsp;&nbsp; !{manaCost2Html(face.mana_cost)}
+                                            h1.ui.header #{card.language.code == "en" ? face.name : face.printed_name} 
+                                            .span !{manaCost2Html(face.mana_cost)}
                                             .meta #{card.language.code == "en" ? face.type_line : face.printed_type_line}
                                             if face.power || face.toughness
                                                 .description #{face.power} / #{face.toughness}
@@ -112,7 +110,8 @@ block data
                                                 p Illustrated by #{card.artist.name}
                                             p &nbsp;
                                     else
-                                        .header #{card.language.code == "en" ? card.name : card.printed_name} &nbsp;&nbsp;&nbsp; !{manaCost2Html(card.mana_cost)}
+                                        h1.ui.header #{card.language.code == "en" ? card.name : card.printed_name} 
+                                        .span !{manaCost2Html(card.mana_cost)}
                                         .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
                                         if card.power || card.toughness
                                             .description #{card.power} / #{card.toughness}
@@ -129,13 +128,15 @@ block data
                                             p Illustrated by #{card.artist.name}
 
                                     .description
-                                        h2.ui.header Rulings
+                                        h3.ui.header Legalities
+                                        +cardLegalities(card)
+                                        h3.ui.header Rulings
                                         +cardRulings(card)
 
                     td(width="20%" style="padding: 10px; vertical-align: top;")
-                        h2.ui.header Pricing
+                        h3.ui.header Pricing
                         +cardPricing(card)
-                        h2.ui.header Other Printings (Market Pricing)
+                        h3.ui.header Other Printings (Market Pricing)
                         +cardOtherPrintings(card)
 
 
