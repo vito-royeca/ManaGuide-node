@@ -13,12 +13,18 @@ mixin cardLegalities(card)
         -    }
         - }
 
-        each val, key in dict
-            h5.ui.header #{key}
-            .ui.celled.horizontal.list
-                each format in val
-                    .item
-                        .content #{format}
+        .ui.list    
+            each val, key in dict
+                .item
+                    .content
+                        .header #{key}
+                        .description
+                            .ui.large.horizontal.divided.list
+                                each format in val
+                                    .item
+                                        .content
+                                            .description #{format}
+            
 
     else
         p &#8212;
