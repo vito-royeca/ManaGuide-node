@@ -17,9 +17,9 @@ block data
                 th Release Date
                 th Languages
         tbody
-            each row in results
-                each set in row.data
-                    +listSetsRow(set)
+            each set in results
+                +listSetsRow(set)
+
         tfoot
             tr
                 th(colspan='5')

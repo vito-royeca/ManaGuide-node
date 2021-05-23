@@ -80,10 +80,10 @@ block data
                             button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')").
                                 <i class="icon sync"></i> Turn Over
                         p &nbsp;
-                        h3.ui.header Variations
+                        h2.ui.header Variations
                         p
                             +cardVariations(card)
-                        h3.ui.header Parts
+                        h2.ui.header Parts
                         p
                             +cardParts(card)
                     td(width="50%" style="padding: 10px; vertical-align: top;")
@@ -108,7 +108,7 @@ block data
                                             .description
                                                 p &nbsp;
                                                 p Illustrated by #{card.artist.name}
-                                            p &nbsp;
+                                            p &nbsp;    
                                     else
                                         h1.ui.header #{card.language.code == "en" ? card.name : card.printed_name} 
                                         .span !{manaCost2Html(card.mana_cost)}
@@ -126,17 +126,17 @@ block data
                                         .description
                                             p &nbsp;
                                             p Illustrated by #{card.artist.name}
-
+                                        p &nbsp;
                                     .description
-                                        h3.ui.header Legalities
+                                        h2.ui.header Legalities
                                         +cardLegalities(card)
-                                        h3.ui.header Rulings
+                                        h2.ui.header Rulings
                                         +cardRulings(card)
 
                     td(width="20%" style="padding: 10px; vertical-align: top;")
-                        h3.ui.header Pricing
+                        h2.ui.header Pricing
                         +cardPricing(card)
-                        h3.ui.header Other Printings (Market Pricing)
+                        h2.ui.header Other Printings (Market Pricing)
                         +cardOtherPrintings(card)
 
 
