@@ -46,7 +46,21 @@ function buildCardImageUrls(new_id, faces) {
                         "normal": normalUrl,
                         "png": pngUrl
                     })
-                } else {
+                }
+            }
+
+            // if imageUris is empty, push the default values
+            if (imageUris.length == 0) {
+                artCropUrl = "/images/cards/" + newId2Path(new_id) + "/art_crop.jpg"
+                normalUrl  = "/images/cards/" + newId2Path(new_id) + "/normal.jpg"
+                pngUrl     = "/images/cards/" + newId2Path(new_id) + "/png.png"
+                if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
+                    imageUris.push({
+                        "art_crop" : artCropUrl,
+                        "normal": normalUrl,
+                        "png": pngUrl
+                    })
+                } else { // if imageUris is empty, push the default values
                     imageUris.push({
                         "art_crop" : soonUrl,
                         "normal": soonUrl,
@@ -61,15 +75,17 @@ function buildCardImageUrls(new_id, faces) {
                     "normal": normalUrl,
                     "png": pngUrl
                 })
-            } else {
+            } else { // if imageUris is empty, push the default values
                 imageUris.push({
                     "art_crop" : soonUrl,
                     "normal": soonUrl,
                     "png": soonUrl
                 })
-            }
+            }    
         }
+
         
+
     } catch(err) {
         console.error(err)
     }
@@ -92,4 +108,22 @@ function newId2Path(new_id) {
     }
 
     return path
+}
+
+function buildImageUris(artCropUrl, normalUrl, pngUrl) {
+    let soonUrl    = "/images/cards/soon.jpg"
+
+    if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
+        return {
+            "art_crop" : artCropUrl,
+            "normal": normalUrl,
+            "png": pngUrl
+        }
+    } else {
+        return {
+            "art_crop" : soonUrl,
+            "normal": soonUrl,
+            "png": soonUrl
+        }
+    }
 }
