@@ -39,10 +39,6 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying,
     character varying,
     character varying,
-    character varying,
-    character varying,
-    character varying,
-    character varying,
     character varying[],
     character varying[],
     character varying[],
@@ -53,6 +49,8 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying[],
     character varying[],
     integer,
+    character varying,
+    character varying,
     character varying) RETURNS varchar AS $$
 DECLARE
     _collector_number ALIAS FOR $1;
@@ -88,28 +86,26 @@ DECLARE
     _is_textless ALIAS FOR $31;
     _mtgo_foil_id ALIAS FOR $32;
     _is_reprint ALIAS FOR $33;
-    _id ALIAS FOR $34;
-    _card_back_id ALIAS FOR $35;
-    _oracle_id ALIAS FOR $36;
-    _illustration_id ALIAS FOR $37;
-    _cmartist ALIAS FOR $38;
-    _cmset ALIAS FOR $39;
-    _cmrarity ALIAS FOR $40;
-    _cmlanguage ALIAS FOR $41;
-    _cmlayout ALIAS FOR $42;
-    _cmwatermark ALIAS FOR $43;
-    _cmframe ALIAS FOR $44;
-    _cmframeeffects ALIAS FOR $45;
-    _cmcolors ALIAS FOR $46;
-    _cmcolor_identities ALIAS FOR $47;
-    _cmcolor_indicators ALIAS FOR $48;
-    _cmlegalities ALIAS FOR $49;
-    _type_line ALIAS FOR $50;
-    _printed_type_line ALIAS FOR $51;
-    _cmcardtype_subtypes ALIAS FOR $52;
-    _cmcardtype_supertypes ALIAS FOR $53;
-    _face_order ALIAS FOR $54;
-    _new_id ALIAS FOR $55;
+    _cmartist ALIAS FOR $34;
+    _cmset ALIAS FOR $35;
+    _cmrarity ALIAS FOR $36;
+    _cmlanguage ALIAS FOR $37;
+    _cmlayout ALIAS FOR $38;
+    _cmwatermark ALIAS FOR $39;
+    _cmframe ALIAS FOR $40;
+    _cmframeeffects ALIAS FOR $41;
+    _cmcolors ALIAS FOR $42;
+    _cmcolor_identities ALIAS FOR $43;
+    _cmcolor_indicators ALIAS FOR $44;
+    _cmlegalities ALIAS FOR $45;
+    _type_line ALIAS FOR $46;
+    _printed_type_line ALIAS FOR $47;
+    _cmcardtype_subtypes ALIAS FOR $48;
+    _cmcardtype_supertypes ALIAS FOR $49;
+    _face_order ALIAS FOR $50;
+    _new_id ALIAS FOR $51;
+    _oracle_id ALIAS FOR $52;
+    _id ALIAS FOR $53;
 
     pkey character varying;
     pkey2 character varying;
@@ -173,15 +169,6 @@ BEGIN
     END IF;
     IF lower(_mtgo_foil_id) = 'null'  THEN
         _mtgo_foil_id := NULL;
-    END IF;
-    IF lower(_card_back_id) = 'null' THEN
-        _card_back_id := NULL;
-    END IF;
-    IF lower(_oracle_id) = 'null' THEN
-        _oracle_id := NULL;
-    END IF;
-    IF lower(_illustration_id) = 'null' THEN
-        _illustration_id := NULL;
     END IF;
     IF lower(_cmartist) = 'null' THEN
         _cmartist := NULL;
@@ -248,10 +235,6 @@ BEGIN
             is_textless,
             mtgo_foil_id,
             is_reprint,
-            id,
-            card_back_id,
-            oracle_id,
-            illustration_id,
             cmartist,
             cmset,
             cmrarity,
@@ -262,7 +245,9 @@ BEGIN
             type_line,
             printed_type_line,
             face_order,
-            new_id)
+            new_id,
+            oracle_id,
+            id)
         VALUES(
             _collector_number,
             _cmc,
@@ -297,10 +282,6 @@ BEGIN
             _is_textless,
             _mtgo_foil_id::integer,
             _is_reprint,
-            _id,
-            _card_back_id,
-            _oracle_id,
-            _illustration_id,
             _cmartist,
             _cmset,
             _cmrarity,
@@ -311,7 +292,9 @@ BEGIN
             _type_line,
             _printed_type_line,
             _face_order,
-            _new_id);
+            _new_id,
+            _oracle_id,
+            _id);
     ELSE
         UPDATE cmcard SET
             collector_number = _collector_number,
@@ -347,10 +330,6 @@ BEGIN
             is_textless = _is_textless,
             mtgo_foil_id = _mtgo_foil_id::integer,
             is_reprint = _is_reprint,
-            id = _id,
-            card_back_id = _card_back_id,
-            oracle_id = _oracle_id,
-            illustration_id = _illustration_id,
             cmartist = _cmartist,
             cmset = _cmset,
             cmrarity = _cmrarity,
@@ -362,6 +341,8 @@ BEGIN
             printed_type_line = _printed_type_line,
             face_order = _face_order,
             new_id = _new_id,
+            oracle_id = _oracle_id,
+            id = _id,
             date_updated = now()
         WHERE new_id = _new_id;
     END IF;
@@ -379,7 +360,7 @@ BEGIN
     END IF;
 
     -- frame effects
-    DELETE FROM cmcard_frameeffect WHERE cmcard = _new_id OR cmcard = _id;
+    DELETE FROM cmcard_frameeffect WHERE cmcard = _new_id;
     IF _cmframeeffects IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmframeeffects LOOP
             INSERT INTO cmcard_frameeffect(
@@ -393,7 +374,7 @@ BEGIN
     END IF;
 
     -- colors
-    DELETE FROM cmcard_color WHERE cmcard = _new_id OR cmcard = _id;
+    DELETE FROM cmcard_color WHERE cmcard = _new_id;
     IF _cmcolors IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolors LOOP
             INSERT INTO cmcard_color(
@@ -407,7 +388,7 @@ BEGIN
     END IF;
 
     -- color identities
-    DELETE FROM cmcard_coloridentity WHERE cmcard = _new_id OR cmcard = _id;
+    DELETE FROM cmcard_coloridentity WHERE cmcard = _new_id;
     IF _cmcolor_identities IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_identities LOOP
             INSERT INTO cmcard_coloridentity(
@@ -421,7 +402,7 @@ BEGIN
     END IF;
 
     -- color indicators
-    DELETE FROM cmcard_colorindicator WHERE cmcard = _new_id OR cmcard = _id;
+    DELETE FROM cmcard_colorindicator WHERE cmcard = _new_id;
     IF _cmcolor_indicators IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_indicators LOOP
             INSERT INTO cmcard_colorindicator(
@@ -435,7 +416,7 @@ BEGIN
     END IF;
 
     -- legalities
-    DELETE FROM cmcard_format_legality WHERE cmcard = _new_id OR cmcard = _id;
+    DELETE FROM cmcard_format_legality WHERE cmcard = _new_id;
     IF _cmlegalities IS NOT NULL THEN
         FOR pkey2, pkey3 IN SELECT * FROM jsonb_each_text(_cmlegalities) LOOP
             INSERT INTO cmcard_format_legality(
@@ -451,7 +432,7 @@ BEGIN
     END IF;
 
     -- subtypes
-    DELETE FROM cmcard_subtype WHERE cmcard = _new_id OR cmcard = _id;
+    DELETE FROM cmcard_subtype WHERE cmcard = _new_id;
     IF _cmcardtype_subtypes IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcardtype_subtypes LOOP
             INSERT INTO cmcard_subtype(
@@ -465,7 +446,7 @@ BEGIN
     END IF;
 
     -- supertypes
-    DELETE FROM cmcard_supertype WHERE cmcard = _new_id OR cmcard = _id;
+    DELETE FROM cmcard_supertype WHERE cmcard = _new_id;
     IF _cmcardtype_subtypes IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcardtype_supertypes LOOP
             INSERT INTO cmcard_supertype(

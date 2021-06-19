@@ -11,6 +11,20 @@ DECLARE
 
     pkey character varying;
 BEGIN
+    -- check for nulls
+    IF lower(_id) = 'null' THEN
+        _id := NULL;
+    END IF;
+    IF lower(_name) = 'null' THEN
+        _name := NULL;
+    END IF;
+    IF lower(_name_section) = 'null' THEN
+        _name_section := NULL;
+    END IF;
+    IF lower(_description) = 'null' THEN
+        _description := NULL;
+    END IF;
+
     SELECT name INTO pkey FROM cmframeeffect WHERE id = _id;
 
     IF NOT FOUND THEN

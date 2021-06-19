@@ -107,7 +107,7 @@ BEGIN
     command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code ';
     command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
     command := command || 'WHERE c.cmlanguage = ''en'' ';
-    command := command || 'AND c.id NOT IN(select cmcard_face from cmcard_face) ';
+    command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face) ';
     command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
     command := command || 'GROUP BY c.new_id,
                     c.collector_number,
