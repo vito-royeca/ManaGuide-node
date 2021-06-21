@@ -197,6 +197,12 @@ BEGIN
     IF lower(_printed_type_line) = 'null' THEN
         _printed_type_line := NULL;
     END IF;
+    IF lower(_oracle_id) = 'null' THEN
+        _oracle_id := NULL;
+    END IF;
+    IF lower(_id) = 'null' THEN
+        _id := NULL;
+    END IF;
 
     SELECT new_id INTO pkey FROM cmcard WHERE new_id = _new_id;
 

@@ -108,6 +108,7 @@ BEGIN
 	command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
     command := command || 'WHERE c.cmset = ''' || _cmset || ''' ';
     command := command || 'AND c.cmlanguage = ''' || _cmlanguage || ''' ';
+    command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face) ';
     command := command || 'ORDER BY ' || _sortedBy || '';
 
     RETURN QUERY EXECUTE command;
