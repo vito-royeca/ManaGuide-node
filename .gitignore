@@ -39,3 +39,6 @@ routes/db.js
 
 #Node.js
 .env
+
+# card images
+public/images/cards
