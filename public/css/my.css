@@ -33,12 +33,20 @@
     transform-style: preserve-3d;
 }
 
+img.card.lea {
+    -webkit-border-radius: 7% / 5.5%;
+    border-radius: 7% / 5.5%;
+}
+
+img.card.cei, img.card.ced {
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
 .card-image .card {
-    width: 100%;
     -webkit-box-shadow: 1px 1px 8px rgba(0,0,0,0.5);
     box-shadow: 1px 1px 8px rgba(0,0,0,0.5);
 }
-
 
 img.card {
     width: var(--width);

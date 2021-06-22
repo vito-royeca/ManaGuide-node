@@ -56,11 +56,25 @@ block data
 
                 tr
                     td(width="30%" style="padding: 10px; vertical-align: top;")
-                        img.card(style="--width: 300px"
-                                 src=image1
-                                 name=image1
-                                 id=card.new_id
-                                 alt=card.language.code == "en" ? card.name : card.printed_name)
+                        .card-image
+                            if card.set.code == "lea"
+                                img.card.lea(style="--width: 300px"
+                                             src=image1
+                                             name=image1
+                                             id=card.new_id
+                                             alt=card.language.code == "en" ? card.name : card.printed_name)
+                            else if card.set.code == "cei" || card.set.code == "ced"
+                                img.card.cei(style="--width: 300px"
+                                             src=image1
+                                             name=image1
+                                             id=card.new_id
+                                             alt=card.language.code == "en" ? card.name : card.printed_name)
+                            else
+                                img.card(style="--width: 300px"
+                                        src=image1
+                                        name=image1
+                                        id=card.new_id
+                                        alt=card.language.code == "en" ? card.name : card.printed_name)
                         if card.layout.name == "Split"
                             button.ui.basic.button(onclick="rotateCard('" + card.new_id + "')").
                                 <i class="icon redo"></i> Rotate
