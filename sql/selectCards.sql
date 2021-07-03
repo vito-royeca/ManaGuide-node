@@ -33,25 +33,25 @@ DECLARE
     command character varying;
 BEGIN
     IF lower(_sortedBy) = 'set_name' THEN
-        _sortedBy = 's.name ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 's.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
 	IF lower(_sortedBy) = 'set_release' THEN
-        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'collector_number' THEN
-        _sortedBy = 'c.my_number_order ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'c.my_number_order ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'name' THEN
-        _sortedBy = 'c.name';
+        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'')';
     END IF;
     IF lower(_sortedBy) = 'cmc' THEN
-        _sortedBy = 'c.cmc ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'c.cmc ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'type' THEN
-        _sortedBy = 'c.type_line ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'rarity' THEN
-        _sortedBy = 'r.name ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
 
     command := 'SELECT

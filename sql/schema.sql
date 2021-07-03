@@ -1726,25 +1726,25 @@ DECLARE
 BEGIN
     _query := lower(_query);
     IF lower(_sortedBy) = 'set_name' THEN
-        _sortedBy = 's.name ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 's.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
 	IF lower(_sortedBy) = 'set_release' THEN
-        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'collector_number' THEN
-        _sortedBy = 'c.my_number_order ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'c.my_number_order ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'name' THEN
-        _sortedBy = 'c.name';
+        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'')';
     END IF;
     IF lower(_sortedBy) = 'cmc' THEN
-        _sortedBy = 'c.cmc ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'c.cmc ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'type' THEN
-        _sortedBy = 'c.type_line ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'rarity' THEN
-        _sortedBy = 'r.name ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
 
     command := 'SELECT
@@ -2245,25 +2245,25 @@ DECLARE
     command character varying;
 BEGIN
     IF lower(_sortedBy) = 'set_name' THEN
-        _sortedBy = 's.name ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 's.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
 	IF lower(_sortedBy) = 'set_release' THEN
-        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'collector_number' THEN
-        _sortedBy = 'c.my_number_order ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'c.my_number_order ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'name' THEN
-        _sortedBy = 'c.name';
+        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'')';
     END IF;
     IF lower(_sortedBy) = 'cmc' THEN
-        _sortedBy = 'c.cmc ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'c.cmc ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'type' THEN
-        _sortedBy = 'c.type_line ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'rarity' THEN
-        _sortedBy = 'r.name ' || _orderBy || ', c.name ' || _orderBy;
+        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
 
     command := 'SELECT
@@ -2501,6 +2501,87 @@ $_$;
 
 
 ALTER FUNCTION public.selectsets(character varying) OWNER TO managuide;
+
+--
+-- Name: selectsets(character varying, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.selectsets(character varying, integer, integer) RETURNS TABLE(page integer, page_limit integer, page_count integer, row_count integer, data json[])
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    _code ALIAS FOR $1;
+    _page ALIAS FOR $2;
+    _page_limit ALIAS FOR $3;
+    dataCommand character varying;
+    pageCommand character varying;
+    command     character varying;
+BEGIN
+    dataCommand := 'SELECT card_count,
+                    code,
+                    is_foil_only,
+                    is_online_only,
+                    mtgo_code,
+                    keyrune_unicode,
+                    keyrune_class,
+                    my_name_section,
+                    my_year_section,
+                    name,
+                    release_date,
+                    tcgplayer_id,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT p.code
+                            FROM cmset p WHERE p.code = s.cmset_parent
+                        ) x
+                    ) AS parent,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT sb.code, sb.name, sb.name_section
+                            FROM cmsetblock sb WHERE sb.code = s.cmsetblock
+                        ) x
+                   ) AS set_block,
+                   (
+                       SELECT row_to_json(x) FROM (
+                            SELECT st.name, st.name_section
+                            FROM cmsettype st WHERE st.name = s.cmsettype
+                        ) x
+                   ) AS set_type,
+                   array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT l.code, l.display_code, l.name, l.name_section
+                            FROM cmset_language sl left join cmlanguage l on sl.cmlanguage = l.code
+                            WHERE sl.cmset = s.code
+                        ) x
+	               ) AS languages
+            FROM cmset s WHERE s.card_count > 0 ';
+
+    IF _page = 1 THEN
+        pageCommand := 'LIMIT ' || _page_limit;
+    ELSE
+        pageCommand := 'OFFSET ' || (_page - 1) * _page_limit || ' LIMIT ' || _page_limit;
+    END IF;
+
+    IF _code IS NOT NULL THEN
+        dataCommand := dataCommand || ' AND s.code = ''' || _code || ''' ORDER BY s.name ASC ' || pageCommand;
+    ELSE
+        dataCommand := dataCommand || ' ORDER BY s.release_date DESC, s.name, s.parent ASC ' || pageCommand;
+    END IF;
+
+
+    command := 'SELECT ' || _page || ',' || _page_limit ||
+           ', (count(*)::integer / 100) + (CASE WHEN (count(*)::integer / 100) > 0 THEN 1 ELSE 0 END),
+           count(*)::integer,
+           array(SELECT row_to_json(x) FROM (' || dataCommand || ') x) AS data
+           FROM cmset
+           WHERE card_count > 0 ';
+
+    RETURN QUERY EXECUTE command;
+END;
+$_$;
+
+
+ALTER FUNCTION public.selectsets(character varying, integer, integer) OWNER TO postgres;
 
 --
 -- Name: updatesetkeyrune(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
@@ -3670,10 +3751,52 @@ CREATE INDEX cmartist_name_index ON public.cmartist USING btree (name varchar_op
 
 
 --
+-- Name: cmcard_cmartist_index; Type: INDEX; Schema: public; Owner: managuide
+--
+
+CREATE INDEX cmcard_cmartist_index ON public.cmcard USING btree (cmartist varchar_pattern_ops) INCLUDE (cmartist);
+
+
+--
+-- Name: cmcard_cmframe_index; Type: INDEX; Schema: public; Owner: managuide
+--
+
+CREATE INDEX cmcard_cmframe_index ON public.cmcard USING btree (cmframe varchar_pattern_ops) INCLUDE (cmframe);
+
+
+--
 -- Name: cmcard_cmlanguage_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
-CREATE INDEX cmcard_cmlanguage_index ON public.cmcard USING btree (cmlanguage text_pattern_ops);
+CREATE INDEX cmcard_cmlanguage_index ON public.cmcard USING btree (cmlanguage varchar_pattern_ops) INCLUDE (cmlanguage);
+
+
+--
+-- Name: cmcard_cmlayout_index; Type: INDEX; Schema: public; Owner: managuide
+--
+
+CREATE INDEX cmcard_cmlayout_index ON public.cmcard USING btree (cmlayout varchar_pattern_ops) INCLUDE (cmlayout);
+
+
+--
+-- Name: cmcard_cmrarity_index; Type: INDEX; Schema: public; Owner: managuide
+--
+
+CREATE INDEX cmcard_cmrarity_index ON public.cmcard USING btree (cmrarity varchar_pattern_ops) INCLUDE (cmrarity);
+
+
+--
+-- Name: cmcard_cmset_index; Type: INDEX; Schema: public; Owner: managuide
+--
+
+CREATE INDEX cmcard_cmset_index ON public.cmcard USING btree (cmset varchar_pattern_ops) INCLUDE (cmset);
+
+
+--
+-- Name: cmcard_cmwatermark_index; Type: INDEX; Schema: public; Owner: managuide
+--
+
+CREATE INDEX cmcard_cmwatermark_index ON public.cmcard USING btree (cmwatermark varchar_pattern_ops) INCLUDE (cmwatermark);
 
 
 --
@@ -3681,6 +3804,13 @@ CREATE INDEX cmcard_cmlanguage_index ON public.cmcard USING btree (cmlanguage te
 --
 
 CREATE INDEX cmcard_name_index ON public.cmcard USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: cmcard_new_id_index; Type: INDEX; Schema: public; Owner: managuide
+--
+
+CREATE INDEX cmcard_new_id_index ON public.cmcard USING btree (new_id varchar_pattern_ops) INCLUDE (new_id);
 
 
 --
