@@ -1,11 +1,16 @@
 mixin montageCardsRow(card)
     .ui.centered.card
         .content
-            .right.floated.meta
-                p !{manaCost2Html(card.mana_cost)}
-            a.header(href="/card/" + card.new_id) #{card.language.code == 'en' ? card.name : card.printed_name}
+            .ui.two.column.very.relaxed.stackable.grid
+                .column
+                    a.header(href="/card/" + card.new_id)
+                        h4.card.name(style="--font: " + cardHeaderFont(card) + "") #{card.language.code == "en" ? card.name : card.printed_name}
+                .right.aligned.column    
+                    p !{manaCost2Html(card.mana_cost)}
             .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
-        +imageCardsRow(card, ImageTypeEnum.art_crop)
+
+        .content
+            +imageCardsRow(card, ImageTypeEnum.art_crop)
 
         .content
             - var foil = 0

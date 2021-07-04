@@ -128,4 +128,23 @@
 -        return array
 -    }
 
+-    function cardHeaderFont(card) {
+-        let releasedAt = card.released_at
+-
+-        if (releasedAt != null) {
+-            let cardDate      = new Date(releasedAt).getTime()
+-            let modernDate    = new Date("2003-07-28").getTime()
+-            let magic2015Date = new Date("2014-07-18").getTime()
+-
+-            if (cardDate < modernDate) {
+-                return "preEightEdition"
+-            } else if (cardDate >= modernDate && cardDate < magic2015Date) {
+-                return "eightEdition"
+-            } else {
+-                return "magic2015"
+-            }    
+-        } else {
+-            return "magic2015"
+-        }
+-    }
 

@@ -106,8 +106,11 @@ block data
                                 .content
                                     if card.faces.length > 0
                                         each face in card.faces
-                                            h1.ui.header #{card.language.code == "en" ? face.name : face.printed_name} 
-                                            .span !{manaCost2Html(face.mana_cost)}
+                                            .ui.two.column.very.relaxed.stackable.grid
+                                                .column
+                                                    h3.card.name(style="--font: " + cardHeaderFont(face) + "") #{card.language.code == "en" ? face.name : face.printed_name}
+                                                .right.aligned.column    
+                                                    p !{manaCost2Html(face.mana_cost)} 
                                             .meta #{card.language.code == "en" ? face.type_line : face.printed_type_line}
                                             if face.power || face.toughness
                                                 .description #{face.power} / #{face.toughness}
@@ -122,10 +125,13 @@ block data
                                             .description
                                                 p &nbsp;
                                                 p Illustrated by #{card.artist.name}
-                                            p &nbsp;    
+                                            p &nbsp;
                                     else
-                                        h1.ui.header #{card.language.code == "en" ? card.name : card.printed_name} 
-                                        .span !{manaCost2Html(card.mana_cost)}
+                                        .ui.two.column.very.relaxed.stackable.grid
+                                            .column
+                                                h3.card.name(style="--font: " + cardHeaderFont(card) + "") #{card.language.code == "en" ? card.name : card.printed_name}
+                                            .right.aligned.column    
+                                                p !{manaCost2Html(card.mana_cost)}
                                         .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
                                         if card.power || card.toughness
                                             .description #{card.power} / #{card.toughness}

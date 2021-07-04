@@ -16,6 +16,7 @@ CREATE OR REPLACE FUNCTION searchCards(
         type_line character varying,
         power character varying,
         toughness character varying,
+        released_at date,
         set json,
         rarity json,
         language json,
@@ -67,6 +68,7 @@ BEGIN
                     type_line,
 	                power,
                     toughness,
+                    released_at,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class
