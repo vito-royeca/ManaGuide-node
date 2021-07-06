@@ -79,9 +79,64 @@ img.card {
 
 @font-face {
     font-family: magic2015;
-    src: url('../fonts/beleren-bold-webfont.ttf');
+    src: url('../fonts/typeface-beleren-bold-master/Beleren2016-Bold.ttf');
 }
 
 h1.card.name, h2.card.name, h3.card.name, h4.card.name, h5.card.name {
     font-family: var(--font);
+}
+
+/*
+  Planeswalker loyalty symbols
+*/
+.mana-symbol-loyalty-plus {
+    background: -2px -7px url(../images/loyalty/loyalty-plus.png) no-repeat;
+        background-size: auto;
+    width: 45px;
+    height: 31px;
+    padding: 7px;
+    background-size: 50px;
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    color: white;
+}
+
+.mana-symbol-loyalty-minus {
+    background: -2px -1px url(../images/loyalty/loyalty-minus.png) no-repeat;
+        background-size: auto;
+    width: 45px;
+    height: 35px;
+    padding: 7px;
+    background-size: 50px;
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    color: white;
+}
+
+.mana-symbol-loyalty-zero {
+    background: -2px -5px url(../images/loyalty/loyalty-zero.png) no-repeat;
+        background-size: auto;
+    width: 45px;
+    height: 30px;
+    padding: 7px;
+    background-size: 50px;
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    color: white;
+}
+
+.mana-symbol-loyalty-initial {
+    background: -3px -5px url(../images/loyalty/loyalty-initial.png) no-repeat;
+        background-size: auto;
+    width: 45px;
+    height: 30px;
+    padding: 7px;
+    background-size: 50px;
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    color: white;
 }
