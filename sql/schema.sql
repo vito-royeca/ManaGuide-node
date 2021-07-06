@@ -1712,10 +1712,10 @@ $_$;
 ALTER FUNCTION public.createorupdatewatermark(character varying, character varying) OWNER TO managuide;
 
 --
--- Name: searchcards(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
+-- Name: searchcards(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.searchcards(character varying, character varying, character varying) RETURNS TABLE(new_id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, set json, rarity json, language json, prices json[], faces json[])
+CREATE FUNCTION public.searchcards(character varying, character varying, character varying) RETURNS TABLE(new_id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, tcgplayer_id integer, released_at date, set json, rarity json, language json, prices json[], faces json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
@@ -1761,6 +1761,8 @@ BEGIN
                     type_line,
 	                power,
                     toughness,
+                    c.tcgplayer_id,
+                    released_at,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class
@@ -1826,7 +1828,7 @@ END;
 $_$;
 
 
-ALTER FUNCTION public.searchcards(character varying, character varying, character varying) OWNER TO managuide;
+ALTER FUNCTION public.searchcards(character varying, character varying, character varying) OWNER TO postgres;
 
 --
 -- Name: searchrules(character varying); Type: FUNCTION; Schema: public; Owner: managuide
@@ -2231,10 +2233,10 @@ $_$;
 ALTER FUNCTION public.selectcard(character varying) OWNER TO managuide;
 
 --
--- Name: selectcards(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
+-- Name: selectcards(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.selectcards(character varying, character varying, character varying, character varying) RETURNS TABLE(new_id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, set json, rarity json, language json, prices json[], faces json[])
+CREATE FUNCTION public.selectcards(character varying, character varying, character varying, character varying) RETURNS TABLE(new_id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, tcgplayer_id integer, released_at date, set json, rarity json, language json, prices json[], faces json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
@@ -2280,6 +2282,8 @@ BEGIN
                     type_line,
 	                power,
                     toughness,
+                    c.tcgplayer_id,
+                    released_at,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class
@@ -2328,7 +2332,7 @@ END;
 $_$;
 
 
-ALTER FUNCTION public.selectcards(character varying, character varying, character varying, character varying) OWNER TO managuide;
+ALTER FUNCTION public.selectcards(character varying, character varying, character varying, character varying) OWNER TO postgres;
 
 --
 -- Name: selectrules(integer); Type: FUNCTION; Schema: public; Owner: managuide
@@ -4367,13 +4371,6 @@ GRANT ALL ON FUNCTION public.createorupdatewatermark(character varying, characte
 
 
 --
--- Name: FUNCTION searchcards(character varying, character varying, character varying); Type: ACL; Schema: public; Owner: managuide
---
-
-GRANT ALL ON FUNCTION public.searchcards(character varying, character varying, character varying) TO managuide_dev;
-
-
---
 -- Name: FUNCTION searchrules(character varying); Type: ACL; Schema: public; Owner: managuide
 --
 
@@ -4385,13 +4382,6 @@ GRANT ALL ON FUNCTION public.searchrules(character varying) TO managuide_dev;
 --
 
 GRANT ALL ON FUNCTION public.selectcard(character varying) TO managuide_dev;
-
-
---
--- Name: FUNCTION selectcards(character varying, character varying, character varying, character varying); Type: ACL; Schema: public; Owner: managuide
---
-
-GRANT ALL ON FUNCTION public.selectcards(character varying, character varying, character varying, character varying) TO managuide_dev;
 
 
 --

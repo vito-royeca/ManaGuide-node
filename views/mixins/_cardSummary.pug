@@ -3,7 +3,8 @@ mixin cardSummary(card, languageCode)
         .column
             h3.card.name(style="--font: " + cardHeaderFont(card) + "") #{languageCode == "en" ? card.name : card.printed_name}
         .right.aligned.column    
-            p !{manaCost2Html(card.mana_cost)} 
+            p !{manaCost2Html(card.mana_cost)}
+             
     .meta #{languageCode == "en" ? card.type_line : card.printed_type_line}
     
     if card.power || card.toughness
@@ -26,4 +27,5 @@ mixin cardSummary(card, languageCode)
                     each supertype in card.supertypes
                         if supertype.name == "Planeswalker"
                             p <span class="mana-symbol-loyalty-initial"> #{card.loyalty} </span>        
-    p &nbsp;
+    
+        

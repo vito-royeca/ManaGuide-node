@@ -16,6 +16,7 @@ CREATE OR REPLACE FUNCTION searchCards(
         type_line character varying,
         power character varying,
         toughness character varying,
+        tcgplayer_id integer,
         released_at date,
         set json,
         rarity json,
@@ -68,6 +69,7 @@ BEGIN
                     type_line,
 	                power,
                     toughness,
+                    c.tcgplayer_id,
                     released_at,
                     (
                         SELECT row_to_json(x) FROM (

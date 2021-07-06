@@ -1,8 +1,9 @@
 extends layout.pug
-include mixins/_montageCardsRow
+include mixins/_cardArt
+include mixins/_cardsSorter
 include mixins/_imageCardsRow
 include mixins/_listCardsRow
-include mixins/_cardsSorter
+include mixins/_montageCardsRow
 include mixins/_setLanguageButtons
 
 block pageTitle
@@ -41,28 +42,7 @@ block data
             center
                 .ui.link.cards
                     each card in set.cards
-                        - var foil = 0
-                        - var normal = 0
-                        each price in card.prices
-                            if price.is_foil
-                                - foil = price.market
-                            else
-                                - normal = price.market
-                        .ui.centered.card
-                            .image
-                                +imageCardsRow(card, ImageTypeEnum.normal)
-                            .content
-                                .description
-                                    if foil > 0
-                                        span(class="right floated") Foil $#{foil}
-                                    else
-                                        span(class="right floated") Foil &#8212
-                                    if normal > 0
-                                        span(class="left floated") Normal $#{normal}
-                                    else
-                                        span(class="left floated") Normal &#8212
-
-
+                        +imageCardsRow(card)
     else if displayAs == "list"
         each set in data
             table.ui.small.table
@@ -76,12 +56,13 @@ block data
                         th Rarity
                         th Normal
                         th Foil
+                        th &nbsp;
                 tbody
                     each card in set.cards
                         +listCardsRow(card)
                 tfoot
                     tr
-                        th(colspan='8')
+                        th(colspan='9')
     else
         .ui.centered.link.cards
             each card in data

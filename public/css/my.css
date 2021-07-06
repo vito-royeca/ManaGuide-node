@@ -64,6 +64,20 @@ img.card {
     text-align: center;
 }
 
+img.crop {
+    width: var(--width);
+    height: auto;
+    background-image: -webkit-repeating-linear-gradient(145deg, #DDD, #DDD 5px, #CCC 5px, #CCC 10px);
+    background-image: -o-repeating-linear-gradient(145deg, #DDD, #DDD 5px, #CCC 5px, #CCC 10px);
+    background-image: repeating-linear-gradient(-55deg, #DDD, #DDD 5px, #CCC 5px, #CCC 10px);
+    color: #000;
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    overflow: hidden;
+    text-align: center;
+}
+
 /*
     Fonts
 */

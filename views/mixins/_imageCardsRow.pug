@@ -1,23 +1,27 @@
-mixin imageCardsRow(card, imageType)
-    a.image(href="/card/" + card.new_id)
-        .card-image
-            if card.set.code == "lea"
-                img.card.lea.lazyload(style="--width: 250px"
-                                      data-sizes="auto"
-                                      data-src=cardImageUrl(card, imageType, 0)
-                                      alt=card.language.code == "en" ? card.name : card.printed_name)
-            else if card.set.code == "cei" || card.set.code == "ced"
-                img.card.cei.lazyload(style="--width: 250px"
-                                      data-sizes="auto"
-                                      data-src=cardImageUrl(card, imageType, 0)
-                                      alt=card.language.code == "en" ? card.name : card.printed_name)    
+mixin imageCardsRow(card)
+    - var foil = 0
+    - var normal = 0
+    each price in card.prices
+        if price.is_foil
+            - foil = price.market
+        else
+            - normal = price.market
+    .ui.centered.card
+        .image
+            +cardArt(card, ImageTypeEnum.normal, card.language.code == "en" ? card.name : card.printed_name, "250px")
+        .content
+            .description
+                if foil > 0
+                    span(class="right floated") Foil $#{foil}
+                else
+                    span(class="right floated") Foil &#8212
+                if normal > 0
+                    span(class="left floated") Normal $#{normal}
+                else
+                    span(class="left floated") Normal &#8212
+        .ui.bottom.attached.button
+            if card.tcgplayer_id != 0
+                a(href="https://www.tcgplayer.com/product/" + card.tcgplayer_id + "/partner=ManaGuide" target="_blank" rel="noopener noreferrer")
+                    <i class="shopping cart icon"></i> Buy at TCGPlayer
             else
-                img.card.lazyload(style="--width: 250px"
-                                 data-sizes="auto"
-                                 data-src=cardImageUrl(card, imageType, 0)
-                                 alt=card.language.code == "en" ? card.name : card.printed_name)
-             
-
-
-
-
+                span &nbsp;

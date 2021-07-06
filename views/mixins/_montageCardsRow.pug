@@ -1,16 +1,17 @@
 mixin montageCardsRow(card)
     .ui.centered.card
         .content
-            .ui.two.column.very.relaxed.stackable.grid
-                .column
-                    a.header(href="/card/" + card.new_id)
-                        h4.card.name(style="--font: " + cardHeaderFont(card) + "") #{card.language.code == "en" ? card.name : card.printed_name}
-                .right.aligned.column    
-                    p !{manaCost2Html(card.mana_cost)}
-            .meta #{card.language.code == "en" ? card.type_line : card.printed_type_line}
+            .left.floated.content
+                h3.card.name(style="--font: " + cardHeaderFont(card) + "") #{card.language.code == "en" ? card.name : card.printed_name}            
+            .right.floated.content !{manaCost2Html(card.mana_cost)}
 
-        .content
-            +imageCardsRow(card, ImageTypeEnum.art_crop)
+        .image
+            +cardArt(card, ImageTypeEnum.art_crop, card.language.code == "en" ? card.name : card.printed_name)
+            
+        .content    
+            .left.floated.content #{card.language.code == "en" ? card.type_line : card.printed_type_line}
+            .right.floated.content
+                i(class='ss ss-' + card.set.keyrune_class + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
 
         .content
             - var foil = 0
@@ -29,16 +30,13 @@ mixin montageCardsRow(card)
                 .right.floated.content Foil $#{ foil }
             else
                 .right.floated.content Foil &#8212;
-
-        .extra.content
-            table
-                tbody
-                    tr()
-                        td(rowspan=2 style="padding: 5px;")
-                            i(class='ss ss-' + card.set.keyrune_class + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
-                        td #{card.set.name}
-                    tr
-                        td(colspan=2) ##{card.collector_number} &#x2E31; #{card.rarity.name} &#x2E31; #{card.language.name}
+        
+        .ui.bottom.attached.button
+            if card.tcgplayer_id != 0
+                a(href="https://www.tcgplayer.com/product/" + card.tcgplayer_id + "/partner=ManaGuide" target="_blank" rel="noopener noreferrer")
+                    <i class="shopping cart icon"></i> Buy at TCGPlayer
+            else
+                span &nbsp;        
 
 
 

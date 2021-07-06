@@ -7,6 +7,7 @@ include mixins/_cardParts
 include mixins/_cardVariations
 include mixins/_cardRulings
 include mixins/_cardSummary
+include mixins/_cardArt
 
 block pageTitle
     each card in data
@@ -53,7 +54,7 @@ block data
         tbody
             each card in data
                 - const image1 = cardImageUrl(card, ImageTypeEnum.normal, 0)
-                - let image2 = card.image_uris.length > 1 ? cardImageUrl(card, ImageTypeEnum.normal, 1) : ""
+                - const image2 = card.image_uris.length > 1 ? cardImageUrl(card, ImageTypeEnum.normal, 1) : ""
 
                 tr
                     td(width="30%" style="padding: 10px; vertical-align: top;")
@@ -108,8 +109,10 @@ block data
                                     if card.faces.length > 0
                                         each face in card.faces
                                             +cardSummary(face, card.language.code)
+                                            p &nbsp;
                                     else
                                         +cardSummary(card, card.language.code)
+                                        p &nbsp;
                                     .description
                                         h2.ui.header Legalities
                                         +cardLegalities(card)
