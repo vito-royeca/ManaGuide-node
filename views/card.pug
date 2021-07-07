@@ -33,23 +33,6 @@ block sorters
                     tr
                         td(width="95%" colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
 block data
-    script.
-        function transformCard(new_id, image1, image2) {
-            const img = document.getElementById(new_id)
-
-            if (img.name == image1) {
-                img.src = image2
-                img.name = image2
-            } else {
-                img.src = image1
-                img.name = image1
-            }
-        }
-
-        function flipCard(new_id) {
-            const img = document.getElementById(new_id)
-        }
-
     table(width="100%")
         tbody
             each card in data
