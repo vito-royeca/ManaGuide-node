@@ -22,7 +22,8 @@ mixin cardOtherPrintings(card)
                     td
                         a.image(href="/card/" + printing.new_id)
                             i(class='ss ss-' + printing.set.keyrune_class + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x')
-                    td #{ printing.set.name }
+                    td
+                        a(href="/card/" + printing.new_id) #{ printing.set.name }
                     if normalMarket > 0
                         td.right.aligned $#{ normalMarket }
                     else
