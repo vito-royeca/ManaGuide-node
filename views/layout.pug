@@ -59,7 +59,7 @@ html(lang="en")
         script(src="/scripts/utilities.js")
 
         // keyrune
-        link(href="//cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.css" type="text/css" rel="stylesheet")
+        link(href="//cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.css" rel="stylesheet" type="text/css")
 
         // Semantic UI
         //link(href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css" type="text/css" rel="stylesheet")
@@ -94,11 +94,6 @@ html(lang="en")
                                         else
                                             a(href="/" style="color: #000") <i class="home icon"></i> Home
                                     li
-                                        if baseUrl != null && baseUrl == "/advancesearch/"
-                                            <i class="search icon"></i> Advance Search
-                                        else
-                                            a(href="/advancesearch" style="color: #000") <i class="search icon"></i> Advance Search
-                                    li
                                         if baseUrl != null && baseUrl == "/sets/"
                                             <i class="ss ss-leg"></i> Sets
                                         else
@@ -131,6 +126,8 @@ html(lang="en")
                 .colorlib-intro
                     .container
                         .row
+                            p &nbsp;
+                            p &nbsp;
                             block headline
                         .row
                             block sorters
