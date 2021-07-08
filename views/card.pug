@@ -28,7 +28,7 @@ block sorters
                         td(rowspan=2 width="5%")
                             i(class='ss ss-' + card.set.keyrune_class + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
                         td(width="95%")
-                            h2.ui.header
+                            h3.ui.header
                                 a(href="/set/" + card.set.code + "/" + card.language.code + "?displayAs=" + displayAs + "&sortedBy=" + sortedBy + "&orderBy=" + orderBy) #{card.set.name} (#{card.set.code})
                     tr
                         td(width="95%" colspan=2) ##{card.collector_number} &#11825; #{card.rarity.name} &#11825; #{card.language.name}
@@ -103,7 +103,6 @@ block data
                                         +cardRulings(card)
 
                     td(width="20%" style="padding: 10px; vertical-align: top;")
-                        h2.ui.header Pricing
                         +cardPricing(card)
                         h2.ui.header Other Printings (Market Pricing)
                         +cardOtherPrintings(card)
