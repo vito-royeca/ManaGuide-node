@@ -79,10 +79,10 @@ block data
                             button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')").
                                 <i class="icon sync"></i> Turn Over
                         p &nbsp;
-                        h2.ui.header Variations
+                        h3.ui.header Variations: #{card.variations.length}
                         p
                             +cardVariations(card)
-                        h2.ui.header Parts
+                        h3.ui.header Parts: #{card.component_parts.length}
                         p
                             +cardParts(card)
                     td(width="50%" style="padding: 10px; vertical-align: top;")
@@ -97,14 +97,14 @@ block data
                                         +cardSummary(card, card.language.code)
                                         p &nbsp;
                                     .description
-                                        h2.ui.header Legalities
+                                        h3.ui.header Legalities
                                         +cardLegalities(card)
-                                        h2.ui.header Rulings
+                                        h3.ui.header Rulings
                                         +cardRulings(card)
 
                     td(width="20%" style="padding: 10px; vertical-align: top;")
                         +cardPricing(card)
-                        h2.ui.header Other Printings (Market Pricing)
+                        h3.ui.header Other Printings (Market Pricing): #{card.other_printings.length}
                         +cardOtherPrintings(card)
 
 

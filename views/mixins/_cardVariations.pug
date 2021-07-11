@@ -7,7 +7,8 @@ mixin cardVariations(card)
                         a.image(href="/card/" + variation.new_id)
                             img.medium.rounded.ui.image(src=cardImageUrl(variation, ImageTypeEnum.art_crop, 0)
                                                 alt=card.language.code == "en" ? card.name : card.printed_name)
-                    .content
-                        .description ##{variation.collector_number} &#11825; #{variation.rarity.name}
+                    .middle.aligned.content
+                        .description
+                            a(href="/card/" + variation.new_id) ##{variation.collector_number}
     else
         p &#8212;

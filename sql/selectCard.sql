@@ -185,28 +185,7 @@ BEGIN
 								SELECT row_to_json(b) FROM (
                                 	select x.new_id,
                                 	x.name,
-                                	x.printed_name,
-							    	(
-                                    	SELECT row_to_json(x) FROM (
-                                        	SELECT v.name
-                                        	FROM cmrarity v
-                                        	WHERE v.name = x.cmrarity
-                                    	) x
-                                	) AS rarity,
-									(
-                                    	SELECT row_to_json(x) FROM (
-                                        	SELECT y.code, y.keyrune_class
-                                        	FROM cmset y
-                                        	WHERE y.code = x.cmset
-                                    	) x
-                                	) AS set,
-									(
-                                    	SELECT row_to_json(x) FROM (
-                                        	SELECT z.code
-                                        	FROM cmlanguage z
-                                        	WHERE z.code = x.cmlanguage
-                                    	) x
-                                	) AS language
+                                	x.printed_name
 								)
 							b) AS card
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
@@ -242,8 +221,6 @@ BEGIN
                     ', array(
                         SELECT row_to_json(x) FROM (
 						    SELECT c.new_id,
-                                c.name,
-                                c.printed_name,
 								(
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.name
@@ -258,13 +235,6 @@ BEGIN
                                         WHERE y.code = c.cmset
                                     ) x
                                 ) AS set,
-								(
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT z.code
-                                        FROM cmlanguage z
-                                        WHERE z.code = c.cmlanguage
-                                    ) x
-                                ) AS language,
                                 array(
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.market, v.is_foil
@@ -285,32 +255,8 @@ BEGIN
                 ', array(
                     SELECT row_to_json(x) FROM (
 						SELECT c.new_id,
-                            c.name,
-                            c.collector_number,
-                            c.printed_name,
-							(
-                                SELECT row_to_json(x) FROM (
-                                    SELECT v.name
-                                    FROM cmrarity v
-                                    WHERE v.name = c.cmrarity
-                                ) x
-                            ) AS rarity,
-							(
-                                SELECT row_to_json(x) FROM (
-                                    SELECT y.code, y.keyrune_class
-                                    FROM cmset y
-                                    WHERE y.code = c.cmset
-                                ) x
-                            ) AS set,
-							(
-                                SELECT row_to_json(x) FROM (
-                                    SELECT z.code
-                                    FROM cmlanguage z
-                                    WHERE z.code = c.cmlanguage
-                                ) x
-                            ) AS language
+                            c.collector_number
                         FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.new_id
-                        left join cmset y on y.code = c.cmset
                         WHERE w.cmcard = ''' || _new_id || '''' ||
                         ' order by c.collector_number
                     ) x
