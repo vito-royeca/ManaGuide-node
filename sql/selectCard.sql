@@ -227,35 +227,13 @@ BEGIN
     command := command ||
                     ', array(
                         SELECT row_to_json(x) FROM (
-                            SELECT c.new_id,
-                                c.name,
-                                c.printed_name,
-							    (
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT v.name
-                                        FROM cmrarity v
-                                        WHERE v.name = c.cmrarity
-                                    ) x
-                                ) AS rarity,
-								(
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT y.code, y.keyrune_class
-                                        FROM cmset y
-                                        WHERE y.code = c.cmset
-                                    ) x
-                                ) AS set,
-								(
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT z.code
-                                        FROM cmlanguage z
-                                        WHERE z.code = c.cmlanguage
-                                    ) x
-                                ) AS language
+                            SELECT
+                                w.code
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.new_id
-                            left join cmset y on y.code = c.cmset
                             WHERE x.cmcard = ''' || _new_id || '''' ||
-                            ' order by y.release_date desc
+                            ' group by w.code 
+							 order by w.code
                         ) x
                     ) AS other_languages ';
 
@@ -298,7 +276,7 @@ BEGIN
                             left join cmcard_otherprinting w on w.cmcard_otherprinting = c.new_id
                             left join cmset y on y.code = c.cmset
                             WHERE w.cmcard = ''' || _new_id || '''' ||
-                            ' order by y.release_date desc
+                            ' order by y.release_date desc, c.collector_number
                         ) x
                     ) AS other_printings ';
 
@@ -334,7 +312,7 @@ BEGIN
                         FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.new_id
                         left join cmset y on y.code = c.cmset
                         WHERE w.cmcard = ''' || _new_id || '''' ||
-                        ' order by y.release_date desc
+                        ' order by c.collector_number
                     ) x
                 ) AS variations ';
 
