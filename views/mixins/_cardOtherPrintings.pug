@@ -35,8 +35,10 @@ mixin cardOtherPrintings(card)
 
             tfoot
                 tr
-                    th.center.aligned(colspan='4') Pricing data provided by <a href="https://www.tcgplayer.com" target="_blank" rel="noopener noreferrer"> TCGPlayer</a>
-                        
+                    if foilMarket > 0 || normalMarket > 0 
+                        th.center.aligned(colspan='4') Pricing data provided by <a href="https://www.tcgplayer.com" target="_blank" rel="noopener noreferrer"> TCGPlayer</a>
+                    else     
+                        th.center.aligned(colspan='4') &nbsp;
 
     else
         p &#8212;

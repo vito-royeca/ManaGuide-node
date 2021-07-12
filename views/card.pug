@@ -1,13 +1,13 @@
 extends layout.pug
+include mixins/_cardArt
 include mixins/_cardLanguageButtons
 include mixins/_cardLegalities
 include mixins/_cardPricing
 include mixins/_cardOtherPrintings
 include mixins/_cardParts
-include mixins/_cardVariations
 include mixins/_cardRulings
 include mixins/_cardSummary
-include mixins/_cardArt
+include mixins/_cardVariations
 
 block pageTitle
     each card in data
@@ -41,44 +41,33 @@ block data
 
                 tr
                     td(width="30%" style="padding: 10px; vertical-align: top;")
-                        .card-image
-                            if card.set.code == "lea"
-                                img.card.lea(style="--width: 300px"
-                                             src=image1
-                                             name=image1
-                                             id=card.new_id
-                                             alt=card.language.code == "en" ? card.name : card.printed_name)
-                            else if card.set.code == "cei" || card.set.code == "ced"
-                                img.card.cei(style="--width: 300px"
-                                             src=image1
-                                             name=image1
-                                             id=card.new_id
-                                             alt=card.language.code == "en" ? card.name : card.printed_name)
-                            else
-                                img.card(style="--width: 300px"
-                                        src=image1
-                                        name=image1
-                                        id=card.new_id
-                                        alt=card.language.code == "en" ? card.name : card.printed_name)
+                        +cardArt(card, ImageTypeEnum.normal, card.language.code == "en" ? card.name : card.printed_name, "300px")
+                        
                         if card.layout.name == "Split"
-                            button.ui.basic.button(onclick="rotateCard('" + card.new_id + "')").
-                                <i class="icon redo"></i> Rotate
-                        if card.layout.name == "Planar"
-                            button.ui.basic.button(onclick="rotateCard('" + card.new_id + "')").
-                                <i class="icon redo"></i> Rotate
-                        if card.layout.name == "Flip"
-                            button.ui.basic.button(onclick="flipCard('" + card.new_id + "')").
-                                <i class="icon redo"></i> Flip
-                        if card.layout.name == "Transform"
-                            button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')").
-                                <i class="icon sync"></i> Transform
-                        if card.layout.name == "Double Faced Token"
-                            button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')").
-                                <i class="icon sync"></i> Turn Over
-                        if card.layout.name == "Art Series"
-                            button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')").
-                                <i class="icon sync"></i> Turn Over
-                        p &nbsp;
+                            <br/>
+                                button.ui.basic.button(onclick="rotateCard('" + card.new_id + "')")
+                                    <i class="icon redo"></i> Rotate
+                        else if card.layout.name == "Planar"
+                            <br/>
+                                button.ui.basic.button(onclick="rotateCard('" + card.new_id + "')")
+                                    <i class="icon redo"></i> Rotate
+                        else if card.layout.name == "Flip"
+                            <br/>
+                                button.ui.basic.button(onclick="flipCard('" + card.new_id + "')")
+                                    <i class="icon redo"></i> Flip
+                        else if card.layout.name == "Transform"
+                            <br/>
+                                button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
+                                    <i class="icon sync"></i> Transform
+                        else if card.layout.name == "Double Faced Token"
+                            <br/>
+                                button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
+                                    <i class="icon sync"></i> Turn Over
+                        else if card.layout.name == "Art Series"
+                            <br/>
+                                button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
+                                    <i class="icon sync"></i> Turn Over
+                        
                         h3.ui.header Variations: #{card.variations.length}
                         p
                             +cardVariations(card)

@@ -18,3 +18,12 @@ function flipCard(new_id) {
     img.style.transform = "rotate(" + rotateAngle + "deg)"
     img.setAttribute("rotangle", "" + rotateAngle) // save the rotangle attribute
 }
+
+function rotateCard(new_id) {
+    const img = document.getElementById(new_id)
+    let rotateAngle = Number(img.getAttribute("rotangle")) + 90
+
+    img.style.transition = "all 0.3s ease"
+    img.style.transform = "rotate(" + rotateAngle + "deg)"
+    img.setAttribute("rotangle", "" + rotateAngle) // save the rotangle attribute
+}

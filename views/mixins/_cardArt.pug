@@ -1,9 +1,10 @@
 mixin cardArt(card, imageType, alt, imageSize = "100%")
     a.image(href="/card/" + card.new_id)
-        if (imageType == ImageTypeEnum.art_crop)
+        if imageType == ImageTypeEnum.art_crop
             img.crop.lazyload(style="--width: " + imageSize
                               data-sizes="auto"
                               data-src=cardImageUrl(card, ImageTypeEnum.art_crop, 0)
+                              name=cardImageUrl(card, ImageTypeEnum.art_crop, 0)
                               id=card.new_id
                               alt=alt)
         else
@@ -12,18 +13,21 @@ mixin cardArt(card, imageType, alt, imageSize = "100%")
                     img.card.lea.lazyload(style="--width: " + imageSize
                                           data-sizes="auto"
                                           data-src=cardImageUrl(card, imageType, 0)
+                                          name=cardImageUrl(card, imageType, 0)
                                           id=card.new_id
                                           alt=alt)
                 else if card.set.code == "cei" || card.set.code == "ced"
                     img.card.cei.lazyload(style="--width: " + imageSize
                                           data-sizes="auto"
                                           data-src=cardImageUrl(card, imageType, 0)
+                                          name=cardImageUrl(card, imageType, 0)
                                           id=card.new_id
                                           alt=alt)
                 else
                     img.card.lazyload(style="--width: " + imageSize
                                       data-sizes="auto"
                                       data-src=cardImageUrl(card, imageType, 0)
+                                      name=cardImageUrl(card, imageType, 0)
                                       id=card.new_id
                                       alt=alt)
              
