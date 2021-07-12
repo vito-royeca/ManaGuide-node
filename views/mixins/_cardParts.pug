@@ -9,7 +9,14 @@ mixin cardParts(card)
                                 alt=part.card.name)
                     .content
                         .descripiton
-                            a.image(href="/card/" + part.card.new_id) #{part.card.name}
+                            a.image(href="/card/" + part.card.new_id data-position="bottom left") #{part.card.name}
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.language.code == "en" ? card.name : card.printed_name,
+                                          "250px",
+                                          card.language.code,
+                                          part.card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
                         .meta #{part.component.name}
 
     else

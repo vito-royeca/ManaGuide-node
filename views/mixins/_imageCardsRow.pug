@@ -11,7 +11,8 @@ mixin imageCardsRow(card)
             - normal = price.market
     .ui.centered.card
         .image
-            +cardArt(card, ImageTypeEnum.normal, card.language.code == "en" ? card.name : card.printed_name, "250px")
+            +cardArt(card, ImageTypeEnum.normal, card.language.code == "en" ? card.name : card.printed_name, "250px")         
+
         .content
             .description
                 if foil > 0

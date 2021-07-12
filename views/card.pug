@@ -1,10 +1,11 @@
 extends layout.pug
 include mixins/_cardArt
+include mixins/_cardArtPopup
 include mixins/_cardLanguageButtons
 include mixins/_cardLegalities
-include mixins/_cardPricing
 include mixins/_cardOtherPrintings
 include mixins/_cardParts
+include mixins/_cardPricing
 include mixins/_cardRulings
 include mixins/_cardSummary
 include mixins/_cardVariations
@@ -72,8 +73,9 @@ block data
                         p
                             +cardVariations(card)
                         h3.ui.header Parts: #{card.component_parts.length}
-                        p
+                        p 
                             +cardParts(card)
+                            
                     td(width="50%" style="padding: 10px; vertical-align: top;")
                         .ui.items
                             .item
@@ -95,6 +97,7 @@ block data
                         +cardPricing(card)
                         h3.ui.header Other Printings (Market Pricing): #{card.other_printings.length}
                         +cardOtherPrintings(card)
+                        
 
 
 

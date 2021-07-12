@@ -1,0 +1,31 @@
+mixin cardArtPopup(card, imageType, alt, imageSize = "100%", languageCode = null, collectorNumber = null, hasFaces = false)
+    .ui.popup
+        - let url = cardImageUrl(card, imageType, 0, languageCode, collectorNumber, hasFaces)
+
+        if imageType == ImageTypeEnum.art_crop
+            img.crop.lazyload(style="--width: " + imageSize
+                              data-sizes="auto"
+                              data-src=url
+                              alt=alt)
+        else
+            .card-image
+                if card.set.code == "lea"
+                    img.card.lea.lazyload(style="--width: " + imageSize
+                                          data-sizes="auto"
+                                          data-src=url
+                                          alt=alt)
+                else if card.set.code == "cei" || card.set.code == "ced"
+                    img.card.cei.lazyload(style="--width: " + imageSize
+                                          data-sizes="auto"
+                                          data-src=url
+                                          alt=alt)
+                else
+                    img.card.lazyload(style="--width: " + imageSize
+                                      data-sizes="auto"
+                                      data-src=url
+                                      alt=alt)
+             
+
+
+
+

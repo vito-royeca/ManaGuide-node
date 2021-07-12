@@ -183,8 +183,10 @@ html(lang="en")
             a.js-gotop(href="#")
                 i.icon-arrow-up2
 
+        // jQuery
+        //script(src="/js/jquery.min.js")
         // jQuery Easing
-        //script(src="/js/jquery.easing.1.3.js")
+        script(src="/js/jquery.easing.1.3.js")
         // Bootstrap
         script(src="/js/bootstrap.min.js")
         // Waypoints
@@ -203,6 +205,13 @@ html(lang="en")
         script.
             $('.ui.selection.dropdown').dropdown();
             $('ui.mini.right.labeled.input').dropdown();
+            $('.button').popup({
+                inline: true
+            });
+            $('a').popup({
+                inline:     true,
+                lastResort: 'bottom right',
+            });
 
 
 

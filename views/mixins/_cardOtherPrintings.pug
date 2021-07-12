@@ -17,13 +17,19 @@ mixin cardOtherPrintings(card)
                         - foilMarket = price.market
                     else
                         - normalMarket = price.market
-
                 tr
                     td
                         a.image(href="/card/" + printing.new_id)
                             i(class='ss ss-' + printing.set.keyrune_class + ' ss-' + printing.rarity.name.toLowerCase() + ' ss-2x')
                     td
-                        a(href="/card/" + printing.new_id) #{ printing.set.name }
+                        a(href="/card/" + printing.new_id data-position="bottom right") #{ printing.set.name }
+                        +cardArtPopup(printing,
+                                      ImageTypeEnum.normal,
+                                      card.language.code == "en" ? card.name : card.printed_name,
+                                      "250px",
+                                      card.language.code,
+                                      printing.collector_number,
+                                      card.faces != undefined && card.faces.length > 0)
                     if normalMarket > 0
                         td.right.aligned $#{ normalMarket }
                     else

@@ -8,7 +8,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "en"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button EN
+                            .ui.button(data-position="bottom right") EN
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "es"
                 .ui.button.disabled ES
@@ -16,7 +23,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "es"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button ES
+                            .ui.button(data-position="bottom right") ES
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "fr"
                 .ui.button.disabled FR
@@ -24,7 +38,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "fr"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button FR
+                            .ui.button(data-position="bottom right") FR
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "de"
                 .ui.button.disabled DE
@@ -32,7 +53,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "de"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button DE
+                            .ui.button(data-position="bottom right") DE
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "it"
                 .ui.button.disabled IT
@@ -40,7 +68,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "it"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button IT
+                            .ui.button(data-position="bottom right") IT
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "pt"
                 .ui.button.disabled PT
@@ -48,7 +83,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "pt"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button PT
+                            .ui.button(data-position="bottom right") PT
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "ja"
                 .ui.button.disabled JA
@@ -56,7 +98,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "ja"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button JA
+                            .ui.button(data-position="bottom right") JA
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "ko"
                 .ui.button.disabled KO
@@ -64,7 +113,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "ko"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button KO
+                            .ui.button(data-position="bottom right") KO
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "ru"
                 .ui.button.disabled RU
@@ -72,7 +128,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "ru"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button RU
+                            .ui.button(data-position="bottom right") RU
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "zhs"
                 .ui.button.disabled 汉语
@@ -80,7 +143,14 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "zhs"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button 汉语
+                            .ui.button(data-position="bottom right") 汉语
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
 
             if card.language.code == "zht"
                 .ui.button.disabled 漢語
@@ -88,4 +158,11 @@ mixin cardLanguageButtons(card)
                 each other_language in card.other_languages
                     if other_language.code == "zht"
                         a(href="/card/" + card.set.code + "_" + other_language.code + "_" + card.collector_number)
-                            .ui.button 漢語 
+                            .ui.button(data-position="bottom right") 漢語 
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.printed_name,
+                                          "250px",
+                                          other_language.code,
+                                          card.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)

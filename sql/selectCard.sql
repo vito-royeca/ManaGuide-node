@@ -184,6 +184,7 @@ BEGIN
                             (
 								SELECT row_to_json(b) FROM (
                                 	select x.new_id,
+                                    x.collector_number,
                                 	x.name,
                                 	x.printed_name
 								)
@@ -220,7 +221,9 @@ BEGIN
     command := command ||
                     ', array(
                         SELECT row_to_json(x) FROM (
-						    SELECT c.new_id,
+						    SELECT
+                                c.new_id,
+                                c.collector_number,
 								(
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.name

@@ -6,9 +6,17 @@ mixin cardVariations(card)
                     .ui.tiny.image
                         a.image(href="/card/" + variation.new_id)
                             img.medium.rounded.ui.image(src=cardImageUrl(variation, ImageTypeEnum.art_crop, 0)
-                                                alt=card.language.code == "en" ? card.name : card.printed_name)
+                                                        alt=card.language.code == "en" ? card.name : card.printed_name)
                     .middle.aligned.content
                         .description
-                            a(href="/card/" + variation.new_id) ##{variation.collector_number}
+                            a(href="/card/" + variation.new_id data-position="bottom left") ##{variation.collector_number}
+                            +cardArtPopup(card,
+                                          ImageTypeEnum.normal,
+                                          card.language.code == "en" ? card.name : card.printed_name,
+                                          "250px",
+                                          card.language.code,
+                                          variation.collector_number,
+                                          card.faces != undefined && card.faces.length > 0)
+                            
     else
         p &#8212;
