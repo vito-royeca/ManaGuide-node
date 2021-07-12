@@ -1,6 +1,9 @@
 mixin imageCardsRow(card)
+    - const image1 = cardImageUrl(card, ImageTypeEnum.normal, 0)
+    - const image2 = card.image_uris.length > 1 ? cardImageUrl(card, ImageTypeEnum.normal, 1) : ""
     - var foil = 0
     - var normal = 0
+
     each price in card.prices
         if price.is_foil
             - foil = price.market
@@ -19,9 +22,34 @@ mixin imageCardsRow(card)
                     span(class="left floated") Normal $#{normal}
                 else
                     span(class="left floated") Normal &#8212
-        .ui.bottom.attached.button
-            if card.tcgplayer_id != 0
-                a(href="https://www.tcgplayer.com/product/" + card.tcgplayer_id + "/partner=ManaGuide" target="_blank" rel="noopener noreferrer")
-                    <i class="shopping cart icon"></i> Buy at TCGPlayer
-            else
-                span &nbsp;
+        .content
+            .left.floated
+                if card.tcgplayer_id != 0
+                    a(href="https://www.tcgplayer.com/product/" + card.tcgplayer_id + "/partner=ManaGuide" target="_blank" rel="noopener noreferrer")    
+                        <i class="shopping cart icon"></i> Buy at TCGPlayer
+                else
+                    span &nbsp;
+
+            .right.floated
+                if card.layout.name == "Split"
+                    a(onclick="rotateCard('" + card.new_id + "')")
+                        <i class="icon redo"></i> Rotate
+                else if card.layout.name == "Planar"
+                    a(onclick="rotateCard('" + card.new_id + "')")
+                        <i class="icon redo"></i> Rotate
+                else if card.layout.name == "Flip"
+                    a(onclick="flipCard('" + card.new_id + "')")
+                        <i class="icon redo"></i> Flip
+                else if card.layout.name == "Transform"
+                    a(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
+                        <i class="icon sync"></i> Transform
+                else if card.layout.name == "Double Faced Token"
+                    a(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
+                        <i class="icon sync"></i> Turn Over
+                else if card.layout.name == "Art Series"
+                    a(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
+                        <i class="icon sync"></i> Turn Over
+                else
+                    span &nbsp;
+
+            

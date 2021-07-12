@@ -22,6 +22,7 @@ CREATE OR REPLACE FUNCTION selectCards(
         set json,
         rarity json,
         language json,
+        layout json,
         prices json[],
         faces  json[]
     )
@@ -90,6 +91,13 @@ BEGIN
                             FROM cmlanguage l WHERE l.code = c.cmlanguage
                         ) x
                     ) AS language,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT v.name, v.name_section, v.description
+                            FROM cmlayout v
+                            WHERE v.name = c.cmlayout
+                        ) x
+                    ) AS layout,
                     array(
                         SELECT row_to_json(x) FROM (
                             SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created

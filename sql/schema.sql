@@ -1715,7 +1715,7 @@ ALTER FUNCTION public.createorupdatewatermark(character varying, character varyi
 -- Name: searchcards(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.searchcards(character varying, character varying, character varying) RETURNS TABLE(new_id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, tcgplayer_id integer, released_at date, set json, rarity json, language json, prices json[], faces json[])
+CREATE FUNCTION public.searchcards(character varying, character varying, character varying) RETURNS TABLE(new_id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, tcgplayer_id integer, released_at date, set json, rarity json, language json, layout json, prices json[], faces json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
@@ -1781,6 +1781,13 @@ BEGIN
                             FROM cmlanguage l WHERE l.code = c.cmlanguage
                         ) x
                     ) AS language,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT v.name, v.name_section, v.description
+                            FROM cmlayout v
+                            WHERE v.name = c.cmlayout
+                        ) x
+                    ) AS layout,
                     array(
                         SELECT row_to_json(x) FROM (
                             SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created
@@ -2008,28 +2015,7 @@ BEGIN
 								SELECT row_to_json(b) FROM (
                                 	select x.new_id,
                                 	x.name,
-                                	x.printed_name,
-							    	(
-                                    	SELECT row_to_json(x) FROM (
-                                        	SELECT v.name
-                                        	FROM cmrarity v
-                                        	WHERE v.name = x.cmrarity
-                                    	) x
-                                	) AS rarity,
-									(
-                                    	SELECT row_to_json(x) FROM (
-                                        	SELECT y.code, y.keyrune_class
-                                        	FROM cmset y
-                                        	WHERE y.code = x.cmset
-                                    	) x
-                                	) AS set,
-									(
-                                    	SELECT row_to_json(x) FROM (
-                                        	SELECT z.code
-                                        	FROM cmlanguage z
-                                        	WHERE z.code = x.cmlanguage
-                                    	) x
-                                	) AS language
+                                	x.printed_name
 								)
 							b) AS card
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
@@ -2050,35 +2036,13 @@ BEGIN
     command := command ||
                     ', array(
                         SELECT row_to_json(x) FROM (
-                            SELECT c.new_id,
-                                c.name,
-                                c.printed_name,
-							    (
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT v.name
-                                        FROM cmrarity v
-                                        WHERE v.name = c.cmrarity
-                                    ) x
-                                ) AS rarity,
-								(
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT y.code, y.keyrune_class
-                                        FROM cmset y
-                                        WHERE y.code = c.cmset
-                                    ) x
-                                ) AS set,
-								(
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT z.code
-                                        FROM cmlanguage z
-                                        WHERE z.code = c.cmlanguage
-                                    ) x
-                                ) AS language
+                            SELECT
+                                w.code
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.new_id
-                            left join cmset y on y.code = c.cmset
                             WHERE x.cmcard = ''' || _new_id || '''' ||
-                            ' order by y.release_date desc
+                            ' group by w.code 
+							 order by w.code
                         ) x
                     ) AS other_languages ';
 
@@ -2087,8 +2051,6 @@ BEGIN
                     ', array(
                         SELECT row_to_json(x) FROM (
 						    SELECT c.new_id,
-                                c.name,
-                                c.printed_name,
 								(
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.name
@@ -2103,13 +2065,6 @@ BEGIN
                                         WHERE y.code = c.cmset
                                     ) x
                                 ) AS set,
-								(
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT z.code
-                                        FROM cmlanguage z
-                                        WHERE z.code = c.cmlanguage
-                                    ) x
-                                ) AS language,
                                 array(
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.market, v.is_foil
@@ -2121,7 +2076,7 @@ BEGIN
                             left join cmcard_otherprinting w on w.cmcard_otherprinting = c.new_id
                             left join cmset y on y.code = c.cmset
                             WHERE w.cmcard = ''' || _new_id || '''' ||
-                            ' order by y.release_date desc
+                            ' order by y.release_date desc, c.collector_number
                         ) x
                     ) AS other_printings ';
 
@@ -2130,34 +2085,10 @@ BEGIN
                 ', array(
                     SELECT row_to_json(x) FROM (
 						SELECT c.new_id,
-                            c.name,
-                            c.collector_number,
-                            c.printed_name,
-							(
-                                SELECT row_to_json(x) FROM (
-                                    SELECT v.name
-                                    FROM cmrarity v
-                                    WHERE v.name = c.cmrarity
-                                ) x
-                            ) AS rarity,
-							(
-                                SELECT row_to_json(x) FROM (
-                                    SELECT y.code, y.keyrune_class
-                                    FROM cmset y
-                                    WHERE y.code = c.cmset
-                                ) x
-                            ) AS set,
-							(
-                                SELECT row_to_json(x) FROM (
-                                    SELECT z.code
-                                    FROM cmlanguage z
-                                    WHERE z.code = c.cmlanguage
-                                ) x
-                            ) AS language
+                            c.collector_number
                         FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.new_id
-                        left join cmset y on y.code = c.cmset
                         WHERE w.cmcard = ''' || _new_id || '''' ||
-                        ' order by y.release_date desc
+                        ' order by c.collector_number
                     ) x
                 ) AS variations ';
 
@@ -2236,7 +2167,7 @@ ALTER FUNCTION public.selectcard(character varying) OWNER TO managuide;
 -- Name: selectcards(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.selectcards(character varying, character varying, character varying, character varying) RETURNS TABLE(new_id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, tcgplayer_id integer, released_at date, set json, rarity json, language json, prices json[], faces json[])
+CREATE FUNCTION public.selectcards(character varying, character varying, character varying, character varying) RETURNS TABLE(new_id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, my_name_section character varying, my_number_order double precision, name character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, tcgplayer_id integer, released_at date, set json, rarity json, language json, layout json, prices json[], faces json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
@@ -2302,6 +2233,13 @@ BEGIN
                             FROM cmlanguage l WHERE l.code = c.cmlanguage
                         ) x
                     ) AS language,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT v.name, v.name_section, v.description
+                            FROM cmlayout v
+                            WHERE v.name = c.cmlayout
+                        ) x
+                    ) AS layout,
                     array(
                         SELECT row_to_json(x) FROM (
                             SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created
