@@ -69,11 +69,11 @@ block data
                                 button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
                                     <i class="icon sync"></i> Turn Over
                         
-                        h3.ui.header Variations: #{card.variations.length}
+                        h3.ui.header Variations #{card.variations.length > 0 ? (": " + card.variations.length) : ""}
                         p
                             +cardVariations(card)
-                        h3.ui.header Parts: #{card.component_parts.length}
-                        p 
+                        h3.ui.header Parts #{card.component_parts.length > 0 ? (": " + card.component_parts.length) : ""}
+                        p
                             +cardParts(card)
                             
                     td(width="50%" style="padding: 10px; vertical-align: top;")
@@ -95,8 +95,9 @@ block data
 
                     td(width="20%" style="padding: 10px; vertical-align: top;")
                         +cardPricing(card)
-                        h3.ui.header Other Printings (Market Pricing): #{card.other_printings.length}
-                        +cardOtherPrintings(card)
+                        h3.ui.header Other Printings (Market Pricing) #{card.other_printings.length > 0 ? (": " + card.other_printings.length) : ""}
+                        p
+                            +cardOtherPrintings(card)
                         
 
 
