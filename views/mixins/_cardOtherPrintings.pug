@@ -31,11 +31,11 @@ mixin cardOtherPrintings(card)
                                       printing.collector_number,
                                       card.faces != undefined && card.faces.length > 0)
                     if normalMarket > 0
-                        td.right.aligned $#{ normalMarket }
+                        td.right.aligned $#{ number2USD(normalMarket) }
                     else
                         td.right.aligned &#8212
                     if foilMarket > 0
-                        td.right.aligned $#{ foilMarket }
+                        td.right.aligned $#{ number2USD(foilMarket) }
                     else
                         td.right.aligned &#8212
 

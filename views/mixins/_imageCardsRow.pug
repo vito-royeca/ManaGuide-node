@@ -14,15 +14,14 @@ mixin imageCardsRow(card)
             +cardArt(card, ImageTypeEnum.normal, card.language.code == "en" ? card.name : card.printed_name, "250px")         
 
         .content
-            .description
-                if foil > 0
-                    span(class="right floated") Foil $#{foil}
-                else
-                    span(class="right floated") Foil &#8212
-                if normal > 0
-                    span(class="left floated") Normal $#{normal}
-                else
-                    span(class="left floated") Normal &#8212
+            if normal > 0
+                .left.floated.content Normal $#{ number2USD(normal) }
+            else
+                .left.floated.content Normal &#8212;
+            if foil > 0
+                .right.floated.content Foil $#{ number2USD(foil) }
+            else
+                .right.floated.content Foil &#8212;
         .content
             .left.floated
                 if card.tcgplayer_id != 0

@@ -1,27 +1,27 @@
 mixin cardPricing(card)
-    - var foilLow = 0
-    - var foilMedian = 0
-    - var foilHigh = 0
-    - var foilMarket = 0
-    - var foilDirectLow = 0
-    - var normalLow = 0
-    - var normalMedian = 0
-    - var normalHigh = 0
-    - var normalMarket = 0
+    - var foilLow         = 0
+    - var foilMedian      = 0
+    - var foilHigh        = 0
+    - var foilMarket      = 0
+    - var foilDirectLow   = 0
+    - var normalLow       = 0
+    - var normalMedian    = 0
+    - var normalHigh      = 0
+    - var normalMarket    = 0
     - var normalDirectLow = 0
 
     each price in card.prices
         if price.is_foil
-            - foilLow = price.low
-            - foilMedian = price.median
-            - foilHigh = price.high
-            - foilMarket = price.market
+            - foilLow       = price.low
+            - foilMedian    = price.median
+            - foilHigh      = price.high
+            - foilMarket    = price.market
             - foilDirectLow = price.direct_low
         else
-            - normalLow = price.low
-            - normalMedian = price.median
-            - normalHigh = price.high
-            - normalMarket = price.market
+            - normalLow       = price.low
+            - normalMedian    = price.median
+            - normalHigh      = price.high
+            - normalMarket    = price.market
             - normalDirectLow = price.direct_low
 
     table.ui.small.table
@@ -34,51 +34,51 @@ mixin cardPricing(card)
             tr
                 td Low
                 if normalLow > 0
-                    td.right.aligned $#{ normalLow }
+                    td.right.aligned $#{ number2USD(normalLow) }
                 else
                     td.right.aligned &#8212
                 if foilLow > 0
-                    td.right.aligned $#{ foilLow }
+                    td.right.aligned $#{ number2USD(foilLow) }
                 else
                     td.right.aligned &#8212
             tr
                 td Median
                 if normalMedian > 0
-                    td.right.aligned $#{ normalMedian }
+                    td.right.aligned $#{ number2USD(normalMedian) }
                 else
                     td.right.aligned &#8212
                 if foilMedian > 0
-                    td.right.aligned $#{ foilMedian }
+                    td.right.aligned $#{ number2USD(foilMedian) }
                 else
                     td.right.aligned &#8212
             tr
                 td High
                 if normalHigh > 0
-                    td.right.aligned $#{ normalHigh }
+                    td.right.aligned $#{ number2USD(normalHigh) }
                 else
                     td.right.aligned &#8212
                 if foilHigh > 0
-                    td.right.aligned $#{ foilHigh }
+                    td.right.aligned $#{ number2USD(foilHigh) }
                 else
                     td.right.aligned &#8212
             tr
                 td Market
                 if normalMarket > 0
-                    td.right.aligned $#{ normalMarket }
+                    td.right.aligned $#{ number2USD(normalMarket) }
                 else
                     td.right.aligned &#8212
                 if foilMarket > 0
-                    td.right.aligned $#{ foilMarket }
+                    td.right.aligned $#{ number2USD(foilMarket) }
                 else
                     td.right.aligned &#8212
             tr
                 td Direct Low
                 if normalDirectLow > 0
-                    td.right.aligned $#{ normalDirectLow }
+                    td.right.aligned $#{ number2USD(normalDirectLow) }
                 else
                     td.right.aligned &#8212
                 if foilDirectLow > 0
-                    td.right.aligned $#{ foilDirectLow }
+                    td.right.aligned $#{ number2USD(foilDirectLow) }
                 else
                     td.right.aligned &#8212
         tfoot

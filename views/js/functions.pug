@@ -189,4 +189,9 @@
 -            return "magic2015"
 -        }
 -    }
+-
+-    function number2USD(number) {
+-        // 12,345.67
+-        return number != null || number != undefined ? (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') : 0
+-    }
 

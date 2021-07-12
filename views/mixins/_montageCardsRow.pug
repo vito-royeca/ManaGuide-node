@@ -1,4 +1,13 @@
 mixin montageCardsRow(card)
+    - var foil = 0
+    - var normal = 0
+
+    each price in card.prices
+        if price.is_foil
+            - foil = price.market
+        else
+            - normal = price.market
+
     .ui.centered.card
         .content
             .left.floated.content
@@ -14,20 +23,12 @@ mixin montageCardsRow(card)
                 i(class='ss ss-' + card.set.keyrune_class + ' ss-' + card.rarity.name.toLowerCase() + ' ss-2x')
 
         .content
-            - var foil = 0
-            - var normal = 0
-
-            each price in card.prices
-                if price.is_foil
-                    - foil = price.market
-                else
-                    - normal = price.market
             if normal > 0
-                .left.floated.content Normal $#{ normal }
+                .left.floated.content Normal $#{ number2USD(normal) }
             else
                 .left.floated.content Normal &#8212;
             if foil > 0
-                .right.floated.content Foil $#{ foil }
+                .right.floated.content Foil $#{ number2USD(foil) }
             else
                 .right.floated.content Foil &#8212;
         

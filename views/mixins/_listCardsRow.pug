@@ -18,11 +18,11 @@ mixin listCardsRow(card)
         td #{card.language.code == "en" ? card.type_line : card.printed_type_line}
         td #{card.rarity.name}
         if normal > 0
-            td.right.aligned $#{ normal }
+            td.right.aligned $#{ number2USD(normal) }
         else
             td.right.aligned &#8212
         if foil > 0
-            td.right.aligned $#{ foil }
+            td.right.aligned $#{ number2USD(foil) }
         else
             td.right.aligned &#8212
         if card.tcgplayer_id != 0    
