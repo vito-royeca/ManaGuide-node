@@ -10,9 +10,9 @@ mixin cardParts(card)
                     .content
                         .descripiton
                             a.image(href="/card/" + part.card.new_id data-position="bottom left") #{part.card.name}
-                            +cardArtPopup(card,
+                            +cardArtPopup(part.card,
                                           ImageTypeEnum.normal,
-                                          card.language.code == "en" ? card.name : card.printed_name,
+                                          card.language.code == "en" ? part.card.name : part.card.printed_name,
                                           "250px",
                                           card.language.code,
                                           part.card.collector_number,

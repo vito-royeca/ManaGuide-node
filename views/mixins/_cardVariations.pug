@@ -12,7 +12,7 @@ mixin cardVariations(card)
                             a(href="/card/" + variation.new_id data-position="bottom left") ##{variation.collector_number}
                             +cardArtPopup(card,
                                           ImageTypeEnum.normal,
-                                          card.language.code == "en" ? card.name : card.printed_name,
+                                          card.language.code == "en" ? variation.name : variation.printed_name,
                                           "250px",
                                           card.language.code,
                                           variation.collector_number,

@@ -186,7 +186,13 @@ BEGIN
                                 	select x.new_id,
                                     x.collector_number,
                                 	x.name,
-                                	x.printed_name
+                                	x.printed_name,
+                                    (
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT v.code, v.keyrune_class
+                                        FROM cmset v WHERE v.code = x.cmset
+                                    ) x
+                                    ) AS set
 								)
 							b) AS card
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
