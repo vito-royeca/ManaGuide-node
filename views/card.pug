@@ -68,7 +68,11 @@ block data
                             <br/>
                                 button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
                                     <i class="icon sync"></i> Turn Over
-                        
+                        else if card.layout.name == "Modal Dfc"
+                            <br/>
+                                button.ui.basic.button(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
+                                    <i class="icon sync"></i> Turn Over
+
                         h3.ui.header Variations #{card.variations.length > 0 ? (": " + card.variations.length) : ""}
                         p
                             +cardVariations(card)

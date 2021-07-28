@@ -23,6 +23,24 @@ exports.updateCardImageUrls = function(card) {
         }
     }
 
+    if (card.other_languages != undefined) {
+        for (var i=0; i<card.other_languages.length; i++) {
+            const newData = card.other_languages[i]
+            new_id = newData.new_id == null ? "" : newData.new_id
+            faces = newData.faces
+            newData.image_uris = buildCardImageUrls(new_id, faces)
+        }
+    }
+
+    if (card.other_printings != undefined) {
+        for (var i=0; i<card.other_printings.length; i++) {
+            const newData = card.other_printings[i]
+            new_id = newData.new_id == null ? "" : newData.new_id
+            faces = newData.faces
+            newData.image_uris = buildCardImageUrls(new_id, faces)
+        }
+    }
+
     return card
 }
 

@@ -13,10 +13,7 @@ mixin cardParts(card)
                             +cardArtPopup(part.card,
                                           ImageTypeEnum.normal,
                                           card.language.code == "en" ? part.card.name : part.card.printed_name,
-                                          "250px",
-                                          card.language.code,
-                                          part.card.collector_number,
-                                          card.faces != undefined && card.faces.length > 0)
+                                          "250px")
                         .meta #{part.component.name}
 
     else

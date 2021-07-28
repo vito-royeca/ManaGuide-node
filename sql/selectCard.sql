@@ -125,7 +125,7 @@ BEGIN
                     ) AS language,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.name, v.name_section, v.description
+                            SELECT v.name
                             FROM cmlayout v
                             WHERE v.name = c.cmlayout
                         ) x
@@ -139,35 +139,35 @@ BEGIN
                     ) AS watermark,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.name, v.name_section, v.description
+                            SELECT v.name
                             FROM cmframe v
                             WHERE v.name = c.cmframe
                         ) x
                     ) AS frame,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.first_name, v.last_name, v.name, v.name_section
+                            SELECT v.name
                             FROM cmartist v
                             WHERE v.name = c.cmartist
                         ) x
                     ) AS artist,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name, w.name_section, w.symbol, w.is_mana_color
+                            SELECT w.name
                             FROM cmcard_color v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
                         ) x
                     ) AS colors,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name, w.name_section, w.symbol, w.is_mana_color
+                            SELECT w.name
                             FROM cmcard_coloridentity v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
                         ) x
                     ) AS color_identities,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name, w.name_section, w.symbol, w.is_mana_color
+                            SELECT w.name
                             FROM cmcard_colorindicator v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
                         ) x
@@ -214,11 +214,32 @@ BEGIN
                     ', array(
                         SELECT row_to_json(x) FROM (
                             SELECT
-                                w.code
+                                x.cmcard_otherlanguage as new_id,
+                                (
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT v.code
+                                        FROM cmlanguage v
+                                        WHERE v.code = w.code
+                                    ) x
+                                ) AS language,
+                                (
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT y.code
+                                        FROM cmset y
+                                        WHERE y.code = c.cmset
+                                    ) x
+                                ) AS set,
+                                array(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT new_id
+                                        FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
+                                        WHERE w.cmcard = x.cmcard_otherlanguage
+                                    ) x
+                                ) AS faces
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.new_id
                             WHERE x.cmcard = ''' || _new_id || '''' ||
-                            ' group by w.code 
+                            ' group by w.code, x.cmcard_otherlanguage, c.cmset 
 							 order by w.code
                         ) x
                     ) AS other_languages ';
@@ -229,7 +250,6 @@ BEGIN
                         SELECT row_to_json(x) FROM (
 						    SELECT
                                 c.new_id,
-                                c.collector_number,
 								(
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.name
@@ -244,6 +264,13 @@ BEGIN
                                         WHERE y.code = c.cmset
                                     ) x
                                 ) AS set,
+								array(
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT new_id
+                                        FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
+                                        WHERE w.cmcard = x.cmcard_otherprinting
+                                    ) x
+                                ) AS faces,
                                 array(
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.market, v.is_foil
@@ -252,9 +279,9 @@ BEGIN
                                     ) x
                                 ) AS prices
                             FROM cmcard c
-                            left join cmcard_otherprinting w on w.cmcard_otherprinting = c.new_id
+                            left join cmcard_otherprinting x on x.cmcard_otherprinting = c.new_id
                             left join cmset y on y.code = c.cmset
-                            WHERE w.cmcard = ''' || _new_id || '''' ||
+                            WHERE x.cmcard = ''' || _new_id || '''' ||
                             ' order by y.release_date desc, c.collector_number
                         ) x
                     ) AS other_printings ';
@@ -287,7 +314,7 @@ BEGIN
     command := command ||
                ', array(
                     SELECT row_to_json(x) FROM (
-                        SELECT w.id, w.name, w.name_section, w.description
+                        SELECT w.id
                         FROM cmcard_frameeffect v left join cmframeeffect w on v.cmframeeffect = w.id
                         WHERE v.cmcard = c.new_id
                     ) x
@@ -297,7 +324,7 @@ BEGIN
     command := command ||
                ', array(
                     SELECT row_to_json(x) FROM (
-                        SELECT w.name, w.name_section, w.cmcardtype_parent AS parent
+                        SELECT w.name
                         FROM cmcard_subtype v left join cmcardtype w on v.cmcardtype = w.name
                         WHERE v.cmcard = c.new_id
                     ) x
@@ -307,7 +334,7 @@ BEGIN
     command := command ||
                ', array(
                     SELECT row_to_json(x) FROM (
-                        SELECT w.name, w.name_section, w.cmcardtype_parent AS parent
+                        SELECT w.name
                         FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
                         WHERE v.cmcard = c.new_id
                     ) x
@@ -317,7 +344,7 @@ BEGIN
     command := command ||
                ', array(
                     SELECT row_to_json(x) FROM (
-                        SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created
+                        SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_updated
                         FROM cmcardprice v
                         WHERE v.cmcard = c.new_id
                     ) x

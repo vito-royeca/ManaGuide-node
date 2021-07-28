@@ -100,7 +100,7 @@ BEGIN
                     ) AS layout,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_created
+                            SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_updated
                             FROM cmcardprice v
                             WHERE v.cmcard = c.new_id
                         ) x

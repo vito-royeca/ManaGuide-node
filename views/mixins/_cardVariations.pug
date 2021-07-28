@@ -13,10 +13,7 @@ mixin cardVariations(card)
                             +cardArtPopup(card,
                                           ImageTypeEnum.normal,
                                           card.language.code == "en" ? variation.name : variation.printed_name,
-                                          "250px",
-                                          card.language.code,
-                                          variation.collector_number,
-                                          card.faces != undefined && card.faces.length > 0)
+                                          "250px")
                             
     else
         p &#8212;

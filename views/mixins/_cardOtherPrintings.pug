@@ -25,11 +25,8 @@ mixin cardOtherPrintings(card)
                         a(href="/card/" + printing.new_id data-position="bottom right") #{ printing.set.name }
                         +cardArtPopup(printing,
                                       ImageTypeEnum.normal,
-                                      card.language.code == "en" ? card.name : card.printed_name,
-                                      "250px",
-                                      card.language.code,
-                                      printing.collector_number,
-                                      card.faces != undefined && card.faces.length > 0)
+                                      card.name,
+                                      "250px")
                     if normalMarket > 0
                         td.right.aligned $#{ number2USD(normalMarket) }
                     else

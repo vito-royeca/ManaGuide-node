@@ -125,28 +125,15 @@
 -        return newText
 -    }
 -
--    function cardImageUrl(card, imageTypeType, index, languageCode = null, collectorNumber = null, hasFaces = false) {
+-    function cardImageUrl(card, imageTypeType, index) {
 -        let path = ""    
--        if (languageCode != null && collectorNumber != null) {
--            let cn = hasFaces ? (collectorNumber + "_" + index) :  collectorNumber
--            path = "/images/cards/"+ card.set.code + "/" + languageCode + "/" + cn
--
+-        if (card.image_uris != undefined && card.image_uris.length > 0) {
 -            if (imageTypeType == ImageTypeEnum.art_crop) {
--                path += "/art_crop.jpg"
+-                path = card.image_uris[index].art_crop
 -            } else if (imageTypeType == ImageTypeEnum.normal) {
--                path += "/normal.jpg"
+-                path = card.image_uris[index].normal
 -            } else if (imageTypeType == ImageTypeEnum.png) {
--                path += "/png.png"
--            }
--        } else  {    
--            if (card.image_uris != undefined && card.image_uris.length > 0) {
--                if (imageTypeType == ImageTypeEnum.art_crop) {
--                    path = card.image_uris[index].art_crop
--                } else if (imageTypeType == ImageTypeEnum.normal) {
--                    path = card.image_uris[index].normal
--                } else if (imageTypeType == ImageTypeEnum.png) {
--                    path = card.image_uris[index].png
--                }
+-                path = card.image_uris[index].png
 -            }
 -        }
 -        return path

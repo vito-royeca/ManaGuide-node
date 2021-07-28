@@ -1,6 +1,6 @@
-mixin cardArtPopup(card, imageType, alt, imageSize = "100%", languageCode = null, collectorNumber = null, hasFaces = false)
+mixin cardArtPopup(card, imageType, alt, imageSize = "100%")
     .ui.popup
-        - let url = cardImageUrl(card, imageType, 0, languageCode, collectorNumber, hasFaces)
+        - let url = cardImageUrl(card, imageType, 0)
 
         if imageType == ImageTypeEnum.art_crop
             img.crop.lazyload(style="--width: " + imageSize
