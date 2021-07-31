@@ -63,8 +63,11 @@ AS
 $$
 DECLARE
     _new_id ALIAS FOR $1;
-    command character varying;
+	_collector_number character varying;
+    command character varying;	
 BEGIN
+	SELECT c.collector_number INTO _collector_number FROM cmcard c where c.new_id = _new_id;
+	
     command := 'SELECT
                     c.collector_number,
                     c.cmc,
@@ -238,7 +241,7 @@ BEGIN
                                 ) AS faces
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.new_id
-                            WHERE x.cmcard = ''' || _new_id || '''' ||
+                            WHERE x.cmcard = ''' || _new_id || '''' || ' and x.cmcard_otherlanguage LIKE ''%' || _collector_number || '''' ||
                             ' group by w.code, x.cmcard_otherlanguage, c.cmset 
 							 order by w.code
                         ) x
@@ -291,7 +294,14 @@ BEGIN
                 ', array(
                     SELECT row_to_json(x) FROM (
 						SELECT c.new_id,
-                            c.collector_number
+                            c.collector_number,
+                            (
+                                SELECT row_to_json(x) FROM (
+                                    SELECT y.code
+                                    FROM cmset y
+                                    WHERE y.code = c.cmset
+                                ) x
+                            ) AS set
                         FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.new_id
                         WHERE w.cmcard = ''' || _new_id || '''' ||
                         ' order by c.collector_number
