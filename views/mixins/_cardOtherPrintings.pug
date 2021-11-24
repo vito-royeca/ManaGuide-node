@@ -12,6 +12,8 @@ mixin cardOtherPrintings(card)
                     th.right.aligned Foil
             tbody
             each printing in card.other_printings
+                - foilMarket = 0
+                - normalMarket = 0
                 each price in printing.prices
                     if price.is_foil
                         - foilMarket = price.market

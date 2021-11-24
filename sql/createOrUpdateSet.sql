@@ -108,12 +108,12 @@ BEGIN
                 is_foil_only = _is_foil_only,
                 is_online_only = _is_online_only,
                 mtgo_code = _mtgo_code,
-                keyrune_unicode = parent_row.keyrune_unicode,
-                keyrune_class = parent_row.keyrune_class,
-                my_name_section = parent_row.my_name_section,
-                my_year_section = parent_row.my_year_section,
+                keyrune_unicode = (CASE WHEN (_keyrune_unicode != parent_row.keyrune_unicode) THEN _keyrune_unicode ELSE parent_row.keyrune_unicode END),
+                keyrune_class = (CASE WHEN (_keyrune_class != parent_row.keyrune_class) THEN _keyrune_class ELSE parent_row.keyrune_class END),
+                my_name_section = (CASE WHEN (_my_name_section != parent_row.my_name_section) THEN _my_name_section ELSE parent_row.my_name_section END),
+                my_year_section = (CASE WHEN (_my_year_section != parent_row.my_year_section) THEN _my_year_section ELSE parent_row.my_year_section END),
                 name = _name,
-                release_date = parent_row.release_date,
+                release_date = (CASE WHEN (_release_date != parent_row.release_date) THEN _release_date ELSE parent_row.release_date END),
                 tcgplayer_id = _tcgplayer_id,
                 cmsetblock = _cmsetblock,
                 cmsettype = _cmsettype,
@@ -137,14 +137,6 @@ BEGIN
                 cmsettype = _cmsettype,
                 date_updated = now()
             WHERE code = _code;
-
-            UPDATE cmset SET
-                keyrune_unicode = _keyrune_unicode,
-                keyrune_class = _keyrune_class,
-                my_name_section = _my_name_section,
-                my_year_section = _my_year_section,
-                date_updated = now()
-            WHERE cmset_parent = _code;
         END IF;
     END IF;
 
