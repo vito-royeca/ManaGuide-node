@@ -22,8 +22,8 @@ DECLARE
     _mtgo_code ALIAS FOR $5;
     _keyrune_unicode ALIAS FOR $6;
     _keyrune_class ALIAS FOR $7;
-    _my_name_section ALIAS FOR $8;
-    _my_year_section ALIAS FOR $9;
+    _name_section ALIAS FOR $8;
+    _year_section ALIAS FOR $9;
     _name ALIAS FOR $10;
     _release_date ALIAS FOR $11;
     _tcgplayer_id ALIAS FOR $12;
@@ -44,11 +44,11 @@ BEGIN
     IF lower(_keyrune_class) = 'null' THEN
         _keyrune_class := NULL;
     END IF;
-    IF lower(_my_name_section) = 'null' THEN
-        _my_name_section := NULL;
+    IF lower(_name_section) = 'null' THEN
+        _name_section := NULL;
     END IF;
-    IF lower(_my_year_section) = 'null' THEN
-        _my_year_section := NULL;
+    IF lower(_year_section) = 'null' THEN
+        _year_section := NULL;
     END IF;
     IF lower(_name) = 'null' THEN
         _name := NULL;
@@ -77,8 +77,8 @@ BEGIN
             mtgo_code,
             keyrune_unicode,
             keyrune_class,
-            my_name_section,
-            my_year_section,
+            name_section,
+            year_section,
             name,
             release_date,
             tcgplayer_id,
@@ -92,8 +92,8 @@ BEGIN
             _mtgo_code,
             _keyrune_unicode,
             _keyrune_class,
-            _my_name_section,
-            _my_year_section,
+            _name_section,
+            _year_section,
             _name,
             _release_date,
             _tcgplayer_id,
@@ -110,8 +110,8 @@ BEGIN
                 mtgo_code = _mtgo_code,
                 keyrune_unicode = (CASE WHEN (_keyrune_unicode != parent_row.keyrune_unicode) THEN _keyrune_unicode ELSE parent_row.keyrune_unicode END),
                 keyrune_class = (CASE WHEN (_keyrune_class != parent_row.keyrune_class) THEN _keyrune_class ELSE parent_row.keyrune_class END),
-                my_name_section = (CASE WHEN (_my_name_section != parent_row.my_name_section) THEN _my_name_section ELSE parent_row.my_name_section END),
-                my_year_section = (CASE WHEN (_my_year_section != parent_row.my_year_section) THEN _my_year_section ELSE parent_row.my_year_section END),
+                name_section = (CASE WHEN (_name_section != parent_row.name_section) THEN _name_section ELSE parent_row.name_section END),
+                year_section = (CASE WHEN (_year_section != parent_row.year_section) THEN _year_section ELSE parent_row.year_section END),
                 name = _name,
                 release_date = (CASE WHEN (_release_date != parent_row.release_date) THEN _release_date ELSE parent_row.release_date END),
                 tcgplayer_id = _tcgplayer_id,
@@ -128,8 +128,8 @@ BEGIN
                 mtgo_code = _mtgo_code,
                 keyrune_unicode = _keyrune_unicode,
                 keyrune_class = _keyrune_class,
-                my_name_section = _my_name_section,
-                my_year_section = _my_year_section,
+                name_section = _name_section,
+                year_section = _year_section,
                 name = _name,
                 release_date = _release_date,
                 tcgplayer_id = _tcgplayer_id,

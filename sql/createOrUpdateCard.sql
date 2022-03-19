@@ -66,8 +66,8 @@ DECLARE
     _loyalty ALIAS FOR $11;
     _mana_cost ALIAS FOR $12;
     _multiverse_ids ALIAS FOR $13;
-    _my_name_section ALIAS FOR $14;
-    _my_number_order ALIAS FOR $15;
+    _name_section ALIAS FOR $14;
+    _number_order ALIAS FOR $15;
     _name ALIAS FOR $16;
     _oracle_text ALIAS FOR $17;
     _power ALIAS FOR $18;
@@ -126,8 +126,8 @@ BEGIN
     IF lower(_mana_cost) = 'null' THEN
         _mana_cost := NULL;
     END IF;
-    IF lower(_my_name_section) = 'null' THEN
-        _my_name_section := NULL;
+    IF lower(_name_section) = 'null' THEN
+        _name_section := NULL;
     END IF;
     IF lower(_name) = 'null' THEN
         _name := NULL;
@@ -221,8 +221,8 @@ BEGIN
             loyalty,
             mana_cost,
             multiverse_ids,
-            my_name_section,
-            my_number_order,
+            name_section,
+            number_order,
             name,
             oracle_text,
             power,
@@ -268,8 +268,8 @@ BEGIN
             _loyalty,
             _mana_cost,
             _multiverse_ids,
-            _my_name_section,
-            _my_number_order,
+            _name_section,
+            _number_order,
             _name,
             _oracle_text,
             _power,
@@ -316,8 +316,8 @@ BEGIN
             loyalty = _loyalty,
             mana_cost = _mana_cost,
             multiverse_ids = _multiverse_ids,
-            my_name_section = _my_name_section,
-            my_number_order = _my_number_order,
+            name_section = _name_section,
+            number_order = _number_order,
             name = _name,
             oracle_text = _oracle_text,
             power = _power,
