@@ -35,7 +35,10 @@ BEGIN
                             ' FROM cmrule c
                             WHERE c.cmrule_parent = s.id ORDER BY c.term'
                         ') x
-                    ) AS children FROM cmrule s';
+                    ) AS children ';
+                    
+    command := command ||                
+                    'FROM cmrule s';
 
     IF _id IS NOT NULL THEN
         command := command || ' WHERE s.id = ' || _id || '';

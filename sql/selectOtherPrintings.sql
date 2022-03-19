@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION searchCards(
+CREATE OR REPLACE FUNCTION selectOtherPrintings(
+    character varying,
     character varying,
     character varying,
     character varying)
@@ -8,7 +9,8 @@ CREATE OR REPLACE FUNCTION searchCards(
         face_order integer,
         loyalty character varying,
         mana_cost character varying,
-        number_order double precision,
+        my_name_section character varying,
+        my_number_order double precision,
         name character varying,
         printed_name character varying,
         printed_type_line character varying,
@@ -20,19 +22,19 @@ CREATE OR REPLACE FUNCTION searchCards(
         set json,
         rarity json,
         language json,
-		layout json,
+        layout json,
         prices json[],
         faces  json[]
     )
 AS
 $$
 DECLARE
-    _query ALIAS FOR $1;
-    _sortedBy ALIAS FOR $2;
-    _orderBy ALIAS FOR $3;
+    _newId ALIAS FOR $1;
+    _cmlanguage ALIAS FOR $2;
+    _sortedBy ALIAS FOR $3;
+    _orderBy ALIAS FOR $4;
     command character varying;
 BEGIN
-    _query := lower(_query);
     IF lower(_sortedBy) = 'set_name' THEN
         _sortedBy = 's.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
@@ -61,7 +63,8 @@ BEGIN
                     face_order,
                     loyalty,
                     mana_cost,
-                    number_order,
+                    c.my_name_section,
+                    my_number_order,
                     c.name,
                     printed_name,
                     printed_type_line,
@@ -78,7 +81,7 @@ BEGIN
                     ) AS set,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT r.name
+                            SELECT r.name, r.name_section
                             FROM cmrarity r WHERE r.name = c.cmrarity
                         ) x
                     ) AS rarity,
@@ -90,7 +93,7 @@ BEGIN
                     ) AS language,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.name, v.description
+                            SELECT v.name, v.name_section, v.description
                             FROM cmlayout v
                             WHERE v.name = c.cmlayout
                         ) x
@@ -105,35 +108,19 @@ BEGIN
 
     -- Faces
     command := command ||
-                   ', array(
-                       SELECT row_to_json(x) FROM (' ||
-                           command ||
-                           'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
-                           WHERE w.cmcard = c.new_id
+                    ', array(
+                        SELECT row_to_json(x) FROM (' ||
+                            command ||
+                            'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
+                            WHERE w.cmcard = c.new_id
                         ) x
-                   ) AS faces ';
+                    ) AS faces ';
 
-    _query := lower(_query);
     command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code ';
-    command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
-    command := command || 'WHERE c.cmlanguage = ''en'' ';
+	command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
+    command := command || 'WHERE c.new_id = ''' || _newId || ''' ';
+    command := command || 'AND c.cmlanguage = ''' || _cmlanguage || ''' ';
     command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face) ';
-    command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
-    command := command || 'GROUP BY c.new_id,
-                            c.collector_number,
-                            c.face_order,
-                            c.loyalty,
-                            c.mana_cost,
-                            c.number_order,
-                            c.name,
-                            c.printed_name,
-                            c.printed_type_line,
-                            c.type_line,
-                            c.power,
-                            c.toughness,
-                            r.name,
-                            s.release_date,
-                            s.name ';
     command := command || 'ORDER BY ' || _sortedBy || '';
 
     RETURN QUERY EXECUTE command;

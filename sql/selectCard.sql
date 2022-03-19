@@ -13,8 +13,7 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         is_story_spotlight boolean,
         loyalty character varying,
         mana_cost character varying,
-        my_name_section character varying,
-        my_number_order double precision,
+        number_order double precision,
         name character varying,
         oracle_text character varying,
         power character varying,
@@ -82,8 +81,7 @@ BEGIN
                     c.is_story_spotlight,
                     c.loyalty,
                     c.mana_cost,
-                    c.my_name_section,
-                    c.my_number_order,
+                    c.number_order,
                     c.name,
                     c.oracle_text,
                     c.power,
@@ -108,13 +106,13 @@ BEGIN
                     c.multiverse_ids,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.code, v.name, v.keyrune_class
+                            SELECT v.code, v.name, v.keyrune_class, v.keyrune_unicode
                             FROM cmset v WHERE v.code = c.cmset
                         ) x
                     ) AS set,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.name, v.name_section
+                            SELECT v.name
                             FROM cmrarity v
                             WHERE v.name = c.cmrarity
                         ) x
@@ -135,7 +133,7 @@ BEGIN
                     ) AS layout,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.name, v.name_section
+                            SELECT v.name
                             FROM cmwatermark v
                             WHERE v.name = c.cmwatermark
                         ) x
@@ -182,7 +180,7 @@ BEGIN
                         SELECT row_to_json(x) FROM (
 							SELECT
 							(
-								SELECT row_to_json(a) FROM (select w.name, w.name_section)
+								SELECT row_to_json(a) FROM (select w.name)
 							a) AS component,
                             (
 								SELECT row_to_json(b) FROM (
@@ -192,7 +190,7 @@ BEGIN
                                 	x.printed_name,
                                     (
                                     SELECT row_to_json(x) FROM (
-                                        SELECT v.code, v.keyrune_class
+                                        SELECT v.code, v.name, v.keyrune_class, v.keyrune_unicode
                                         FROM cmset v WHERE v.code = x.cmset
                                     ) x
                                     ) AS set
@@ -220,14 +218,14 @@ BEGIN
                                 x.cmcard_otherlanguage as new_id,
                                 (
                                     SELECT row_to_json(x) FROM (
-                                        SELECT v.code
+                                        SELECT v.code, v.display_code, v.name
                                         FROM cmlanguage v
                                         WHERE v.code = w.code
                                     ) x
                                 ) AS language,
                                 (
                                     SELECT row_to_json(x) FROM (
-                                        SELECT y.code
+                                        SELECT y.code, y.name, y.keyrune_class, y.keyrune_unicode
                                         FROM cmset y
                                         WHERE y.code = c.cmset
                                     ) x
@@ -262,7 +260,7 @@ BEGIN
                                 ) AS rarity,
 								(
                                     SELECT row_to_json(x) FROM (
-                                        SELECT y.code, y.keyrune_class, y.name
+                                        SELECT y.code, y.name, y.keyrune_class, y.keyrune_unicode
                                         FROM cmset y
                                         WHERE y.code = c.cmset
                                     ) x
@@ -276,7 +274,7 @@ BEGIN
                                 ) AS faces,
                                 array(
                                     SELECT row_to_json(x) FROM (
-                                        SELECT v.market, v.is_foil
+                                        SELECT id, v.market, v.is_foil
                                         FROM cmcardprice v
                                         WHERE v.cmcard = c.new_id
                                     ) x
@@ -297,7 +295,7 @@ BEGIN
                             c.collector_number,
                             (
                                 SELECT row_to_json(x) FROM (
-                                    SELECT y.code
+                                    SELECT y.code, y.name, y.keyrune_class, y.keyrune_unicode
                                     FROM cmset y
                                     WHERE y.code = c.cmset
                                 ) x
@@ -312,8 +310,8 @@ BEGIN
     command := command ||
                 ', array(
                     SELECT row_to_json(x) FROM (
-                        SELECT (SELECT row_to_json(a) FROM (select w.name, w.name_section) a) AS format,
-                            (SELECT row_to_json(b) FROM (select x.name, x.name_section) b) AS legality
+                        SELECT (SELECT row_to_json(a) FROM (select w.name) a) AS format,
+                            (SELECT row_to_json(b) FROM (select x.name) b) AS legality
                         FROM cmcard_format_legality v left join cmformat w on v.cmformat = w.name
                         left join cmlegality x on v.cmlegality = x.name
                         WHERE v.cmcard = c.new_id
@@ -324,7 +322,7 @@ BEGIN
     command := command ||
                ', array(
                     SELECT row_to_json(x) FROM (
-                        SELECT w.id
+                        SELECT w.description, w.id, w.name
                         FROM cmcard_frameeffect v left join cmframeeffect w on v.cmframeeffect = w.id
                         WHERE v.cmcard = c.new_id
                     ) x

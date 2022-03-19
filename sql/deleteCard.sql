@@ -10,6 +10,7 @@ BEGIN
 	DELETE from cmcard_colorindicator WHERE cmcard = _new_id;
 	DELETE from cmcard_component_part WHERE cmcard = _new_id;
     DELETE from cmcard_component_part WHERE cmcard_part = _new_id;
+	DELETE from cmcard_face WHERE cmcard_face = _new_id;
 	DELETE from cmcard_face WHERE cmcard = _new_id;
     DELETE from cmcard_format_legality WHERE cmcard = _new_id;
     DELETE from cmcard_frameeffect WHERE cmcard = _new_id;

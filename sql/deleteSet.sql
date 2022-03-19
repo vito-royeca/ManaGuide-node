@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION deleteSetCards(
+CREATE OR REPLACE FUNCTION deleteSet(
     character varying) RETURNS integer AS $$
 DECLARE
     _code ALIAS FOR $1;
@@ -11,6 +11,9 @@ BEGIN
         PERFORM deleteCard(_new_id);
         _card_count := _card_count + 1;
     END LOOP;
+
+    DELETE FROM cmset_language WHERE cmset = _code;
+    DELETE FROM cmset WHERE code = _code;
 
     RETURN _card_count;
 END;

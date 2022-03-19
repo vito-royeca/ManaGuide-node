@@ -11,8 +11,7 @@ CREATE OR REPLACE FUNCTION selectSet(
         mtgo_code       character varying,
         keyrune_unicode character varying,
         keyrune_class character varying,
-        my_name_section character varying,
-        my_year_section character varying,
+        year_section character varying,
         name            character varying,
         release_date    character varying,
         tcgplayer_id    integer,
@@ -37,26 +36,25 @@ BEGIN
                     mtgo_code,
                     keyrune_unicode,
                     keyrune_class,
-                    my_name_section,
-                    my_year_section,
+                    year_section,
                     name,
                     release_date,
                     tcgplayer_id,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT sb.code, sb.name, sb.name_section
+                            SELECT sb.code, sb.name
                             FROM cmsetblock sb WHERE sb.code = s.cmsetblock
                         ) x
                    ) AS set_block,
                    (
                        SELECT row_to_json(x) FROM (
-                            SELECT st.name, st.name_section
+                            SELECT st.name
                             FROM cmsettype st WHERE st.name = s.cmsettype
                         ) x
                    ) AS set_type,
                    array(
                         SELECT row_to_json(x) FROM (
-                            SELECT l.code, l.display_code, l.name, l.name_section
+                            SELECT l.code, l.display_code, l.name
                             FROM cmset_language sl left join cmlanguage l on sl.cmlanguage = l.code
                             WHERE sl.cmset = s.code
                         ) x

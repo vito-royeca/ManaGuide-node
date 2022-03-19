@@ -9,8 +9,7 @@ CREATE OR REPLACE FUNCTION selectCards(
         face_order integer,
         loyalty character varying,
         mana_cost character varying,
-        my_name_section character varying,
-        my_number_order double precision,
+        number_order double precision,
         name character varying,
         printed_name character varying,
         printed_type_line character varying,
@@ -63,8 +62,7 @@ BEGIN
                     face_order,
                     loyalty,
                     mana_cost,
-                    c.my_name_section,
-                    my_number_order,
+                    number_order,
                     c.name,
                     printed_name,
                     printed_type_line,
@@ -75,13 +73,13 @@ BEGIN
                     released_at,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT s.code, s.name, s.keyrune_class
+                            SELECT s.code, s.name, s.keyrune_class, s.keyrune_unicode
                             FROM cmset s WHERE s.code = c.cmset
                         ) x
                     ) AS set,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT r.name, r.name_section
+                            SELECT r.name
                             FROM cmrarity r WHERE r.name = c.cmrarity
                         ) x
                     ) AS rarity,
@@ -93,7 +91,7 @@ BEGIN
                     ) AS language,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.name, v.name_section, v.description
+                            SELECT v.name, v.description
                             FROM cmlayout v
                             WHERE v.name = c.cmlayout
                         ) x
