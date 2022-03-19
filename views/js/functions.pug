@@ -40,6 +40,8 @@
 -
 -            if (mana.toLowerCase() == "chaos") {
 -                mana = "Chaos"
+-            } else if (mana.toLowerCase() == "∞") {
+-                mana = "Infinity"
 -            }
 -            if (mana.length == 3 && mana.includes("/")) {
 -                mana = mana.replace(/\//g, "").trim()
@@ -107,6 +109,8 @@
 -                let manaString = manaCost.replace(/{/g, "").replace(/}/g, "").replace(/\//g, "")
 -                if (manaString.toLowerCase() == "chaos") {
 -                    manaString = "Chaos"
+-                } else if (manaString.toLowerCase() == "∞") {
+-                    manaString = "Infinity"
 -                }
 -                const manaSymbol = "<img src=\'/images/mana/" + manaString + ".svg\' height=\'16\' />"
 -
