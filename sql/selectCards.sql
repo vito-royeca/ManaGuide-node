@@ -23,7 +23,8 @@ CREATE OR REPLACE FUNCTION selectCards(
         language json,
         layout json,
         prices json[],
-        faces  json[]
+        faces  json[],
+        supertypes json[]
     )
 AS
 $$
@@ -113,6 +114,16 @@ BEGIN
                             WHERE w.cmcard = c.new_id
                         ) x
                     ) AS faces ';
+
+    -- Supertypes
+    command := command ||
+                    ', array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT w.name
+                            FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
+                            WHERE v.cmcard = c.new_id
+                        ) x
+                    ) AS supertypes ';                
 
     command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code ';
 	command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';

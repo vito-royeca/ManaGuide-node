@@ -189,11 +189,18 @@ BEGIN
                                 	x.name,
                                 	x.printed_name,
                                     (
-                                    SELECT row_to_json(x) FROM (
-                                        SELECT v.code, v.name, v.keyrune_class, v.keyrune_unicode
-                                        FROM cmset v WHERE v.code = x.cmset
-                                    ) x
-                                    ) AS set
+                                        SELECT row_to_json(x) FROM (
+                                            SELECT v.code, v.name, v.keyrune_class, v.keyrune_unicode
+                                            FROM cmset v WHERE v.code = x.cmset
+                                        ) x
+                                    ) AS set,
+                                    (
+                                        SELECT row_to_json(x) FROM (
+                                            SELECT v.code, v.name
+                                            FROM cmlanguage v
+                                            WHERE v.code = x.cmlanguage
+                                        ) x
+                                    ) AS language
 								)
 							b) AS card
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
@@ -216,6 +223,16 @@ BEGIN
                         SELECT row_to_json(x) FROM (
                             SELECT
                                 x.cmcard_otherlanguage as new_id,
+                                c.name,
+                                c.printed_name,
+                                c.collector_number,
+                                (
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT v.name
+                                        FROM cmrarity v
+                                        WHERE v.name = c.cmrarity
+                                    ) x
+                                ) AS rarity,
                                 (
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.code, v.display_code, v.name
@@ -232,7 +249,10 @@ BEGIN
                                 ) AS set,
                                 array(
                                     SELECT row_to_json(x) FROM (
-                                        SELECT new_id
+                                        SELECT
+                                            new_id,
+                                            name,
+                                            printed_name
                                         FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                                         WHERE w.cmcard = x.cmcard_otherlanguage
                                     ) x
@@ -240,7 +260,7 @@ BEGIN
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.new_id
                             WHERE x.cmcard = ''' || _new_id || '''' || ' and x.cmcard_otherlanguage LIKE ''%' || _collector_number || '''' ||
-                            ' group by w.code, x.cmcard_otherlanguage, c.cmset 
+                            ' group by w.code, x.cmcard_otherlanguage, c.cmset, c.name, c.printed_name, c.cmrarity, c.collector_number 
 							 order by w.code
                         ) x
                     ) AS other_languages ';
@@ -251,6 +271,9 @@ BEGIN
                         SELECT row_to_json(x) FROM (
 						    SELECT
                                 c.new_id,
+                                c.name,
+                                c.printed_name,
+                                c.collector_number,
 								(
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.name
@@ -278,7 +301,14 @@ BEGIN
                                         FROM cmcardprice v
                                         WHERE v.cmcard = c.new_id
                                     ) x
-                                ) AS prices
+                                ) AS prices,
+                                (
+                                    SELECT row_to_json(x) FROM (
+                                        SELECT v.code, v.name
+                                        FROM cmlanguage v
+                                        WHERE v.code = c.cmlanguage
+                                    ) x
+                                ) AS language
                             FROM cmcard c
                             left join cmcard_otherprinting x on x.cmcard_otherprinting = c.new_id
                             left join cmset y on y.code = c.cmset
@@ -293,13 +323,30 @@ BEGIN
                     SELECT row_to_json(x) FROM (
 						SELECT c.new_id,
                             c.collector_number,
+                            c.name,
+                            c.printed_name,
+                            c.collector_number,
+                            (
+                                SELECT row_to_json(x) FROM (
+                                    SELECT v.name
+                                    FROM cmrarity v
+                                    WHERE v.name = c.cmrarity
+                                ) x
+                            ) AS rarity,
                             (
                                 SELECT row_to_json(x) FROM (
                                     SELECT y.code, y.name, y.keyrune_class, y.keyrune_unicode
                                     FROM cmset y
                                     WHERE y.code = c.cmset
                                 ) x
-                            ) AS set
+                            ) AS set,
+                            (
+                                SELECT row_to_json(x) FROM (
+                                    SELECT v.code, v.name
+                                    FROM cmlanguage v
+                                    WHERE v.code = c.cmlanguage
+                                ) x
+                            ) AS language
                         FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.new_id
                         WHERE w.cmcard = ''' || _new_id || '''' ||
                         ' order by c.collector_number
