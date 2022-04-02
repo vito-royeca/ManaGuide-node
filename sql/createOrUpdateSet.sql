@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION createOrUpdateSet(
     boolean,
     boolean,
     character varying,
+    character varying,
 	character varying,
     character varying,
     character varying,
@@ -19,22 +20,26 @@ DECLARE
     _code ALIAS FOR $2;
     _is_foil_only ALIAS FOR $3;
     _is_online_only ALIAS FOR $4;
-    _mtgo_code ALIAS FOR $5;
-    _keyrune_unicode ALIAS FOR $6;
-    _keyrune_class ALIAS FOR $7;
-    _name_section ALIAS FOR $8;
-    _year_section ALIAS FOR $9;
-    _name ALIAS FOR $10;
-    _release_date ALIAS FOR $11;
-    _tcgplayer_id ALIAS FOR $12;
-    _cmsetblock ALIAS FOR $13;
-    _cmsettype ALIAS FOR $14;
-    _cmset_parent ALIAS FOR $15;
+    _logo_code ALIAS FOR $5;
+    _mtgo_code ALIAS FOR $6;
+    _keyrune_unicode ALIAS FOR $7;
+    _keyrune_class ALIAS FOR $8;
+    _name_section ALIAS FOR $9;
+    _year_section ALIAS FOR $10;
+    _name ALIAS FOR $11;
+    _release_date ALIAS FOR $12;
+    _tcgplayer_id ALIAS FOR $13;
+    _cmsetblock ALIAS FOR $14;
+    _cmsettype ALIAS FOR $15;
+    _cmset_parent ALIAS FOR $16;
 
     pkey character varying;
     parent_row cmset%rowtype;
 BEGIN
     -- check for nulls
+    IF lower(_logo_code) = 'null' THEN
+        _logo_code := NULL;
+    END IF;
     IF lower(_mtgo_code) = 'null' THEN
         _mtgo_code := NULL;
     END IF;
@@ -74,6 +79,7 @@ BEGIN
             code,
             is_foil_only,
             is_online_only,
+            logo_code,
             mtgo_code,
             keyrune_unicode,
             keyrune_class,
@@ -89,6 +95,7 @@ BEGIN
             _code,
             _is_foil_only,
             _is_online_only,
+            _logo_code,
             _mtgo_code,
             _keyrune_unicode,
             _keyrune_class,
@@ -107,6 +114,7 @@ BEGIN
                 card_count = _card_count,
                 is_foil_only = _is_foil_only,
                 is_online_only = _is_online_only,
+                logo_code = _logo_code,
                 mtgo_code = _mtgo_code,
                 keyrune_unicode = (CASE WHEN (_keyrune_unicode != parent_row.keyrune_unicode) THEN _keyrune_unicode ELSE parent_row.keyrune_unicode END),
                 keyrune_class = (CASE WHEN (_keyrune_class != parent_row.keyrune_class) THEN _keyrune_class ELSE parent_row.keyrune_class END),
@@ -125,6 +133,7 @@ BEGIN
                 card_count = _card_count,
                 is_foil_only = _is_foil_only,
                 is_online_only = _is_online_only,
+                logo_code = _logo_code,
                 mtgo_code = _mtgo_code,
                 keyrune_unicode = _keyrune_unicode,
                 keyrune_class = _keyrune_class,
