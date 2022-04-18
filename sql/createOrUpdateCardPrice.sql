@@ -5,9 +5,8 @@ CREATE OR REPLACE FUNCTION createOrUpdateCardPrice(
     double precision,
     double precision,
     integer,
-    character varying,
     boolean
-) RETURNS varchar AS $$
+) RETURNS void AS $$
 DECLARE
     _low ALIAS FOR $1;
     _median ALIAS FOR $2;
@@ -15,11 +14,10 @@ DECLARE
     _market ALIAS FOR $4;
     _direct_low ALIAS FOR $5;
     _tcgplayer_id ALIAS FOR $6;
-    _cmstore ALIAS FOR $7;
-    _is_foil ALIAS FOR $8;
+    _is_foil ALIAS FOR $7;
 
-    _pkey character varying;
-    _cmcard character varying;
+    row cmcardprice%ROWTYPE;
+    new_id character varying;
 BEGIN
     IF _low = 0.0 THEN
         _low := NULL;
@@ -37,12 +35,11 @@ BEGIN
         _direct_low := NULL;
     END IF;
 
-    SELECT new_id INTO _cmcard FROM cmcard WHERE tcgplayer_id = _tcgplayer_id;
+    SELECT new_id INTO new_id FROM cmcard WHERE tcgplayer_id = _tcgplayer_id;
 
     IF FOUND THEN
-        SELECT id INTO _pkey FROM cmcardprice
+        SELECT * INTO row FROM cmcardprice
             WHERE cmcard = _cmcard AND
-                cmstore = _cmstore AND
                 is_foil = _is_foil;
 
         IF NOT FOUND THEN
@@ -53,7 +50,6 @@ BEGIN
                 market,
                 direct_low,
                 cmcard,
-                cmstore,
                 is_foil)
             VALUES(
                 _low,
@@ -62,26 +58,33 @@ BEGIN
                 _market,
                 _direct_low,
                 _cmcard,
-                _cmstore,
                 _is_foil);
         ELSE
-            UPDATE cmcardprice SET
-                low = _low,
-                median = _median,
-                high = _high,
-                market = _market,
-                direct_low = _direct_low,
-                cmcard = _cmcard,
-                cmstore = _cmstore,
-                is_foil = _is_foil,
-                date_updated = now()
-            WHERE cmcard = _cmcard AND
-                cmstore = _cmstore AND
-                is_foil = _is_foil;
+            IF row.low IS DISTINCT FROM _low OR
+               row.median IS DISTINCT FROM _median OR
+               row.high IS DISTINCT FROM _high OR
+               row.market IS DISTINCT FROM _market OR
+               row.direct_low IS DISTINCT FROM _direct_low OR
+               row.cmcard IS DISTINCT FROM _cmcard OR
+               row.is_foil IS DISTINCT FROM _is_foil THEN
+                
+                UPDATE cmcardprice SET
+                    low = _low,
+                    median = _median,
+                    high = _high,
+                    market = _market,
+                    direct_low = _direct_low,
+                    cmcard = _cmcard,
+                    is_foil = _is_foil,
+                    date_updated = now()
+                WHERE cmcard = _cmcard AND
+                    cmstore = _cmstore AND
+                    is_foil = _is_foil;
+            END IF;        
         END IF;
     END IF;
 
-    RETURN _pkey;
+    RETURN;
 END;
 $$ LANGUAGE plpgsql;
 

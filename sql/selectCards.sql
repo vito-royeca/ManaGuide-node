@@ -19,6 +19,9 @@ CREATE OR REPLACE FUNCTION selectCards(
         toughness character varying,
         tcgplayer_id integer,
         released_at date,
+        art_crop_url character varying,
+        normal_url character varying,
+        png_url character varying,
         set json,
         rarity json,
         language json,
@@ -74,6 +77,9 @@ BEGIN
                     toughness,
                     c.tcgplayer_id,
                     released_at,
+                    art_crop_url,
+                    normal_url,
+                    png_url,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class, s.keyrune_unicode
@@ -110,8 +116,7 @@ BEGIN
     -- Faces
     command := command ||
                     ', array(
-                        SELECT row_to_json(x) FROM (' ||
-                            command ||
+                        SELECT row_to_json(x) FROM (' || command ||
                             'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
                             WHERE w.cmcard = c.new_id
                         ) x

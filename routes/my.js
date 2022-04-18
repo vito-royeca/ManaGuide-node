@@ -1,16 +1,17 @@
 const fs = require('fs')
 
-exports.updateCardImageUrls = function(card) {
+exports.updateCardImageUrls = function(card, isMobile) {
     let new_id = card.new_id == null ? "" : card.new_id
     let faces = card.faces
-    card.image_uris = buildCardImageUrls(new_id, faces)
+
+    trimImageUrls(new_id, card, faces, isMobile)
 
     if (card.component_parts != undefined) {
         for (var i=0; i<card.component_parts.length; i++) {
             const newData = card.component_parts[i].card
             new_id = newData.new_id == null ? "" : newData.new_id
             faces = newData.faces
-            newData.image_uris = buildCardImageUrls(new_id, faces)
+            trimImageUrls(new_id, newData, faces, isMobile)
         }
     }
 
@@ -19,7 +20,7 @@ exports.updateCardImageUrls = function(card) {
             const newData = card.variations[i]
             new_id = newData.new_id == null ? "" : newData.new_id
             faces = newData.faces
-            newData.image_uris = buildCardImageUrls(new_id, faces)
+            trimImageUrls(new_id, newData, faces, isMobile)
         }
     }
 
@@ -28,7 +29,7 @@ exports.updateCardImageUrls = function(card) {
             const newData = card.other_languages[i]
             new_id = newData.new_id == null ? "" : newData.new_id
             faces = newData.faces
-            newData.image_uris = buildCardImageUrls(new_id, faces)
+            trimImageUrls(new_id, newData, faces, isMobile)
         }
     }
 
@@ -37,18 +38,41 @@ exports.updateCardImageUrls = function(card) {
             const newData = card.other_printings[i]
             new_id = newData.new_id == null ? "" : newData.new_id
             faces = newData.faces
-            newData.image_uris = buildCardImageUrls(new_id, faces)
+            trimImageUrls(new_id, newData, faces, isMobile)
         }
     }
 
     return card
 }
 
-function buildCardImageUrls(new_id, faces) {
-    let imageUris = []
-    let artCropUrl = "/images/cards/" + newId2Path(new_id) + "/art_crop.jpg"
-    let normalUrl  = "/images/cards/" + newId2Path(new_id) + "/normal.jpg"
-    let pngUrl     = "/images/cards/" + newId2Path(new_id) + "/png.png"
+function trimImageUrls(new_id, card, faces, isMobile) {
+    if (isMobile) {
+        if (faces != null && faces.length > 0) {
+            // remove properties
+            delete card.art_crop_url
+            delete card.normal_url
+            delete card.png_url
+        }
+
+    } else {
+
+        if (faces != null && faces.length > 0) {
+            // remove properties
+            delete card.art_crop_url
+            delete card.normal_url
+            delete card.png_url
+
+            replaceCardImageUrls(faces)
+        } else {
+            replaceCardImageUrls([card])
+        }            
+    }
+}
+
+function replaceCardImageUrls(faces) {
+    let artCropUrl = ""
+    let normalUrl  = ""
+    let pngUrl     = ""
     let soonUrl    = "/images/cards/soon.jpg"
 
     try {
@@ -58,64 +82,35 @@ function buildCardImageUrls(new_id, faces) {
                 normalUrl  = "/images/cards/" + newId2Path(faces[i].new_id) + "/normal.jpg"
                 pngUrl     = "/images/cards/" + newId2Path(faces[i].new_id) + "/png.png"
 
-                if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
-                    imageUris.push({
-                        "art_crop" : artCropUrl,
-                        "normal": normalUrl,
-                        "png": pngUrl
-                    })
+                if (fs.existsSync("./public/" + artCropUrl)) {
+                    faces[i].art_crop_url = artCropUrl
+                } else {
+                    faces[i].art_crop_url = soonUrl
                 }
-            }
 
-            // if imageUris is empty, push the default values
-            if (imageUris.length == 0) {
-                artCropUrl = "/images/cards/" + newId2Path(new_id) + "/art_crop.jpg"
-                normalUrl  = "/images/cards/" + newId2Path(new_id) + "/normal.jpg"
-                pngUrl     = "/images/cards/" + newId2Path(new_id) + "/png.png"
-                if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
-                    imageUris.push({
-                        "art_crop" : artCropUrl,
-                        "normal": normalUrl,
-                        "png": pngUrl
-                    })
-                } else { // if imageUris is empty, push the default values
-                    imageUris.push({
-                        "art_crop" : soonUrl,
-                        "normal": soonUrl,
-                        "png": soonUrl
-                    })
+                if (fs.existsSync("./public/" + normalUrl)) {
+                    faces[i].normal_url = normalUrl
+                } else {
+                    faces[i].normal_url = soonUrl
                 }
-            }
-        } else {
-            if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
-                imageUris.push({
-                    "art_crop" : artCropUrl,
-                    "normal": normalUrl,
-                    "png": pngUrl
-                })
-            } else { // if imageUris is empty, push the default values
-                imageUris.push({
-                    "art_crop" : soonUrl,
-                    "normal": soonUrl,
-                    "png": soonUrl
-                })
-            }    
+
+                if (fs.existsSync("./public/" + pngUrl)) {
+                    faces[i].png_url = pngUrl
+                } else {
+                    faces[i].png_url = soonUrl
+                }
+            }            
         }
-
-        
-
     } catch(err) {
         console.error(err)
     }
 
-    return imageUris
 }
 
 function newId2Path(new_id) {
     let path = new_id == null ? "" : new_id
 
     if (path.length > 0) {
-        
         if ((path.match(/_/g) || []).length > 2) {
             path = path.replaceAll("_", "/")
             let index = path.lastIndexOf("/")
@@ -126,22 +121,4 @@ function newId2Path(new_id) {
     }
 
     return path
-}
-
-function buildImageUris(artCropUrl, normalUrl, pngUrl) {
-    let soonUrl    = "/images/cards/soon.jpg"
-
-    if (fs.existsSync("./public/" + artCropUrl) && fs.existsSync("./public/" + normalUrl)) {
-        return {
-            "art_crop" : artCropUrl,
-            "normal": normalUrl,
-            "png": pngUrl
-        }
-    } else {
-        return {
-            "art_crop" : soonUrl,
-            "normal": soonUrl,
-            "png": soonUrl
-        }
-    }
 }

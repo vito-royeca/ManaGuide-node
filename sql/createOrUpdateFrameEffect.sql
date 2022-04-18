@@ -2,14 +2,14 @@ CREATE OR REPLACE FUNCTION createOrUpdateFrameEffect(
     character varying,
     character varying,
     character varying,
-    character varying) RETURNS varchar AS $$
+    character varying) RETURNS void AS $$
 DECLARE
     _id ALIAS FOR $1;
     _name ALIAS FOR $2;
     _name_section ALIAS FOR $3;
     _description ALIAS FOR $4;
 
-    pkey character varying;
+    row cmframeeffect%ROWTYPE;
 BEGIN
     -- check for nulls
     IF lower(_id) = 'null' THEN
@@ -25,7 +25,7 @@ BEGIN
         _description := NULL;
     END IF;
 
-    SELECT name INTO pkey FROM cmframeeffect WHERE id = _id;
+    SELECT * INTO row FROM cmframeeffect WHERE id = _id;
 
     IF NOT FOUND THEN
         INSERT INTO cmframeeffect(
@@ -39,16 +39,22 @@ BEGIN
             _name_section,
             _description);
     ELSE
-        UPDATE cmframeeffect SET
-            id = _id,
-            name = _name,
-            name_section = _name_section,
-            description = _description,
-            date_updated = now()
-        WHERE id = _id;
+        IF row.id IS DISTINCT FROM _id OR
+           row.name IS DISTINCT FROM _name OR
+           row.name_section IS DISTINCT FROM _name_section OR
+           row.description IS DISTINCT FROM _description THEN
+            
+            UPDATE cmframeeffect SET
+                id = _id,
+                name = _name,
+                name_section = _name_section,
+                description = _description,
+                date_updated = now()
+            WHERE id = _id;
+        END IF;    
     END IF;
 
-    RETURN _id;
+    RETURN;
 END;
 $$ LANGUAGE plpgsql;
 

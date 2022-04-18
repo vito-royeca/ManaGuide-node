@@ -1,22 +1,22 @@
 CREATE OR REPLACE FUNCTION createOrUpdateCardParts(
     character varying,
     character varying,
-    character varying) RETURNS varchar AS $$
+    character varying) RETURNS void AS $$
 DECLARE
     _cmcard ALIAS FOR $1;
     _cmcomponent ALIAS FOR $2;
     _cmcard_part ALIAS FOR $3;
 
-    pkey character varying;
+    row cmcard_component_part%ROWTYPE;
     cmcard_part_new_id character varying;
 BEGIN
     SELECT new_id INTO cmcard_part_new_id FROM cmcard
-    WHERE id = _cmcard_part;
+        WHERE id = _cmcard_part;
 
-    SELECT cmcard INTO pkey FROM cmcard_component_part
-    WHERE cmcard = _cmcard
-      AND cmcomponent = _cmcomponent
-      AND cmcard_part = cmcard_part_new_id;
+    SELECT * INTO row FROM cmcard_component_part
+        WHERE cmcard = _cmcard
+        AND cmcomponent = _cmcomponent
+        AND cmcard_part = cmcard_part_new_id;
 
     IF NOT FOUND THEN
         INSERT INTO cmcard_component_part(
@@ -28,17 +28,22 @@ BEGIN
             _cmcomponent,
             cmcard_part_new_id);
     ELSE
-        UPDATE cmcard_component_part SET
-            cmcard = _cmcard,
-            cmcomponent = _cmcomponent,
-            cmcard_part = cmcard_part_new_id,
-            date_updated = now()
-        WHERE cmcard = _cmcard
-          AND cmcomponent = _cmcomponent
-          AND cmcard_part = cmcard_part_new_id;
+        IF row.cmcard IS DISTINCT FROM _cmcard OR
+           row.cmcomponent IS DISTINCT FROM _cmcomponent OR
+           row.cmcard_part IS DISTINCT FROM cmcard_part_new_id THEN
+
+            UPDATE cmcard_component_part SET
+                cmcard = _cmcard,
+                cmcomponent = _cmcomponent,
+                cmcard_part = cmcard_part_new_id,
+                date_updated = now()
+            WHERE cmcard = _cmcard
+            AND cmcomponent = _cmcomponent
+            AND cmcard_part = cmcard_part_new_id;
+        END IF;    
     END IF;
 
-    RETURN _cmcard;
+    RETURN;
 END;
 $$ LANGUAGE plpgsql;
 

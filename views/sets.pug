@@ -9,21 +9,17 @@ block sorters
     p &nbsp;
 block data
 
-    table.ui.small.table.treetable(id="setsTable")
+    table.ui.small.table
         thead
             tr
-                th(colspan='2') Name
+                th.center.aligned Symbol
+                th Name
                 th Cards
                 th Release Date
                 th Languages
         tbody
             each set in results
-                if set.cmset_parent != null
-                    tr.branch.expanded(data-tt-id="" + set.code + "" data-tt-parent-id="" + set.cmset_parent + "")
-                        +listSetsRow(set)
-                else
-                    tr.branch.expanded(data-tt-id="" + set.code + "")
-                        +listSetsRow(set)
+                +listSetsRow(set)
 
         tfoot
             tr
@@ -34,8 +30,3 @@ block data
                         a(aria-current="false" aria-disabled="false" tabindex="0" value="2" type="pageItem" class="item") 2
                         a(aria-current="false" aria-disabled="false" tabindex="0" value="3" type="pageItem" class="item") 3
                         a(aria-current="false" aria-disabled="false" tabindex="0" value="2" aria-label="Next item" type="nextItem" class="item") ⟩
-        
-        link(href="/css/jquery.treetable.css" type="text/css" rel="stylesheet")
-        script(src="/js/jquery.treetable.js")
-        script.
-            $("#setsTable").treetable();

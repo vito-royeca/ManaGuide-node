@@ -130,16 +130,27 @@
 -    }
 -
 -    function cardImageUrl(card, imageTypeType, index) {
--        let path = ""    
--        if (card.image_uris != undefined && card.image_uris.length > 0) {
+-        let path = ""
+-
+-        if (card.faces != null && card.faces.length > 0) {
 -            if (imageTypeType == ImageTypeEnum.art_crop) {
--                path = card.image_uris[index].art_crop
+-                path = card.faces[index].art_crop_url
 -            } else if (imageTypeType == ImageTypeEnum.normal) {
--                path = card.image_uris[index].normal
+-                path = card.faces[index].normal_url
 -            } else if (imageTypeType == ImageTypeEnum.png) {
--                path = card.image_uris[index].png
+-                path = card.faces[index].png_url
+-            }
+-
+-        } else {
+-            if (imageTypeType == ImageTypeEnum.art_crop) {
+-                path = card.art_crop_url
+-            } else if (imageTypeType == ImageTypeEnum.normal) {
+-                path = card.normal_url
+-            } else if (imageTypeType == ImageTypeEnum.png) {
+-                path = card.png_url
 -            }
 -        }
+-
 -        return path
 -    }
 -

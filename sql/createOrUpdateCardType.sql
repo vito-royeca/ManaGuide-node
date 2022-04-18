@@ -1,13 +1,13 @@
 CREATE OR REPLACE FUNCTION createOrUpdateCardType(
     character varying,
     character varying,
-    character varying) RETURNS varchar AS $$
+    character varying) RETURNS void AS $$
 DECLARE
     _name ALIAS FOR $1;
     _name_section ALIAS FOR $2;
     _cmcardtype_parent ALIAS FOR $3;
 
-    pkey character varying;
+    row cmcardtype%ROWTYPE;
 BEGIN
     IF lower(_name) = 'null' THEN
         _name := NULL;
@@ -21,10 +21,10 @@ BEGIN
     END IF;
 
     IF _cmcardtype_parent IS NOT NULL THEN
-        SELECT createOrUpdateCardType(_cmcardtype_parent, LEFT(_cmcardtype_parent, 1), NULL) INTO pkey;
+        PERFORM createOrUpdateCardType(_cmcardtype_parent, LEFT(_cmcardtype_parent, 1), NULL);
     END IF;
 
-    SELECT name INTO pkey FROM cmcardtype WHERE name = _name;
+    SELECT * INTO row FROM cmcardtype WHERE name = _name;
 
     IF NOT FOUND THEN
         INSERT INTO cmcardtype(
@@ -36,15 +36,20 @@ BEGIN
             _name_section,
             _cmcardtype_parent);
     ELSE
-        UPDATE cmcardtype SET
-            name = _name,
-            name_section = _name_section,
-            cmcardtype_parent = _cmcardtype_parent,
-            date_updated = now()
-        WHERE name = _name;
+        IF row.name IS DISTINCT FROM _name OR
+           row.name_section IS DISTINCT FROM _name_section OR
+           row.cmcardtype_parent IS DISTINCT FROM _cmcardtype_parent THEN
+
+            UPDATE cmcardtype SET
+                name = _name,
+                name_section = _name_section,
+                cmcardtype_parent = _cmcardtype_parent,
+                date_updated = now()
+            WHERE name = _name;
+        END IF;    
     END IF;
 
-    RETURN _name;
+    RETURN;
 END;
 $$ LANGUAGE plpgsql;
 

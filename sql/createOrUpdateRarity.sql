@@ -1,13 +1,13 @@
 CREATE OR REPLACE FUNCTION createOrUpdateRarity(
     character varying,
-    character varying) RETURNS varchar AS $$
+    character varying) RETURNS void AS $$
 DECLARE
     _name ALIAS FOR $1;
     _name_section ALIAS FOR $2;
 
-    pkey character varying;
+    row cmrarity%ROWTYPE;
 BEGIN
-    SELECT name INTO pkey FROM cmrarity WHERE name = _name;
+    SELECT * INTO row FROM cmrarity WHERE name = _name;
 
     IF NOT FOUND THEN
         INSERT INTO cmrarity(
@@ -17,14 +17,18 @@ BEGIN
             _name,
             _name_section);
     ELSE
-        UPDATE cmrarity SET
-            name = _name,
-            name_section = _name_section,
-            date_updated = now()
-        WHERE name = _name;
+        IF row.name IS DISTINCT FROM _name OR
+           row.name_section IS DISTINCT FROM _name_section THEN
+        
+            UPDATE cmrarity SET
+                name = _name,
+                name_section = _name_section,
+                date_updated = now()
+            WHERE name = _name;
+        END IF;    
     END IF;
 
-    RETURN _name;
+    RETURN;
 END;
 $$ LANGUAGE plpgsql;
 

@@ -1,15 +1,15 @@
 CREATE OR REPLACE FUNCTION createOrUpdateLayout(
     character varying,
     character varying,
-    character varying) RETURNS varchar AS $$
+    character varying) RETURNS void AS $$
 DECLARE
     _name ALIAS FOR $1;
     _name_section ALIAS FOR $2;
     _description ALIAS FOR $3;
 
-    pkey character varying;
+    row cmlayout%ROWTYPE;
 BEGIN
-    SELECT name INTO pkey FROM cmlayout WHERE name = _name;
+    SELECT * INTO row FROM cmlayout WHERE name = _name;
 
     IF NOT FOUND THEN
         INSERT INTO cmlayout(
@@ -21,15 +21,20 @@ BEGIN
             _name_section,
             _description);
     ELSE
-        UPDATE cmlayout SET
-            name = _name,
-            name_section = _name_section,
-            description = _description,
-            date_updated = now()
-        WHERE name = _name;
+        if row.name IS DISTINCT FROM _name OR
+           row.name_section IS DISTINCT FROM _name_section OR
+           row.description IS DISTINCT FROM _description THEN
+        
+            UPDATE cmlayout SET
+                name = _name,
+                name_section = _name_section,
+                description = _description,
+                date_updated = now()
+            WHERE name = _name;
+        END IF;    
     END IF;
 
-    RETURN _name;
+    RETURN;
 END;
 $$ LANGUAGE plpgsql;
 

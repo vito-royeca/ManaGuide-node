@@ -36,6 +36,9 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         printed_type_line character varying,
         type_line character varying,
         multiverse_ids integer[],
+        art_crop_url character varying,
+        normal_url character varying,
+        png_url character varying,
         set json,
         rarity json,
         language json,
@@ -104,6 +107,9 @@ BEGIN
                     c.printed_type_line,
                     c.type_line,
                     c.multiverse_ids,
+                    c.art_crop_url,
+                    c.normal_url,
+                    c.png_url,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT v.code, v.name, v.keyrune_class, v.keyrune_unicode
@@ -188,6 +194,9 @@ BEGIN
                                     x.collector_number,
                                 	x.name,
                                 	x.printed_name,
+                                    x.art_crop_url,
+                                    x.normal_url,
+                                    x.png_url,
                                     (
                                         SELECT row_to_json(x) FROM (
                                             SELECT v.code, v.name, v.keyrune_class, v.keyrune_unicode
@@ -205,7 +214,7 @@ BEGIN
 							b) AS card
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
 							left join cmcard x on v.cmcard_part = x.new_id
-                            WHERE v.cmcard = c.new_id
+                            WHERE v.cmcard = c.new_id AND v.cmcard_part != c.new_id
                         ) x
                     ) AS component_parts ';
     -- Faces
@@ -226,6 +235,9 @@ BEGIN
                                 c.name,
                                 c.printed_name,
                                 c.collector_number,
+                                c.art_crop_url,
+                                c.normal_url,
+                                c.png_url,
                                 (
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.name
@@ -252,7 +264,10 @@ BEGIN
                                         SELECT
                                             new_id,
                                             name,
-                                            printed_name
+                                            printed_name,
+                                            art_crop_url,
+                                            normal_url,
+                                            png_url
                                         FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                                         WHERE w.cmcard = x.cmcard_otherlanguage
                                     ) x
@@ -260,7 +275,8 @@ BEGIN
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.new_id
                             WHERE x.cmcard = ''' || _new_id || '''' || ' and x.cmcard_otherlanguage LIKE ''%' || _collector_number || '''' ||
-                            ' group by w.code, x.cmcard_otherlanguage, c.cmset, c.name, c.printed_name, c.cmrarity, c.collector_number 
+                            ' group by w.code, x.cmcard_otherlanguage, c.cmset, c.name, c.printed_name, c.cmrarity, c.collector_number,
+                              c.art_crop_url, c.normal_url, c.png_url 
 							 order by w.code
                         ) x
                     ) AS other_languages ';
@@ -274,6 +290,9 @@ BEGIN
                                 c.name,
                                 c.printed_name,
                                 c.collector_number,
+                                c.art_crop_url,
+                                c.normal_url,
+                                c.png_url,
 								(
                                     SELECT row_to_json(x) FROM (
                                         SELECT v.name
@@ -290,7 +309,7 @@ BEGIN
                                 ) AS set,
 								array(
                                     SELECT row_to_json(x) FROM (
-                                        SELECT new_id
+                                        SELECT new_id, art_crop_url, normal_url, png_url
                                         FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                                         WHERE w.cmcard = x.cmcard_otherprinting
                                     ) x
@@ -326,6 +345,9 @@ BEGIN
                             c.name,
                             c.printed_name,
                             c.collector_number,
+                            c.art_crop_url,
+                            c.normal_url,
+                            c.png_url,
                             (
                                 SELECT row_to_json(x) FROM (
                                     SELECT v.name

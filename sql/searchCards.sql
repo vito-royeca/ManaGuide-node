@@ -18,6 +18,9 @@ CREATE OR REPLACE FUNCTION searchCards(
         toughness character varying,
         tcgplayer_id integer,
         released_at date,
+        art_crop_url character varying,
+        normal_url character varying,
+        png_url character varying,
         set json,
         rarity json,
         language json,
@@ -64,15 +67,18 @@ BEGIN
                     loyalty,
                     mana_cost,
                     number_order,
-                    c.name,
-                    c.name_section,
+                    name,
+                    name_section,
                     printed_name,
                     printed_type_line,
                     type_line,
 	                power,
                     toughness,
-                    c.tcgplayer_id,
+                    tcgplayer_id,
                     released_at,
+                    art_crop_url,
+                    normal_url,
+                    png_url,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class, s.keyrune_unicode
@@ -108,13 +114,12 @@ BEGIN
 
     -- Faces
     command := command ||
-                   ', array(
-                       SELECT row_to_json(x) FROM (' ||
-                           command ||
-                           'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
-                           WHERE w.cmcard = c.new_id
+                    ', array(
+                        SELECT row_to_json(x) FROM (' || command ||
+                            'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
+                            WHERE w.cmcard = c.new_id
                         ) x
-                   ) AS faces ';
+                    ) AS faces ';
 
     -- Supertypes
     command := command ||
@@ -126,28 +131,10 @@ BEGIN
                         ) x
                     ) AS supertypes ';               
 
-    _query := lower(_query);
-    command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code ';
-    command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
+    command := command || 'FROM cmcard c ';
     command := command || 'WHERE c.cmlanguage = ''en'' ';
     command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face) ';
     command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
-    command := command || 'GROUP BY c.new_id,
-                            c.collector_number,
-                            c.face_order,
-                            c.loyalty,
-                            c.mana_cost,
-                            c.number_order,
-                            c.name,
-                            c.name_section,
-                            c.printed_name,
-                            c.printed_type_line,
-                            c.type_line,
-                            c.power,
-                            c.toughness,
-                            r.name,
-                            s.release_date,
-                            s.name ';
     command := command || 'ORDER BY ' || _sortedBy || '';
 
     RETURN QUERY EXECUTE command;

@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION createOrUpdateServerUpdate(
+CREATE OR REPLACE FUNCTION createServerUpdate(
     boolean) RETURNS boolean AS $$
 DECLARE
     _full_update ALIAS FOR $1;

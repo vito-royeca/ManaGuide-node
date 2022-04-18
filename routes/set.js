@@ -20,7 +20,7 @@ function callback(req, res, queryResults) {
     let newData = []
 
     for (var i=0; i<data.length; i++) {
-        newData.push(my.updateCardImageUrls(data[i]))
+        newData.push(my.updateCardImageUrls(data[i], req.query.mobile == "true"))
     }
 
     let newQueryResults = queryResults.rows
