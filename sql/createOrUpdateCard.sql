@@ -441,7 +441,8 @@ BEGIN
 
     -- set and language
     IF _cmset IS NOT NULL AND _cmlanguage IS NOT NULL THEN
-        SELECT * INTO rowSetLanguage FROM cmset_language WHERE cmset = _cmset AND cmlanguage = _cmlanguage;
+        SELECT * INTO rowSetLanguage FROM cmset_language
+            WHERE cmset = _cmset AND cmlanguage = _cmlanguage;
 
         IF NOT FOUND THEN
             INSERT INTO cmset_language(
@@ -457,7 +458,8 @@ BEGIN
     -- frame effects
     IF _cmframeeffects IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmframeeffects LOOP
-            SELECT * INTO rowFrameEffect FROM cmcard_frameeffect WHERE cmcard = _new_id;
+            SELECT * INTO rowFrameEffect FROM cmcard_frameeffect
+                WHERE cmcard = _new_id AND cmframeeffect = pkey;
 
             IF NOT FOUND THEN
                 INSERT INTO cmcard_frameeffect(
@@ -474,7 +476,8 @@ BEGIN
     -- colors
     IF _cmcolors IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolors LOOP
-            SELECT * INTO rowColor FROM cmcard_color WHERE cmcard = _new_id;
+            SELECT * INTO rowColor FROM cmcard_color
+                WHERE cmcard = _new_id AND cmcolor = pkey;
 
             IF NOT FOUND THEN
                 INSERT INTO cmcard_color(
@@ -491,7 +494,8 @@ BEGIN
     -- color identities
     IF _cmcolor_identities IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_identities LOOP
-            SELECT * INTO rowColorIndentity FROM cmcard_coloridentity WHERE cmcard = _new_id;
+            SELECT * INTO rowColorIndentity FROM cmcard_coloridentity
+                WHERE cmcard = _new_id AND cmcolor = pkey;
 
             IF NOT FOUND THEN
                 INSERT INTO cmcard_coloridentity(
@@ -508,7 +512,8 @@ BEGIN
     -- color indicators
     IF _cmcolor_indicators IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_indicators LOOP
-            SELECT * INTO rowColorIndicator FROM cmcard_colorindicator WHERE cmcard = _new_id;
+            SELECT * INTO rowColorIndicator FROM cmcard_colorindicator
+                WHERE cmcard = _new_id AND cmcolor = pkey;
 
             IF NOT FOUND THEN
                 INSERT INTO cmcard_colorindicator(
@@ -525,7 +530,8 @@ BEGIN
     -- legalities
     IF _cmlegalities IS NOT NULL THEN
         FOR pkey2, pkey3 IN SELECT * FROM jsonb_each_text(_cmlegalities) LOOP
-            SELECT * INTO rowFormatLegality FROM cmcard_format_legality WHERE cmcard = _new_id;
+            SELECT * INTO rowFormatLegality FROM cmcard_format_legality
+                WHERE cmcard = _new_id AND cmformat = pkey2 AND cmlegality = pkey3;
 
             IF NOT FOUND THEN
                 INSERT INTO cmcard_format_legality(
@@ -544,7 +550,8 @@ BEGIN
     -- subtypes
     IF _cmcardtype_subtypes IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcardtype_subtypes LOOP
-            SELECT * INTO rowSubtype FROM cmcard_subtype WHERE cmcard = _new_id;
+            SELECT * INTO rowSubtype FROM cmcard_subtype
+                WHERE cmcard = _new_id AND cmcardtype = pkey;
 
             IF NOT FOUND THEN
                 INSERT INTO cmcard_subtype(
@@ -554,14 +561,15 @@ BEGIN
                     _new_id,
                     pkey
                 );
-            END IF;    
+            END IF;
         END LOOP;
     END IF;
 
     -- supertypes
     IF _cmcardtype_subtypes IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcardtype_supertypes LOOP
-            SELECT * INTO rowSupertype FROM cmcard_supertype WHERE cmcard = _new_id;
+            SELECT * INTO rowSupertype FROM cmcard_supertype
+               WHERE cmcard = _new_id AND cmcardtype = pkey;
 
             IF NOT FOUND THEN
                 INSERT INTO cmcard_supertype(

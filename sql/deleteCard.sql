@@ -16,7 +16,6 @@ BEGIN
     DELETE from cmcard_frameeffect WHERE cmcard = _new_id;
 	DELETE from cmcard_otherlanguage WHERE cmcard = _new_id;
     DELETE from cmcard_otherprinting WHERE cmcard = _new_id;
-	DELETE from cmcard_store_price WHERE cmcard = _new_id;
     DELETE from cmcard_subtype WHERE cmcard = _new_id;
     DELETE from cmcard_supertype WHERE cmcard = _new_id;
     DELETE from cmcardprice WHERE cmcard = _new_id;
