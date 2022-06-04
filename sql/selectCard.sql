@@ -209,7 +209,20 @@ BEGIN
                                             FROM cmlanguage v
                                             WHERE v.code = x.cmlanguage
                                         ) x
-                                    ) AS language
+                                    ) AS language,
+                                    array(
+                                        SELECT row_to_json(x) FROM (
+                                            SELECT
+                                                new_id,
+                                                name,
+                                                printed_name,
+                                                art_crop_url,
+                                                normal_url,
+                                                png_url
+                                            FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
+                                            WHERE w.cmcard = x.new_id
+                                        ) x
+                                    ) AS faces
 								)
 							b) AS card
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
