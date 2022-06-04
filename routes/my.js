@@ -51,19 +51,20 @@ function trimImageUrls(new_id, card, faces, isMobile) {
             for (var i=0; i<faces.length; i++) {
                 if (faces[i].art_crop_url == null || faces[i].art_crop_url == undefined) {
                     faces[i].art_crop_url = card.art_crop_url
-                    delete card.art_crop_url
                 }
 
                 if (faces[i].normal_url == null || faces[i].normal_url == undefined) {
                     faces[i].normal_url = card.normal_url
-                    delete card.normal_url
                 }
 
                 if (faces[i].png_url == null || faces[i].png_url == undefined) {
                     faces[i].png_url = card.png_url
-                    delete card.png_url
                 }
-            }    
+            } 
+
+            delete card.art_crop_url
+            delete card.normal_url
+            delete card.png_url
         }
 
     } else {
