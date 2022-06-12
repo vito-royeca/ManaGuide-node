@@ -21,7 +21,10 @@ mixin cardSummary(card, languageCode)
         p &nbsp;
         .ui.two.column.very.relaxed.stackable.grid
             .column
-                p Illustrated by #{card.artist.name}
+                if card.artist != undefined && card.artist.name != undefined
+                    p Illustrated by #{card.artist.name}
+                else
+                    P &nbsp;    
             .right.aligned.column
                 if card.supertypes != undefined && card.supertypes.length > 0
                     each supertype in card.supertypes
