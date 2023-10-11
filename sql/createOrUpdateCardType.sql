@@ -24,7 +24,9 @@ BEGIN
         PERFORM createOrUpdateCardType(_cmcardtype_parent, LEFT(_cmcardtype_parent, 1), NULL);
     END IF;
 
-    SELECT * INTO row FROM cmcardtype WHERE name = _name;
+    SELECT * INTO row FROM cmcardtype
+        WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmcardtype(

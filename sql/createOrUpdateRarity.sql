@@ -7,7 +7,9 @@ DECLARE
 
     row cmrarity%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmrarity WHERE name = _name;
+    SELECT * INTO row FROM cmrarity
+        WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmrarity(

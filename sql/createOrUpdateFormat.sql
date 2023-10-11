@@ -7,7 +7,9 @@ DECLARE
 
     row cmformat%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmformat WHERE name = _name;
+    SELECT * INTO row FROM cmformat
+        WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmformat(

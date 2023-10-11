@@ -32,7 +32,8 @@ BEGIN
         WHERE term = _term AND
         term_section = _term_section AND
         definition = _definition AND
-        "order" = _order;
+        "order" = _order
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmrule(

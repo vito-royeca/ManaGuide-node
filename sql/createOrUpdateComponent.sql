@@ -7,7 +7,9 @@ DECLARE
 
     row cmcomponent%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmcomponent WHERE name = _name;
+    SELECT * INTO row FROM cmcomponent
+        WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmcomponent(

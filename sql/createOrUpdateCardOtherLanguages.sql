@@ -13,6 +13,7 @@ BEGIN
             c.new_id NOT IN (SELECT cmcard_face FROM cmcard_face) AND
             c.new_id NOT IN (SELECT cmcard_part FROM cmcard_component_part)
         ORDER BY s.release_date, c.name
+        LIMIT 200
     LOOP
         FOR row2 IN SELECT new_id FROM cmcard c
                 LEFT JOIN cmset s ON c.cmset = s.code
@@ -21,8 +22,11 @@ BEGIN
                 c.name = row.name AND
                 cmlanguage IS DISTINCT FROM row.cmlanguage
             ORDER BY s.release_date, c.name
+            LIMIT 100
         LOOP
-            SELECT * INTO rowOtherLanguage FROM cmcard_otherlanguage WHERE cmcard = row.new_id AND cmcard_otherlanguage = row2.new_id;
+            SELECT * INTO rowOtherLanguage FROM cmcard_otherlanguage
+                WHERE cmcard = row.new_id AND cmcard_otherlanguage = row2.new_id
+                LIMIT 1;
 
             IF NOT FOUND THEN
                 INSERT INTO cmcard_otherlanguage(

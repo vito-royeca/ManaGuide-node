@@ -11,7 +11,8 @@ DECLARE
 
     row cmcolor%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmcolor WHERE name = _name;
+    SELECT * INTO row FROM cmcolor WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmcolor(

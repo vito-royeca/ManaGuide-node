@@ -71,7 +71,9 @@ BEGIN
         _cmset_parent := NULL;
     END IF;
 
-    SELECT * INTO row FROM cmset WHERE code = _code;
+    SELECT * INTO row FROM cmset
+        WHERE code = _code
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmset(
@@ -108,7 +110,9 @@ BEGIN
             _cmsettype);
     ELSE
         IF _cmset_parent IS NOT NULL THEN
-            SELECT * INTO parent_row FROM cmset WHERE code = _cmset_parent;
+            SELECT * INTO parent_row FROM cmset
+                WHERE code = _cmset_parent
+                LIMIT 1;
 
             IF row.card_count IS DISTINCT FROM _card_count OR
                row.is_foil_only IS DISTINCT FROM _is_foil_only OR

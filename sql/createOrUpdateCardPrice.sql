@@ -35,12 +35,15 @@ BEGIN
         _direct_low := NULL;
     END IF;
 
-    SELECT new_id INTO _new_id FROM cmcard WHERE tcgplayer_id = _tcgplayer_id;
+    SELECT new_id INTO _new_id FROM cmcard
+        WHERE tcgplayer_id = _tcgplayer_id
+        LIMIT 1;
 
     IF FOUND THEN
         SELECT * INTO row FROM cmcardprice
             WHERE cmcard = _new_id AND
-                is_foil = _is_foil;
+                is_foil = _is_foil
+                LIMIT 1;
 
         IF NOT FOUND THEN
             INSERT INTO cmcardprice(

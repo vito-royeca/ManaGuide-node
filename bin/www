@@ -11,8 +11,9 @@ var https = require('https');
 var fs = require('fs');
 
 var options = {
-    key: fs.readFileSync('../ssl/managuideapp_com.key'),
-    cert: fs.readFileSync('../ssl/managuideapp_com.crt')
+    cert: fs.readFileSync('../ssl/managuideapp_com.crt'),
+    ca: fs.readFileSync('../ssl/managuideapp_com.ca-bundle'),
+    key: fs.readFileSync('../ssl/managuideapp_com.key')
 };
 
 // Create an HTTP service.

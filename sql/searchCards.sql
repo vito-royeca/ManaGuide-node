@@ -83,18 +83,21 @@ BEGIN
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class, s.keyrune_unicode
                             FROM cmset s WHERE s.code = c.cmset
+                            LIMIT 1
                         ) x
                     ) AS set,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT r.name
                             FROM cmrarity r WHERE r.name = c.cmrarity
+                            LIMIT 1
                         ) x
                     ) AS rarity,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT l.code, l.name
                             FROM cmlanguage l WHERE l.code = c.cmlanguage
+                            LIMIT 1
                         ) x
                     ) AS language,
                     (
@@ -102,6 +105,7 @@ BEGIN
                             SELECT v.name, v.description
                             FROM cmlayout v
                             WHERE v.name = c.cmlayout
+                            LIMIT 1
                         ) x
                     ) AS layout,
                     array(
@@ -109,6 +113,7 @@ BEGIN
                             SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_updated
                             FROM cmcardprice v
                             WHERE v.cmcard = c.new_id
+                            LIMIT 100
                         ) x
                     ) AS prices ';
 
@@ -118,6 +123,7 @@ BEGIN
                         SELECT row_to_json(x) FROM (' || command ||
                             'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
                             WHERE w.cmcard = c.new_id
+                            LIMIT 100
                         ) x
                     ) AS faces ';
 
@@ -128,6 +134,7 @@ BEGIN
                             SELECT w.name
                             FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
                             WHERE v.cmcard = c.new_id
+                            LIMIT 100
                         ) x
                     ) AS supertypes ';               
 

@@ -9,7 +9,8 @@ DECLARE
 BEGIN
     SELECT * INTO row FROM cmcard_face
     WHERE cmcard = _cmcard
-        AND cmcard_face = _cmcard_face;
+        AND cmcard_face = _cmcard_face
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmcard_face(

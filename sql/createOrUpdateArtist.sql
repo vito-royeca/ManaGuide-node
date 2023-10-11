@@ -11,7 +11,9 @@ DECLARE
 
     row cmartist%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmartist WHERE name = _name;
+    SELECT * INTO row FROM cmartist
+        WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmartist(

@@ -9,7 +9,9 @@ DECLARE
 
     row cmsetblock%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmsetblock WHERE code = _code;
+    SELECT * INTO row FROM cmsetblock
+        WHERE code = _code
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmsetblock(

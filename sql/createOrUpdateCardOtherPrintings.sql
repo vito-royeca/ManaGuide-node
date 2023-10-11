@@ -23,8 +23,11 @@ BEGIN
                 c.name = row.name AND
                 cmlanguage = row.cmlanguage
             ORDER BY s.release_date, c.name
+            LIMIT 200
         LOOP
-            SELECT * INTO rowOtherPrinting FROM cmcard_otherprinting WHERE cmcard = row.new_id AND cmcard_otherprinting = row2.new_id;
+            SELECT * INTO rowOtherPrinting FROM cmcard_otherprinting
+                WHERE cmcard = row.new_id AND cmcard_otherprinting = row2.new_id
+                LIMIT 1;
 
             IF NOT FOUND THEN
                 INSERT INTO cmcard_otherprinting(

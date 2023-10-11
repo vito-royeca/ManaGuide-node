@@ -7,7 +7,9 @@ DECLARE
 
     row cmlegality%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmlegality WHERE name = _name;
+    SELECT * INTO row FROM cmlegality
+        WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmlegality(

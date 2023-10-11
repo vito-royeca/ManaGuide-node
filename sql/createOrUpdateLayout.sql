@@ -9,7 +9,9 @@ DECLARE
 
     row cmlayout%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmlayout WHERE name = _name;
+    SELECT * INTO row FROM cmlayout
+        WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmlayout(

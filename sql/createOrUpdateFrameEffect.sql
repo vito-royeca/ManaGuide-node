@@ -25,7 +25,9 @@ BEGIN
         _description := NULL;
     END IF;
 
-    SELECT * INTO row FROM cmframeeffect WHERE id = _id;
+    SELECT * INTO row FROM cmframeeffect
+        WHERE id = _id
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmframeeffect(

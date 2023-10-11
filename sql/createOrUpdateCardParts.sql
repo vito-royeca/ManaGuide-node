@@ -11,12 +11,14 @@ DECLARE
     cmcard_part_new_id character varying;
 BEGIN
     SELECT new_id INTO cmcard_part_new_id FROM cmcard
-        WHERE id = _cmcard_part;
+        WHERE id = _cmcard_part
+        LIMIT 1;
 
     SELECT * INTO row FROM cmcard_component_part
         WHERE cmcard = _cmcard
         AND cmcomponent = _cmcomponent
-        AND cmcard_part = cmcard_part_new_id;
+        AND cmcard_part = cmcard_part_new_id
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmcard_component_part(

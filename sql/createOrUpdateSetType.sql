@@ -7,7 +7,9 @@ DECLARE
 
     row cmartist%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmsettype WHERE name = _name;
+    SELECT * INTO row FROM cmsettype
+        WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmsettype(

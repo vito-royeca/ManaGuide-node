@@ -77,18 +77,21 @@ BEGIN
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class, s.keyrune_unicode
                             FROM cmset s WHERE s.code = c.cmset
+                            LIMIT 1
                         ) x
                     ) AS set,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT r.name, r.name_section
                             FROM cmrarity r WHERE r.name = c.cmrarity
+                            LIMIT 1
                         ) x
                     ) AS rarity,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT l.code, l.name
                             FROM cmlanguage l WHERE l.code = c.cmlanguage
+                            LIMIT 1
                         ) x
                     ) AS language,
                     (
@@ -96,6 +99,7 @@ BEGIN
                             SELECT v.name, v.name_section, v.description
                             FROM cmlayout v
                             WHERE v.name = c.cmlayout
+                            LIMIT 1
                         ) x
                     ) AS layout,
                     array(
@@ -103,6 +107,7 @@ BEGIN
                             SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_updated
                             FROM cmcardprice v
                             WHERE v.cmcard = c.new_id
+                            LIMIT 1
                         ) x
                     ) AS prices ';
 
@@ -113,6 +118,7 @@ BEGIN
                             command ||
                             'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
                             WHERE w.cmcard = c.new_id
+                            LIMIT 100
                         ) x
                     ) AS faces ';
 
@@ -121,7 +127,7 @@ BEGIN
     command := command || 'WHERE c.new_id = ''' || _newId || ''' ';
     command := command || 'AND c.cmlanguage = ''' || _cmlanguage || ''' ';
     command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face) ';
-    command := command || 'ORDER BY ' || _sortedBy || '';
+    command := command || 'ORDER BY ' || _sortedBy || ' LIMIT 200';
 
     RETURN QUERY EXECUTE command;
 END;

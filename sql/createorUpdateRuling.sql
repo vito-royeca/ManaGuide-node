@@ -9,7 +9,9 @@ DECLARE
 
     row cmruling%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmruling WHERE oracle_id = _oracle_id;
+    SELECT * INTO row FROM cmruling
+        WHERE oracle_id = _oracle_id
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmruling(

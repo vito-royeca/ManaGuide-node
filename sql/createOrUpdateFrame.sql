@@ -9,7 +9,9 @@ DECLARE
 
     row cmframe%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmframe WHERE name = _name;
+    SELECT * INTO row FROM cmframe
+        WHERE name = _name
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmframe(

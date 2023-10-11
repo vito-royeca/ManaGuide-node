@@ -46,12 +46,14 @@ BEGIN
                         SELECT row_to_json(x) FROM (
                             SELECT sb.code, sb.name
                             FROM cmsetblock sb WHERE sb.code = s.cmsetblock
+                            LIMIT 1
                         ) x
                    ) AS set_block,
                    (
                        SELECT row_to_json(x) FROM (
                             SELECT st.name
                             FROM cmsettype st WHERE st.name = s.cmsettype
+                            LIMIT 1
                         ) x
                    ) AS set_type,
                    array(
@@ -59,6 +61,7 @@ BEGIN
                             SELECT l.code, l.display_code, l.name
                             FROM cmset_language sl left join cmlanguage l on sl.cmlanguage = l.code
                             WHERE sl.cmset = s.code
+                            LIMIT 100
                         ) x
 	               ) AS languages,
                    array_to_json(

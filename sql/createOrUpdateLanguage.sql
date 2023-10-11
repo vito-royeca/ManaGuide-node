@@ -22,7 +22,9 @@ BEGIN
         _name_section := NULL;
     END IF;
 
-    SELECT * INTO row FROM cmlanguage WHERE code = _code;
+    SELECT * INTO row FROM cmlanguage
+        WHERE code = _code
+        LIMIT 1;
 
     IF NOT FOUND THEN
         INSERT INTO cmlanguage(

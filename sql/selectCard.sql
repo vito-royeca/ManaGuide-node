@@ -114,6 +114,7 @@ BEGIN
                         SELECT row_to_json(x) FROM (
                             SELECT v.code, v.name, v.keyrune_class, v.keyrune_unicode
                             FROM cmset v WHERE v.code = c.cmset
+                            LIMIT 1
                         ) x
                     ) AS set,
                     (
@@ -121,6 +122,7 @@ BEGIN
                             SELECT v.name
                             FROM cmrarity v
                             WHERE v.name = c.cmrarity
+                            LIMIT 1
                         ) x
                     ) AS rarity,
                     (
@@ -128,6 +130,7 @@ BEGIN
                             SELECT v.code, v.name
                             FROM cmlanguage v
                             WHERE v.code = c.cmlanguage
+                            LIMIT 1
                         ) x
                     ) AS language,
                     (
@@ -135,6 +138,7 @@ BEGIN
                             SELECT v.name
                             FROM cmlayout v
                             WHERE v.name = c.cmlayout
+                            LIMIT 1
                         ) x
                     ) AS layout,
                     (
@@ -142,6 +146,7 @@ BEGIN
                             SELECT v.name
                             FROM cmwatermark v
                             WHERE v.name = c.cmwatermark
+                            LIMIT 1
                         ) x
                     ) AS watermark,
                     (
@@ -149,6 +154,7 @@ BEGIN
                             SELECT v.name
                             FROM cmframe v
                             WHERE v.name = c.cmframe
+                            LIMIT 1
                         ) x
                     ) AS frame,
                     (
@@ -156,6 +162,7 @@ BEGIN
                             SELECT v.name
                             FROM cmartist v
                             WHERE v.name = c.cmartist
+                            LIMIT 10
                         ) x
                     ) AS artist,
                     array(
@@ -163,6 +170,7 @@ BEGIN
                             SELECT w.name
                             FROM cmcard_color v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
+                            LIMIT 10
                         ) x
                     ) AS colors,
                     array(
@@ -170,6 +178,7 @@ BEGIN
                             SELECT w.name
                             FROM cmcard_coloridentity v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
+                            LIMIT 100
                         ) x
                     ) AS color_identities,
                     array(
@@ -177,6 +186,7 @@ BEGIN
                             SELECT w.name
                             FROM cmcard_colorindicator v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
+                            LIMIT 100
                         ) x
                     ) AS color_indicators ';
 
@@ -201,6 +211,7 @@ BEGIN
                                         SELECT row_to_json(x) FROM (
                                             SELECT v.code, v.name, v.keyrune_class, v.keyrune_unicode
                                             FROM cmset v WHERE v.code = x.cmset
+                                            LIMIT 1
                                         ) x
                                     ) AS set,
                                     (
@@ -208,6 +219,7 @@ BEGIN
                                             SELECT v.code, v.name
                                             FROM cmlanguage v
                                             WHERE v.code = x.cmlanguage
+                                            LIMIT 1
                                         ) x
                                     ) AS language,
                                     array(
@@ -221,6 +233,7 @@ BEGIN
                                                 png_url
                                             FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                                             WHERE w.cmcard = x.new_id
+                                            LIMIT 100
                                         ) x
                                     ) AS faces
 								)
@@ -228,6 +241,7 @@ BEGIN
                             FROM cmcard_component_part v left join cmcomponent w on v.cmcomponent = w.name
 							left join cmcard x on v.cmcard_part = x.new_id
                             WHERE v.cmcard = c.new_id AND v.cmcard_part != c.new_id
+                            LIMIT 100
                         ) x
                     ) AS component_parts ';
     -- Faces
@@ -236,7 +250,7 @@ BEGIN
                         SELECT row_to_json(x) FROM (' || command ||
                             'FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                             WHERE w.cmcard = ''' || _new_id || '''' ||
-                        ') x
+                        ' LIMIT 100) x
                     ) AS faces ';
 
     -- Other Languages
@@ -256,6 +270,7 @@ BEGIN
                                         SELECT v.name
                                         FROM cmrarity v
                                         WHERE v.name = c.cmrarity
+                                        LIMIT 1
                                     ) x
                                 ) AS rarity,
                                 (
@@ -263,6 +278,7 @@ BEGIN
                                         SELECT v.code, v.display_code, v.name
                                         FROM cmlanguage v
                                         WHERE v.code = w.code
+                                        LIMIT 1
                                     ) x
                                 ) AS language,
                                 (
@@ -270,6 +286,7 @@ BEGIN
                                         SELECT y.code, y.name, y.keyrune_class, y.keyrune_unicode
                                         FROM cmset y
                                         WHERE y.code = c.cmset
+                                        LIMIT 1
                                     ) x
                                 ) AS set,
                                 array(
@@ -283,6 +300,7 @@ BEGIN
                                             png_url
                                         FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                                         WHERE w.cmcard = x.cmcard_otherlanguage
+                                        LIMIT 100
                                     ) x
                                 ) AS faces
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
@@ -291,6 +309,7 @@ BEGIN
                             ' group by w.code, x.cmcard_otherlanguage, c.cmset, c.name, c.printed_name, c.cmrarity, c.collector_number,
                               c.art_crop_url, c.normal_url, c.png_url 
 							 order by w.code
+                             LIMIT 100
                         ) x
                     ) AS other_languages ';
 
@@ -311,6 +330,7 @@ BEGIN
                                         SELECT v.name
                                         FROM cmrarity v
                                         WHERE v.name = c.cmrarity
+                                        LIMIT 1
                                     ) x
                                 ) AS rarity,
 								(
@@ -318,6 +338,7 @@ BEGIN
                                         SELECT y.code, y.name, y.keyrune_class, y.keyrune_unicode
                                         FROM cmset y
                                         WHERE y.code = c.cmset
+                                        LIMIT 1
                                     ) x
                                 ) AS set,
 								array(
@@ -325,6 +346,7 @@ BEGIN
                                         SELECT new_id, art_crop_url, normal_url, png_url
                                         FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                                         WHERE w.cmcard = x.cmcard_otherprinting
+                                        LIMIT 100
                                     ) x
                                 ) AS faces,
                                 array(
@@ -332,6 +354,7 @@ BEGIN
                                         SELECT id, v.market, v.is_foil
                                         FROM cmcardprice v
                                         WHERE v.cmcard = c.new_id
+                                        LIMIT 1
                                     ) x
                                 ) AS prices,
                                 (
@@ -346,6 +369,7 @@ BEGIN
                             left join cmset y on y.code = c.cmset
                             WHERE x.cmcard = ''' || _new_id || '''' ||
                             ' order by y.release_date desc, c.collector_number
+                            LIMIT 100
                         ) x
                     ) AS other_printings ';
 
@@ -366,6 +390,7 @@ BEGIN
                                     SELECT v.name
                                     FROM cmrarity v
                                     WHERE v.name = c.cmrarity
+                                    LIMIT 1
                                 ) x
                             ) AS rarity,
                             (
@@ -373,6 +398,7 @@ BEGIN
                                     SELECT y.code, y.name, y.keyrune_class, y.keyrune_unicode
                                     FROM cmset y
                                     WHERE y.code = c.cmset
+                                    LIMIT 1
                                 ) x
                             ) AS set,
                             (
@@ -380,11 +406,13 @@ BEGIN
                                     SELECT v.code, v.name
                                     FROM cmlanguage v
                                     WHERE v.code = c.cmlanguage
+                                    LIMIT 1
                                 ) x
                             ) AS language
                         FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.new_id
                         WHERE w.cmcard = ''' || _new_id || '''' ||
                         ' order by c.collector_number
+                        LIMIT 100
                     ) x
                 ) AS variations ';
 
@@ -397,6 +425,7 @@ BEGIN
                         FROM cmcard_format_legality v left join cmformat w on v.cmformat = w.name
                         left join cmlegality x on v.cmlegality = x.name
                         WHERE v.cmcard = c.new_id
+                        LIMIT 100
                     ) x
                 ) AS format_legalities ';
 
@@ -407,6 +436,7 @@ BEGIN
                         SELECT w.description, w.id, w.name
                         FROM cmcard_frameeffect v left join cmframeeffect w on v.cmframeeffect = w.id
                         WHERE v.cmcard = c.new_id
+                        LIMIT 100
                     ) x
                 ) AS frame_effects ';
 
@@ -417,6 +447,7 @@ BEGIN
                         SELECT w.name
                         FROM cmcard_subtype v left join cmcardtype w on v.cmcardtype = w.name
                         WHERE v.cmcard = c.new_id
+                        LIMIT 100
                     ) x
                 ) AS subtypes ';
 
@@ -427,6 +458,7 @@ BEGIN
                         SELECT w.name
                         FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
                         WHERE v.cmcard = c.new_id
+                        LIMIT 100
                     ) x
                 ) AS supertypes ';
 
@@ -437,6 +469,7 @@ BEGIN
                         SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_updated
                         FROM cmcardprice v
                         WHERE v.cmcard = c.new_id
+                        LIMIT 1
                     ) x
                 ) AS prices ';
 
@@ -447,6 +480,7 @@ BEGIN
                         SELECT v.id, v.date_published, v.text
                         FROM cmruling v
                         WHERE v.oracle_id = c.oracle_id
+                        LIMIT 100
                     ) x
                 ) AS rulings ';
 
