@@ -124,7 +124,7 @@ BEGIN
                         SELECT row_to_json(x) FROM (' || command ||
                             'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
                             WHERE w.cmcard = c.new_id
-                            LIMIT 100
+                            LIMIT 10
                         ) x
                     ) AS faces ';
 
@@ -135,7 +135,7 @@ BEGIN
                             SELECT w.name
                             FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
                             WHERE v.cmcard = c.new_id
-                            LIMIT 100
+                            LIMIT 50
                         ) x
                     ) AS supertypes ';                
 

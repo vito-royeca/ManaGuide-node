@@ -98,8 +98,10 @@ block data
                                         +cardRulings(card)
 
                     td(width="20%" style="padding: 10px; vertical-align: top;")
-                        +cardPricing(card)
-                        h3.ui.header Other Printings (Market Pricing) #{card.other_printings.length > 0 ? (": " + card.other_printings.length) : ""}
+                        h3.ui.header Market Pricing
+                        p
+                            +cardPricing(card)
+                        h3.ui.header Other Printings
                         p
                             +cardOtherPrintings(card)
                         

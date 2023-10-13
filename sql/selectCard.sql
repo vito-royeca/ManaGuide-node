@@ -178,7 +178,7 @@ BEGIN
                             SELECT w.name
                             FROM cmcard_coloridentity v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
-                            LIMIT 100
+                            LIMIT 10
                         ) x
                     ) AS color_identities,
                     array(
@@ -186,7 +186,7 @@ BEGIN
                             SELECT w.name
                             FROM cmcard_colorindicator v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
-                            LIMIT 100
+                            LIMIT 10
                         ) x
                     ) AS color_indicators ';
 
@@ -250,7 +250,7 @@ BEGIN
                         SELECT row_to_json(x) FROM (' || command ||
                             'FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                             WHERE w.cmcard = ''' || _new_id || '''' ||
-                        ' LIMIT 100) x
+                        ' LIMIT 10) x
                     ) AS faces ';
 
     -- Other Languages
@@ -309,7 +309,7 @@ BEGIN
                             ' group by w.code, x.cmcard_otherlanguage, c.cmset, c.name, c.printed_name, c.cmrarity, c.collector_number,
                               c.art_crop_url, c.normal_url, c.png_url 
 							 order by w.code
-                             LIMIT 100
+                             LIMIT 50
                         ) x
                     ) AS other_languages ';
 
@@ -369,7 +369,7 @@ BEGIN
                             left join cmset y on y.code = c.cmset
                             WHERE x.cmcard = ''' || _new_id || '''' ||
                             ' order by y.release_date desc, c.collector_number
-                            LIMIT 100
+                            LIMIT 10
                         ) x
                     ) AS other_printings ';
 
@@ -412,7 +412,7 @@ BEGIN
                         FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.new_id
                         WHERE w.cmcard = ''' || _new_id || '''' ||
                         ' order by c.collector_number
-                        LIMIT 100
+                        LIMIT 50
                     ) x
                 ) AS variations ';
 
@@ -425,7 +425,7 @@ BEGIN
                         FROM cmcard_format_legality v left join cmformat w on v.cmformat = w.name
                         left join cmlegality x on v.cmlegality = x.name
                         WHERE v.cmcard = c.new_id
-                        LIMIT 100
+                        LIMIT 50
                     ) x
                 ) AS format_legalities ';
 
@@ -436,7 +436,7 @@ BEGIN
                         SELECT w.description, w.id, w.name
                         FROM cmcard_frameeffect v left join cmframeeffect w on v.cmframeeffect = w.id
                         WHERE v.cmcard = c.new_id
-                        LIMIT 100
+                        LIMIT 50
                     ) x
                 ) AS frame_effects ';
 
@@ -447,7 +447,7 @@ BEGIN
                         SELECT w.name
                         FROM cmcard_subtype v left join cmcardtype w on v.cmcardtype = w.name
                         WHERE v.cmcard = c.new_id
-                        LIMIT 100
+                        LIMIT 50
                     ) x
                 ) AS subtypes ';
 
@@ -458,7 +458,7 @@ BEGIN
                         SELECT w.name
                         FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
                         WHERE v.cmcard = c.new_id
-                        LIMIT 100
+                        LIMIT 50
                     ) x
                 ) AS supertypes ';
 

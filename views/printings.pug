@@ -1,0 +1,54 @@
+extends layout.pug
+include mixins/_cardArt
+include mixins/_cardsSorter
+include mixins/_imageCardsRow
+include mixins/_listCardsRow
+include mixins/_montageCardsRow
+
+block pageTitle
+    title All Printings - #{defaultPageTitle}
+block headline
+    h1.ui.header All Printings: #{ data.length }
+block sorters
+    if data.length > 0
+        +cardsSorter("printings")
+block data
+    if data.length > 0
+        form(action=baseUrl method="get" id="printings" name="printings")
+            input(type="hidden" value=displayAs name="displayAs" id="printings.displayAs")
+            input(type="hidden" value=sortedBy name="sortedBy" id="printings.sortedBy")
+            input(type="hidden" value=orderBy name="orderBy" id="printings.orderBy")
+
+        if displayAs == "montage"
+            .ui.centered.link.cards
+                each card in data
+                    +montageCardsRow(card)
+        else if displayAs == "image"
+            center
+                .ui.link.cards
+                    each card in data
+                        +imageCardsRow(card)
+        else if displayAs == "list"
+            table.ui.small.table
+                thead
+                    tr
+                        th Set
+                        th #
+                        th Name
+                        th Casting Cost
+                        th Type
+                        th Rarity
+                        th.right.aligned Normal
+                        th.right.aligned Foil
+                        th &nbsp;
+                tbody
+                    each card in data
+                        +listCardsRow(card)
+                tfoot
+                    tr
+                        th(colspan='9')
+        else
+            .ui.centered.link.cards
+                each card in data
+                    +montageCardsRow(card)
+

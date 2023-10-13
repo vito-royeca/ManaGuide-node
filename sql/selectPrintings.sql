@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION searchCards(
+CREATE OR REPLACE FUNCTION selectPrintings(
+    character varying,
     character varying,
     character varying,
     character varying)
@@ -32,12 +33,12 @@ CREATE OR REPLACE FUNCTION searchCards(
 AS
 $$
 DECLARE
-    _query ALIAS FOR $1;
-    _sortedBy ALIAS FOR $2;
-    _orderBy ALIAS FOR $3;
+    _newId ALIAS FOR $1;
+    _cmlanguage ALIAS FOR $2;
+    _sortedBy ALIAS FOR $3;
+    _orderBy ALIAS FOR $4;
     command character varying;
 BEGIN
-    _query := lower(_query);
     IF lower(_sortedBy) = 'set_name' THEN
         _sortedBy = 's.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
@@ -136,14 +137,20 @@ BEGIN
                             WHERE v.cmcard = c.new_id
                             LIMIT 100
                         ) x
-                    ) AS supertypes ';               
+                    ) AS supertypes ';   
 
-    command := command || 'FROM cmcard c ';
-    command := command || 'LEFT join cmset s ON c.cmset = s.code ';
-    command := command || 'WHERE c.cmlanguage = ''en'' ';
-    command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face) ';
-    command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
+    -- FROM cmcard c
+    --                         left join cmcard_otherprinting x on x.cmcard_otherprinting = c.new_id
+    --                         left join cmset y on y.code = c.cmset
+    --                         WHERE x.cmcard = ''' || _new_id || '''' ||
+    --                         ' order by y.release_date desc, c.collector_number
+
+    command := command || 'FROM cmcard c left join cmcard_otherprinting x on x.cmcard_otherprinting = c.new_id ';
+	command := command || 'left join cmset s on s.code = c.cmset ';
+    command := command || 'WHERE x.cmcard = ''' || _newId || ''' ';
+    command := command || 'AND c.cmlanguage = ''' || _cmlanguage || ''' ';
     command := command || 'ORDER BY ' || _sortedBy || '';
+
 
     RETURN QUERY EXECUTE command;
 END;
