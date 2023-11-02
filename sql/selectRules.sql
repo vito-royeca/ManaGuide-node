@@ -23,7 +23,7 @@ BEGIN
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT p.id, p.term, p.definition
-                            FROM cmrule p WHERE p.id = s.cmrule_parent
+                            FROM cmrule p WHERE p.id = s.cmrule_parent LIMIT 100
                         ) x
                     ) AS parent';
 
@@ -33,7 +33,7 @@ BEGIN
                         SELECT row_to_json(x) FROM (' ||
                             command || ', (SELECT children from selectRules(c.id))'
                             ' FROM cmrule c
-                            WHERE c.cmrule_parent = s.id ORDER BY c.term'
+                            WHERE c.cmrule_parent = s.id ORDER BY c.term LIMIT 100'
                         ') x
                     ) AS children ';
                     
@@ -46,7 +46,7 @@ BEGIN
 	    command := command || ' WHERE s.cmrule_parent IS NULL';
     END IF;
 
-    command := command || ' ORDER BY s.order ASC';
+    command := command || ' ORDER BY s.order ASC LIMIT 100';
 
     RETURN QUERY EXECUTE command;
 END;

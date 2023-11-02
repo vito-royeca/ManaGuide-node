@@ -113,17 +113,35 @@ BEGIN
                             SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_updated
                             FROM cmcardprice v
                             WHERE v.cmcard = c.new_id
-                            LIMIT 100
+                            LIMIT 1
                         ) x
                     ) AS prices ';
 
     -- Faces
     command := command ||
                     ', array(
-                        SELECT row_to_json(x) FROM (' || command ||
-                            'FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
+                        SELECT row_to_json(x) FROM (
+                            SELECT
+                                new_id,
+                                collector_number,
+                                face_order,
+                                loyalty,
+                                mana_cost,
+                                number_order,
+                                name,
+                                name_section,
+                                printed_name,
+                                printed_type_line,
+                                type_line,
+	                            power,
+                                toughness,
+                                art_crop_url,
+                                normal_url,
+                                png_url
+                            FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
                             WHERE w.cmcard = c.new_id
-                            LIMIT 100
+                            ORDER BY face_order
+                            LIMIT 10
                         ) x
                     ) AS faces ';
 
@@ -134,7 +152,7 @@ BEGIN
                             SELECT w.name
                             FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
                             WHERE v.cmcard = c.new_id
-                            LIMIT 100
+                            LIMIT 50
                         ) x
                     ) AS supertypes ';               
 
