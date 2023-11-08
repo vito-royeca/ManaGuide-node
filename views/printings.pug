@@ -6,9 +6,9 @@ include mixins/_listCardsRow
 include mixins/_montageCardsRow
 
 block pageTitle
-    title All Printings - #{defaultPageTitle}
+    title All Other Printings - #{defaultPageTitle}
 block headline
-    h1.ui.header All Printings: #{ data.length }
+    h1.ui.header All Other Printings: #{ data.length }
 block sorters
     if data.length > 0
         +cardsSorter("printings")

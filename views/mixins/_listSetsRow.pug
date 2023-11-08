@@ -2,9 +2,18 @@ mixin listSetsRow(set)
     tr
         td.center.aligned
             i(class="ss ss-" + set.keyrune_class + " ss-2x")
+        //- td
+        //-     img.set.lazyload(style="--width: 100"
+        //-                      data-sizes="auto"
+        //-                      data-src="/images/sets/" + set.logo_code + "_small.png"
+        //-                      name="/images/sets/" + set.logo_code + "_small.png"
+        //-                      id=set.code
+        //-                      alt=alt)
+        //-     p &nbsp;
+        //-     p #{set.name} (#{set.code})
         td #{set.name} (#{set.code})
         td.right.aligned #{set.card_count}
-        td.center.aligned #{set.release_date}
+        td #{set.release_date}
         td
             // EN
             if set.languages.some(e => e.code == "en")

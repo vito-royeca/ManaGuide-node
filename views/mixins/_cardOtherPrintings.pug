@@ -43,7 +43,7 @@ mixin cardOtherPrintings(card)
                     th.center.aligned(colspan='4')
                         if card.other_printings.length == 10
                             p.left.aligned 
-                                a(href="/printings/" + card.new_id + "/" + card.language.code + "?displayAs=image&sortedBy=set_release&orderBy=desc") View All Printings
+                                a(href="/printings/" + card.new_id + "/" + card.language.code + "?displayAs=image&sortedBy=set_release&orderBy=desc") View All Other Printings
                         if foilMarket > 0 || normalMarket > 0 
                             p.left.aligned Pricing data provided by <a href="https://www.tcgplayer.com" target="_blank" rel="noopener noreferrer"> TCGPlayer</a>
                     

@@ -78,6 +78,15 @@ img.crop {
     text-align: center;
 }
 
+img.set {
+    width: var(--width);
+    height: auto;
+    color: #000;
+    display: block;
+    overflow: hidden;
+    text-align: center;
+}
+
 /*
     Fonts
 */

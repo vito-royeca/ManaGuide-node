@@ -51,6 +51,9 @@ mixin imageCardsRow(card)
                         <i class="icon sync"></i> Turn Over
                 else if card.layout.name == "Modal Dfc"
                     a(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
+                        <i class="icon sync"></i> Turn Over
+                else if card.layout.name == "Reversible Card"
+                    a(onclick="transformCard('" + card.new_id + "', '" + image1 + "', '" + image2 + "')")
                         <i class="icon sync"></i> Turn Over        
                 else
                     span &nbsp;

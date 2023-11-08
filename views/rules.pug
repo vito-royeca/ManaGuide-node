@@ -18,17 +18,18 @@ block data
             a.section(href="/rules") Table of Contents
             i.right.chevron.icon.divider
             .active.section #{data != null ? data.length : 0} results
-        if data.length > 1
-            +rulesList(data)
+        +rulesList(results)            
     else
-        if data.length > 1
-            +rulesList(data)
-        else
-            .ui.huge.breadcrumb
-                a.section(href="/rules") Table of Contents
-                i.right.chevron.icon.divider
-                each parent in splitRule(data)
-                    a.section(href="/rules/" + parent.id) #{parent.term} #{parent.definition}
-                    i.right.chevron.icon.divider
-                .active.section #{data[0].term} #{data[0].definition}
-            +rulesList(data[0].children)
+        +rulesList(results)
+        //- if data != null
+        //-     if data.length > 0
+        //-         +rulesList(data)
+        //-     else
+        //-         .ui.huge.breadcrumb
+        //-             a.section(href="/rules") Table of Contents
+        //-             i.right.chevron.icon.divider
+        //-             each parent in splitRule(data)
+        //-                 a.section(href="/rules/" + parent.id) #{parent.term} #{parent.definition}
+        //-                 i.right.chevron.icon.divider
+        //-             .active.section #{data[0].term} #{data[0].definition}
+        //-         +rulesList(data[0].children)
