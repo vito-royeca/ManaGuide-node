@@ -42,7 +42,7 @@ BEGIN
         _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'collector_number' THEN
-        _sortedBy = 'c.my_number_order ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'c.number_order ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'name' THEN
         _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'')';
