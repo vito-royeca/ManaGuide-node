@@ -5,12 +5,8 @@ var url = require('url')
 
 // select all
 router.get('/', function(req, res, next) {
-    //const sql = 'SELECT * from selectSets(null, $1, $2)'
     const sql = 'SELECT * from selectSets()'
-    // const parameters = [req.query.page,
-    //     req.query.limit]
 
-    //db.executeQuery(req, res, next, sql, parameters, null)
     db.executeQuery(req, res, next, sql, null, null)
 })
 
