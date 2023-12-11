@@ -32,7 +32,7 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     boolean,
     character varying,
     boolean,
-    character varying,
+    character varying[],
     character varying,
     character varying,
     character varying,
@@ -54,7 +54,9 @@ CREATE OR REPLACE FUNCTION createOrUpdateCard(
     character varying,
     character varying,
     character varying,
-    character varying) RETURNS void AS $$
+    character varying,
+    character varying[],
+    character varying[]) RETURNS void AS $$
 DECLARE
     _collector_number ALIAS FOR $1;
     _cmc ALIAS FOR $2;
@@ -89,7 +91,7 @@ DECLARE
     _is_textless ALIAS FOR $31;
     _mtgo_foil_id ALIAS FOR $32;
     _is_reprint ALIAS FOR $33;
-    _cmartist ALIAS FOR $34;
+    _cmartists ALIAS FOR $34;
     _cmset ALIAS FOR $35;
     _cmrarity ALIAS FOR $36;
     _cmlanguage ALIAS FOR $37;
@@ -112,6 +114,8 @@ DECLARE
     _art_crop_url ALIAS FOR $54;
     _normal_url ALIAS FOR $55;
     _png_url ALIAS FOR $56;
+    _cmgames ALIAS FOR $57;
+    _cmkeywords ALIAS FOR $58;
 
     pkey character varying;
     pkey2 character varying;
@@ -121,6 +125,7 @@ DECLARE
     -- row types
     rowCard cmcard%ROWTYPE;
     rowSetLanguage cmset_language%ROWTYPE;
+    rowArtist cmcard_artist%ROWTYPE;
     rowFrameEffect cmcard_frameeffect%ROWTYPE;
     rowColor cmcard_color%ROWTYPE;
     rowColorIndentity cmcard_coloridentity%ROWTYPE;
@@ -128,6 +133,8 @@ DECLARE
     rowFormatLegality cmcard_format_legality%ROWTYPE;
     rowSubtype cmcard_subtype%ROWTYPE;
     rowSupertype cmcard_supertype%ROWTYPE;
+    rowGame cmcard_game%ROWTYPE;
+    rowKeyword cmcard_keyword%ROWTYPE;
 
 BEGIN
     -- check for nulls
@@ -186,9 +193,6 @@ BEGIN
     END IF;
     IF lower(_mtgo_foil_id) = 'null'  THEN
         _mtgo_foil_id := NULL;
-    END IF;
-    IF lower(_cmartist) = 'null' THEN
-        _cmartist := NULL;
     END IF;
     IF lower(_cmset) = 'null' THEN
         _cmset := NULL;
@@ -269,7 +273,6 @@ BEGIN
             is_textless,
             mtgo_foil_id,
             is_reprint,
-            cmartist,
             cmset,
             cmrarity,
             cmlanguage,
@@ -319,7 +322,6 @@ BEGIN
             _is_textless,
             _mtgo_foil_id::integer,
             _is_reprint,
-            _cmartist,
             _cmset,
             _cmrarity,
             _cmlanguage,
@@ -369,7 +371,6 @@ BEGIN
            rowCard.is_textless IS DISTINCT FROM _is_textless OR
            rowCard.mtgo_foil_id IS DISTINCT FROM _mtgo_foil_id::integer OR
            rowCard.is_reprint IS DISTINCT FROM _is_reprint OR
-           rowCard.cmartist IS DISTINCT FROM _cmartist OR
            rowCard.cmset IS DISTINCT FROM _cmset OR
            rowCard.cmrarity IS DISTINCT FROM _cmrarity OR
            rowCard.cmlanguage IS DISTINCT FROM _cmlanguage OR
@@ -420,7 +421,6 @@ BEGIN
                 is_textless = _is_textless,
                 mtgo_foil_id = _mtgo_foil_id::integer,
                 is_reprint = _is_reprint,
-                cmartist = _cmartist,
                 cmset = _cmset,
                 cmrarity = _cmrarity,
                 cmlanguage = _cmlanguage,
@@ -456,6 +456,25 @@ BEGIN
                 _cmlanguage
             );
         END IF;    
+    END IF;
+
+     -- artists
+    IF _cmartists IS NOT NULL THEN
+        FOREACH pkey IN ARRAY _cmartists LOOP
+            SELECT * INTO rowArtist FROM cmcard_artist
+                WHERE cmcard = _new_id AND cmartist = pkey
+                LIMIT 1;
+
+            IF NOT FOUND THEN
+                INSERT INTO cmcard_artist(
+                    cmcard,
+                    cmartist
+                ) VALUES (
+                    _new_id,
+                    pkey
+                );
+            END IF;    
+        END LOOP;
     END IF;
 
     -- frame effects
@@ -585,6 +604,44 @@ BEGIN
                 INSERT INTO cmcard_supertype(
                     cmcard,
                     cmcardtype
+                ) VALUES (
+                    _new_id,
+                    pkey
+                );
+            END IF;    
+        END LOOP;
+    END IF;
+
+    -- games
+    IF _cmgames IS NOT NULL THEN
+        FOREACH pkey IN ARRAY _cmgames LOOP
+            SELECT * INTO rowGame FROM cmcard_game
+               WHERE cmcard = _new_id AND cmgame = pkey
+               LIMIT 1;
+
+            IF NOT FOUND THEN
+                INSERT INTO cmcard_game(
+                    cmcard,
+                    cmgame
+                ) VALUES (
+                    _new_id,
+                    pkey
+                );
+            END IF;    
+        END LOOP;
+    END IF;
+
+    -- keywords
+    IF _cmkeywords IS NOT NULL THEN
+        FOREACH pkey IN ARRAY _cmkeywords LOOP
+            SELECT * INTO rowKeyword FROM cmcard_keyword
+               WHERE cmcard = _new_id AND cmkeyword = pkey
+               LIMIT 1;
+
+            IF NOT FOUND THEN
+                INSERT INTO cmcard_keyword(
+                    cmcard,
+                    cmkeyword
                 ) VALUES (
                     _new_id,
                     pkey

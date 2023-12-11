@@ -20,6 +20,9 @@ BEGIN
     DELETE from cmcard_supertype WHERE cmcard = _new_id;
     DELETE from cmcardprice WHERE cmcard = _new_id;
 	DELETE from cmcard_variation WHERE cmcard = _new_id;
+    DELETE from cmcard_game WHERE cmcard = _new_id;
+    DELETE from cmcard_artist WHERE cmcard = _new_id;
+    DELETE from cmcard_keyword WHERE cmcard = _new_id;
     DELETE from cmcard WHERE new_id = _new_id;
 
     RETURN true;
