@@ -47,17 +47,16 @@ BEGIN
             _name_section,
             _info);
     ELSE
-        IF row.first_name IS DISTINCT FROM _first_name OR
-           row.last_name IS DISTINCT FROM _last_name OR
-           row.name_section IS DISTINCT FROM _name_section OR
-           row.info IS DISTINCT FROM _info THEN
+        IF row.name IS DISTINCT FROM _name THEN
             IF row.info IS NULL THEN
                 _new_info := _info;
             ELSE
                 IF _info IS NULL THEN
                     _new_info := NULL;
                 ELSE
-                    _new_info := row.info || '; ' || _info;
+                    IF right(row.info, char_length(_info)) <> _info THEN
+                        _new_info := row.info || '; ' || _info;
+                    END IF;
                 END IF;
             END IF;
 
