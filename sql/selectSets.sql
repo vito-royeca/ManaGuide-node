@@ -60,7 +60,7 @@ BEGIN
 
 
     command := command || ' GROUP BY cmset_parent, card_count, code';
-    command := command || ' ORDER BY release_date DESC, cmset_parent DESC, cmset_parent DESC';
+    command := command || ' ORDER BY release_date DESC, cmset_parent DESC, name ASC';
 
     
     RETURN QUERY EXECUTE command;
