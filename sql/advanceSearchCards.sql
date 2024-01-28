@@ -3,6 +3,7 @@ CREATE OR REPLACE FUNCTION advanceSearchCards(
     character varying[],
     character varying[],
     character varying[],
+    character varying[],
     character varying,
     character varying)
     RETURNS TABLE (
@@ -40,12 +41,15 @@ DECLARE
     _colors ALIAS FOR $2;
     _rarities ALIAS FOR $3;
     _types ALIAS FOR $4;
-    _sortedBy ALIAS FOR $5;
-    _orderBy ALIAS FOR $6;
+    _keywords ALIAS FOR $5;
+    _sortedBy ALIAS FOR $6;
+    _orderBy ALIAS FOR $7;
     command character varying;
 BEGIN
     IF lower(_query) = 'null' THEN
         _query := NULL;
+    ELSE
+        _query := lower(_query);
     END IF;
 
     IF lower(_sortedBy) = 'set_name' THEN
@@ -70,7 +74,7 @@ BEGIN
         _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
 
-    command := 'SELECT
+    command := 'SELECT DISTINCT ON (' || _sortedBy || ')
                     c.new_id,
                     c.collector_number,
                     c.face_order,
@@ -175,7 +179,6 @@ BEGIN
                     ) AS supertypes ';               
 
     command := command || 'FROM cmcard c ';
-    command := command || 'LEFT join cmset s ON c.cmset = s.code ';
     command := command || 'WHERE c.cmlanguage = ''en'' ';
     command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face LIMIT 20) ';
 
@@ -193,6 +196,10 @@ BEGIN
 
     IF array_length(_types, 1) > 0 THEN
         command := command || format('AND c.new_id IN(select cmcard from cmcard_supertype WHERE cmcardtype = ANY(''%s'')) ', _types);
+    END IF;
+
+    IF array_length(_keywords, 1) > 0 THEN
+        command := command || format('AND c.new_id IN(select cmcard from cmcard_keyword WHERE cmkeyword = ANY(''%s'')) ', _keywords);
     END IF;
 
     command := command || 'ORDER BY ' || _sortedBy || '';
