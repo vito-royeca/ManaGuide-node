@@ -45,22 +45,22 @@ BEGIN
         _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'collector_number' THEN
-        _sortedBy = 'c.number_order ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'c.number_order ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'name' THEN
-        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'')';
+        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'cmc' THEN
-        _sortedBy = 'c.cmc ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'c.cmc ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'type' THEN
-        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'rarity' THEN
-        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
     END IF;
 
-    command := 'SELECT
+    command := 'SELECT DISTINCT ON (regexp_replace(c.name, ''"'', '''', ''g''))
                     c.new_id,
                     c.collector_number,
                     c.face_order,
@@ -157,7 +157,6 @@ BEGIN
                     ) AS supertypes ';               
 
     command := command || 'FROM cmcard c ';
-    command := command || 'LEFT join cmset s ON c.cmset = s.code ';
     command := command || 'WHERE c.cmlanguage = ''en'' ';
     command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face) ';
     command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';

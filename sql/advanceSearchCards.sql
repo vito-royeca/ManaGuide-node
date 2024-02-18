@@ -5,7 +5,9 @@ CREATE OR REPLACE FUNCTION advanceSearchCards(
     character varying[],
     character varying[],
     character varying,
-    character varying)
+    character varying,
+    integer,
+    integer)
     RETURNS TABLE (
         new_id character varying,
         collector_number character varying,
@@ -44,6 +46,8 @@ DECLARE
     _keywords ALIAS FOR $5;
     _sortedBy ALIAS FOR $6;
     _orderBy ALIAS FOR $7;
+    _pageSize ALIAS FOR $8;
+    _pageOffset ALIAS FOR $9;
     command character varying;
 BEGIN
     IF lower(_query) = 'null' THEN
@@ -52,29 +56,20 @@ BEGIN
         _query := lower(_query);
     END IF;
 
-    IF lower(_sortedBy) = 'set_name' THEN
-        _sortedBy = 's.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
-    END IF;
-	IF lower(_sortedBy) = 'set_release' THEN
-        _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+    IF lower(_sortedBy) = 'name' THEN
+        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'collector_number' THEN
-        _sortedBy = 'c.number_order ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
-    END IF;
-    IF lower(_sortedBy) = 'name' THEN
-        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'')';
-    END IF;
-    IF lower(_sortedBy) = 'cmc' THEN
-        _sortedBy = 'c.cmc ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'c.number_order ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'type' THEN
-        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g''), c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'rarity' THEN
-        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g''), c.released_at DESC';
     END IF;
 
-    command := 'SELECT DISTINCT ON (' || _sortedBy || ')
+    command := 'SELECT DISTINCT ON (regexp_replace(c.name, ''"'', '''', ''g''))
                     c.new_id,
                     c.collector_number,
                     c.face_order,
@@ -202,7 +197,8 @@ BEGIN
         command := command || format('AND c.new_id IN(select cmcard from cmcard_keyword WHERE cmkeyword = ANY(''%s'')) ', _keywords);
     END IF;
 
-    command := command || 'ORDER BY ' || _sortedBy || '';
+    command := command || 'ORDER BY ' || _sortedBy || ' ';
+    command := command || 'LIMIT ' || _pageSize || ' OFFSET ' || _pageOffset || '';
 
     RETURN QUERY EXECUTE command;
 END;

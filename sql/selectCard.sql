@@ -15,6 +15,7 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         mana_cost character varying,
         number_order double precision,
         name character varying,
+        name_section character varying,
         oracle_text character varying,
         power character varying,
         printed_name character varying,
@@ -86,6 +87,7 @@ BEGIN
                     c.mana_cost,
                     c.number_order,
                     c.name,
+                    c.name_section,
                     c.oracle_text,
                     c.power,
                     c.printed_name,
@@ -203,6 +205,7 @@ BEGIN
                                 	select x.new_id,
                                     x.collector_number,
                                 	x.name,
+                                    x.name_section,
                                 	x.printed_name,
                                     x.art_crop_url,
                                     x.normal_url,
@@ -227,6 +230,7 @@ BEGIN
                                             SELECT
                                                 new_id,
                                                 name,
+                                                name_section,
                                                 printed_name,
                                                 art_crop_url,
                                                 normal_url,
@@ -260,6 +264,7 @@ BEGIN
                             SELECT
                                 x.cmcard_otherlanguage as new_id,
                                 c.name,
+                                c.name_section,
                                 c.printed_name,
                                 c.collector_number,
                                 c.art_crop_url,
@@ -294,6 +299,7 @@ BEGIN
                                         SELECT
                                             new_id,
                                             name,
+                                            name_section,
                                             printed_name,
                                             art_crop_url,
                                             normal_url,
@@ -306,7 +312,7 @@ BEGIN
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.new_id
                             WHERE x.cmcard = ''' || _new_id || '''' || ' and x.cmcard_otherlanguage LIKE ''%' || _collector_number || '''' ||
-                            ' group by w.code, x.cmcard_otherlanguage, c.cmset, c.name, c.printed_name, c.cmrarity, c.collector_number,
+                            ' group by w.code, x.cmcard_otherlanguage, c.cmset, c.name, c.name_section, c.printed_name, c.cmrarity, c.collector_number,
                               c.art_crop_url, c.normal_url, c.png_url 
 							 order by w.code
                              LIMIT 50
@@ -320,6 +326,7 @@ BEGIN
 						    SELECT
                                 c.new_id,
                                 c.name,
+                                c.name_section,
                                 c.printed_name,
                                 c.collector_number,
                                 c.art_crop_url,
@@ -380,6 +387,7 @@ BEGIN
 						SELECT c.new_id,
                             c.collector_number,
                             c.name,
+                            c.name_section,
                             c.printed_name,
                             c.collector_number,
                             c.art_crop_url,
