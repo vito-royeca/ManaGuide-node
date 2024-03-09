@@ -39,7 +39,6 @@ const setsRouter = require('./routes/sets')
 const setsTmpRouter = require('./routes/setsTmp')
 const setBlocksRouter = require('./routes/setblocks')
 const setTypesRouter = require('./routes/settypes')
-const testRouter = require('./routes/test')
 const watermarksRouter = require('./routes/watermarks')
 
 const app = express()
@@ -114,7 +113,6 @@ app.use('/sets', setsRouter)
 app.use('/setsTmp', setsTmpRouter)
 app.use('/setblocks', setBlocksRouter)
 app.use('/settypes', setTypesRouter)
-app.use('/test', testRouter)
 app.use('/watermarks', watermarksRouter)
 
 // catch 404 and forward to error handler
