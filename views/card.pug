@@ -12,7 +12,7 @@ include mixins/_cardVariations
 
 block pageTitle
     each card in data
-        title #{card.language.code == "en" ? card.name : card.printed_name} (#{card.set.code}) - #{defaultPageTitle}
+        title #{card.language.code == "en" ? card.name : (card.printed_name == nil ? card.name : card.printed_name)} - #{defaultPageTitle}
 block headline
 block sorters
     if data.length == 0

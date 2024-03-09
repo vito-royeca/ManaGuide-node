@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION advanceSearchCards(
     character varying[],
     character varying[],
     character varying[],
+    character varying[],
     character varying,
     character varying,
     integer,
@@ -44,10 +45,11 @@ DECLARE
     _rarities ALIAS FOR $3;
     _types ALIAS FOR $4;
     _keywords ALIAS FOR $5;
-    _sortedBy ALIAS FOR $6;
-    _orderBy ALIAS FOR $7;
-    _pageSize ALIAS FOR $8;
-    _pageOffset ALIAS FOR $9;
+    _artists ALIAS FOR $6;
+    _sortedBy ALIAS FOR $7;
+    _orderBy ALIAS FOR $8;
+    _pageSize ALIAS FOR $9;
+    _pageOffset ALIAS FOR $10;
     command character varying;
 BEGIN
     IF lower(_query) = 'null' THEN
@@ -174,8 +176,8 @@ BEGIN
                     ) AS supertypes ';               
 
     command := command || 'FROM cmcard c ';
-    command := command || 'WHERE c.cmlanguage = ''en'' ';
-    command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face LIMIT 20) ';
+    -- command := command || 'WHERE c.cmlanguage = ''en'' ';
+    command := command || 'WHERE c.new_id NOT IN(select cmcard_face from cmcard_face LIMIT 20) ';
 
     IF _query IS NOT NULL THEN
          command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
@@ -195,6 +197,10 @@ BEGIN
 
     IF array_length(_keywords, 1) > 0 THEN
         command := command || format('AND c.new_id IN(select cmcard from cmcard_keyword WHERE cmkeyword = ANY(''%s'')) ', _keywords);
+    END IF;
+
+    IF array_length(_artists, 1) > 0 THEN
+        command := command || format('AND c.new_id IN(select cmcard from cmcard_artist WHERE cmartist = ANY(''%s'')) ', _artists);
     END IF;
 
     command := command || 'ORDER BY ' || _sortedBy || ' ';

@@ -46,7 +46,7 @@ CREATE OR REPLACE FUNCTION selectCard(character varying)
         layout json,
         watermark json,
         frame json,
-        artist json,
+        artists json[],
         colors json[],
         color_identities json[],
         color_indicators json[],
@@ -159,17 +159,17 @@ BEGIN
                             LIMIT 1
                         ) x
                     ) AS frame,
-                    (
-                        SELECT row_to_json(x) FROM (
-                            SELECT v.name
-                            FROM cmartist v
-                            WHERE v.name = c.cmartist
-                            LIMIT 10
-                        ) x
-                    ) AS artist,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name
+                            SELECT w.first_name, w.last_name, w.name, w.name_section, w.info
+                            FROM cmcard_artist v left join cmartist w on v.cmartist = w.name
+                            WHERE v.cmcard = c.new_id
+                            LIMIT 10
+                        ) x
+                    ) AS artists,
+                    array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT w.name, w.symbol
                             FROM cmcard_color v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
                             LIMIT 10
@@ -177,7 +177,7 @@ BEGIN
                     ) AS colors,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name
+                            SELECT w.name, w.symbol
                             FROM cmcard_coloridentity v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
                             LIMIT 10
@@ -185,7 +185,7 @@ BEGIN
                     ) AS color_identities,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name
+                            SELECT w.name, w.symbol
                             FROM cmcard_colorindicator v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
                             LIMIT 10

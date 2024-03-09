@@ -4,7 +4,7 @@ const db = require('./db')
 
 // select all
 router.get('/', function(req, res, next) {
-    const sql = 'SELECT * FROM cmartist ORDER BY last_name ASC'
+    const sql = 'SELECT name, first_name, last_name, name_section FROM cmartist ORDER BY last_name ASC'
 
     db.executeQuery(req, res, next, sql, null, null)
 });

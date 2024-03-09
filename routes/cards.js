@@ -4,7 +4,7 @@ const db = require('./db')
 
 // select by cmset and cmlanguage
 router.get('/:cmset/:cmlanguage', function(req, res, next) {
-    const sql = 'SELECT * from selectCards($1,$2)'
+    const sql = 'SELECT selectCards($1,$2)'
     const parameters = [
         req.params.cmset,
         req.params.cmlanguage]
