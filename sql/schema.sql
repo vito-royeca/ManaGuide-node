@@ -2,10 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.1
--- Dumped by pg_dump version 16.1
-
--- Started on 2023-12-14 05:28:10 UTC
+-- Dumped from database version 15.13 (Debian 15.13-0+deb12u1)
+-- Dumped by pg_dump version 15.13 (Debian 15.13-0+deb12u1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +17,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 306 (class 1255 OID 37384)
 -- Name: advancesearchcards(character varying, character varying[], character varying[], character varying[], character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -196,7 +193,187 @@ $_$;
 ALTER FUNCTION public.advancesearchcards(character varying, character varying[], character varying[], character varying[], character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 308 (class 1255 OID 37574)
+-- Name: advancesearchcards(character varying, character varying[], character varying[], character varying[], character varying[], character varying[], character varying, character varying, integer, integer); Type: FUNCTION; Schema: public; Owner: managuide
+--
+
+CREATE FUNCTION public.advancesearchcards(character varying, character varying[], character varying[], character varying[], character varying[], character varying[], character varying, character varying, integer, integer) RETURNS TABLE(new_id character varying, collector_number character varying, face_order integer, loyalty character varying, mana_cost character varying, number_order double precision, name character varying, name_section character varying, printed_name character varying, printed_type_line character varying, type_line character varying, power character varying, toughness character varying, tcgplayer_id integer, released_at date, art_crop_url character varying, normal_url character varying, png_url character varying, set json, rarity json, language json, layout json, colors json[], prices json[], faces json[], supertypes json[])
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    _query ALIAS FOR $1;
+    _colors ALIAS FOR $2;
+    _rarities ALIAS FOR $3;
+    _types ALIAS FOR $4;
+    _keywords ALIAS FOR $5;
+    _artists ALIAS FOR $6;
+    _sortedBy ALIAS FOR $7;
+    _orderBy ALIAS FOR $8;
+    _pageSize ALIAS FOR $9;
+    _pageOffset ALIAS FOR $10;
+    command character varying;
+BEGIN
+    IF lower(_query) = 'null' THEN
+        _query := NULL;
+    ELSE
+        _query := lower(_query);
+    END IF;
+
+    IF lower(_sortedBy) = 'name' THEN
+        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
+    END IF;
+    IF lower(_sortedBy) = 'collector_number' THEN
+        _sortedBy = 'c.number_order ' || _orderBy || ', c.released_at DESC';
+    END IF;
+    IF lower(_sortedBy) = 'type' THEN
+        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g''), c.released_at DESC';
+    END IF;
+    IF lower(_sortedBy) = 'rarity' THEN
+        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g''), c.released_at DESC';
+    END IF;
+
+    command := 'SELECT DISTINCT ON (regexp_replace(c.name, ''"'', '''', ''g''))
+                    c.new_id,
+                    c.collector_number,
+                    c.face_order,
+                    c.loyalty,
+                    c.mana_cost,
+                    c.number_order,
+                    c.name,
+                    c.name_section,
+                    c.printed_name,
+                    c.printed_type_line,
+                    c.type_line,
+	                c.power,
+                    c.toughness,
+                    c.tcgplayer_id,
+                    c.released_at,
+                    c.art_crop_url,
+                    c.normal_url,
+                    c.png_url,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT s.code, s.name, s.keyrune_class, s.keyrune_unicode
+                            FROM cmset s WHERE s.code = c.cmset
+                            LIMIT 1
+                        ) x
+                    ) AS set,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT r.name
+                            FROM cmrarity r WHERE r.name = c.cmrarity
+                            LIMIT 1
+                        ) x
+                    ) AS rarity,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT l.code, l.name
+                            FROM cmlanguage l WHERE l.code = c.cmlanguage
+                            LIMIT 1
+                        ) x
+                    ) AS language,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT v.name, v.description
+                            FROM cmlayout v
+                            WHERE v.name = c.cmlayout
+                            LIMIT 1
+                        ) x
+                    ) AS layout,
+                    array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT w.name
+                            FROM cmcard_color v left join cmcolor w on v.cmcolor = w.symbol
+                            WHERE v.cmcard = c.new_id
+                            LIMIT 10
+                        ) x
+                    ) AS colors,
+                    array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_updated
+                            FROM cmcardprice v
+                            WHERE v.cmcard = c.new_id
+                            LIMIT 1
+                        ) x
+                    ) AS prices ';
+
+    -- Faces
+    command := command ||
+                    ', array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT
+                                new_id,
+                                collector_number,
+                                face_order,
+                                loyalty,
+                                mana_cost,
+                                number_order,
+                                name,
+                                name_section,
+                                printed_name,
+                                printed_type_line,
+                                type_line,
+	                            power,
+                                toughness,
+                                art_crop_url,
+                                normal_url,
+                                png_url
+                            FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
+                            WHERE w.cmcard = c.new_id
+                            ORDER BY face_order
+                            LIMIT 10
+                        ) x
+                    ) AS faces ';
+
+    -- Supertypes
+    command := command ||
+                    ', array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT w.name
+                            FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
+                            WHERE v.cmcard = c.new_id
+                            LIMIT 50
+                        ) x
+                    ) AS supertypes ';               
+
+    command := command || 'FROM cmcard c ';
+    -- command := command || 'WHERE c.cmlanguage = ''en'' ';
+    command := command || 'WHERE c.new_id NOT IN(select cmcard_face from cmcard_face LIMIT 20) ';
+
+    IF _query IS NOT NULL THEN
+         command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
+    END IF;
+
+    IF array_length(_colors, 1) > 0 THEN
+        command := command || format('AND c.new_id IN(select cmcard from cmcard_color WHERE cmcolor = ANY(''%s'')) ', _colors);
+    END IF;
+
+    IF array_length(_rarities, 1) > 0 THEN
+        command := command || format('AND c.cmrarity IN(select name from cmrarity WHERE name = ANY(''%s'') LIMIT 20) ', _rarities);
+    END IF;
+
+    IF array_length(_types, 1) > 0 THEN
+        command := command || format('AND c.new_id IN(select cmcard from cmcard_supertype WHERE cmcardtype = ANY(''%s'')) ', _types);
+    END IF;
+
+    IF array_length(_keywords, 1) > 0 THEN
+        command := command || format('AND c.new_id IN(select cmcard from cmcard_keyword WHERE cmkeyword = ANY(''%s'')) ', _keywords);
+    END IF;
+
+    IF array_length(_artists, 1) > 0 THEN
+        command := command || format('AND c.new_id IN(select cmcard from cmcard_artist WHERE cmartist = ANY(''%s'')) ', _artists);
+    END IF;
+
+    command := command || 'ORDER BY ' || _sortedBy || ' ';
+    command := command || 'LIMIT ' || _pageSize || ' OFFSET ' || _pageOffset || '';
+
+    RETURN QUERY EXECUTE command;
+END;
+$_$;
+
+
+ALTER FUNCTION public.advancesearchcards(character varying, character varying[], character varying[], character varying[], character varying[], character varying[], character varying, character varying, integer, integer) OWNER TO managuide;
+
+--
 -- Name: createorupdateartist(character varying, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -246,7 +423,10 @@ BEGIN
             _name_section,
             _info);
     ELSE
-        IF row.name IS DISTINCT FROM _name THEN
+        IF row.first_name IS DISTINCT FROM _first_name OR
+           row.last_name IS DISTINCT FROM _last_name OR
+           row.name_section IS DISTINCT FROM _name_section OR
+           row.info IS DISTINCT FROM _info THEN
             IF row.info IS NULL THEN
                 _new_info := _info;
             ELSE
@@ -278,7 +458,6 @@ $_$;
 ALTER FUNCTION public.createorupdateartist(character varying, character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 303 (class 1255 OID 37567)
 -- Name: createorupdatecard(character varying, double precision, character varying, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying[], character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[]); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -886,7 +1065,6 @@ $_$;
 ALTER FUNCTION public.createorupdatecard(character varying, double precision, character varying, boolean, boolean, boolean, boolean, boolean, boolean, boolean, character varying, character varying, integer[], character varying, double precision, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, boolean, boolean, boolean, character varying, boolean, character varying, boolean, character varying[], character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[], character varying[], character varying[], jsonb, character varying, character varying, character varying[], character varying[], integer, character varying, character varying, character varying, character varying, character varying, character varying, character varying[], character varying[]) OWNER TO managuide;
 
 --
--- TOC entry 286 (class 1255 OID 17609)
 -- Name: createorupdatecardfaces(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -932,7 +1110,6 @@ $_$;
 ALTER FUNCTION public.createorupdatecardfaces(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 291 (class 1255 OID 17610)
 -- Name: createorupdatecardotherlanguages(); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -953,16 +1130,14 @@ BEGIN
             c.new_id NOT IN (SELECT cmcard_face FROM cmcard_face) AND
             c.new_id NOT IN (SELECT cmcard_part FROM cmcard_component_part)
         ORDER BY s.release_date, c.name
-        LIMIT 200
     LOOP
-        FOR row2 IN SELECT new_id FROM cmcard c
+        FOR row2 IN SELECT new_id FROM cmcard c                    
                 LEFT JOIN cmset s ON c.cmset = s.code
             WHERE
                 s.code = row.cmset AND
                 c.name = row.name AND
                 cmlanguage IS DISTINCT FROM row.cmlanguage
             ORDER BY s.release_date, c.name
-            LIMIT 100
         LOOP
             SELECT * INTO rowOtherLanguage FROM cmcard_otherlanguage
                 WHERE cmcard = row.new_id AND cmcard_otherlanguage = row2.new_id
@@ -992,7 +1167,6 @@ $$;
 ALTER FUNCTION public.createorupdatecardotherlanguages() OWNER TO managuide;
 
 --
--- TOC entry 288 (class 1255 OID 17611)
 -- Name: createorupdatecardotherprintings(); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1023,7 +1197,6 @@ BEGIN
                 c.name = row.name AND
                 cmlanguage = row.cmlanguage
             ORDER BY s.release_date, c.name
-            LIMIT 200
         LOOP
             SELECT * INTO rowOtherPrinting FROM cmcard_otherprinting
                 WHERE cmcard = row.new_id AND cmcard_otherprinting = row2.new_id
@@ -1053,7 +1226,6 @@ $$;
 ALTER FUNCTION public.createorupdatecardotherprintings() OWNER TO managuide;
 
 --
--- TOC entry 293 (class 1255 OID 17612)
 -- Name: createorupdatecardparts(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1111,7 +1283,6 @@ $_$;
 ALTER FUNCTION public.createorupdatecardparts(character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 270 (class 1255 OID 17613)
 -- Name: createorupdatecardprice(double precision, double precision, double precision, double precision, double precision, integer, boolean); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1205,7 +1376,6 @@ $_$;
 ALTER FUNCTION public.createorupdatecardprice(double precision, double precision, double precision, double precision, double precision, integer, boolean) OWNER TO managuide;
 
 --
--- TOC entry 271 (class 1255 OID 17614)
 -- Name: createorupdatecardtype(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1269,7 +1439,6 @@ $_$;
 ALTER FUNCTION public.createorupdatecardtype(character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 287 (class 1255 OID 17615)
 -- Name: createorupdatecardvariations(); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1291,7 +1460,7 @@ BEGIN
             c.new_id NOT IN (SELECT cmcard_face FROM cmcard_face) AND
             c.new_id NOT IN (SELECT cmcard_part FROM cmcard_component_part)
         ORDER BY s.release_date, c.name
-        LIMIT 200
+        -- LIMIT 200
     LOOP
         FOR row2 IN SELECT new_id FROM cmcard c
                 LEFT JOIN cmset s ON c.cmset = s.code
@@ -1301,7 +1470,7 @@ BEGIN
                 c.name = row.name AND
                 cmlanguage = row.cmlanguage
             ORDER BY s.release_date, c.name
-            LIMIT 100
+            -- LIMIT 100
         LOOP
             SELECT * INTO rowVariation FROM cmcard_variation
                 WHERE cmcard = row.new_id AND cmcard_variation = row2.new_id
@@ -1331,7 +1500,6 @@ $$;
 ALTER FUNCTION public.createorupdatecardvariations() OWNER TO managuide;
 
 --
--- TOC entry 289 (class 1255 OID 17616)
 -- Name: createorupdatecolor(character varying, character varying, character varying, boolean); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1384,7 +1552,6 @@ $_$;
 ALTER FUNCTION public.createorupdatecolor(character varying, character varying, character varying, boolean) OWNER TO managuide;
 
 --
--- TOC entry 272 (class 1255 OID 17617)
 -- Name: createorupdatecomponent(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1428,7 +1595,6 @@ $_$;
 ALTER FUNCTION public.createorupdatecomponent(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 273 (class 1255 OID 17618)
 -- Name: createorupdateformat(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1472,7 +1638,6 @@ $_$;
 ALTER FUNCTION public.createorupdateformat(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 274 (class 1255 OID 17619)
 -- Name: createorupdateframe(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1521,7 +1686,6 @@ $_$;
 ALTER FUNCTION public.createorupdateframe(character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 290 (class 1255 OID 17620)
 -- Name: createorupdateframeeffect(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1589,7 +1753,6 @@ $_$;
 ALTER FUNCTION public.createorupdateframeeffect(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 304 (class 1255 OID 37565)
 -- Name: createorupdategame(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1633,7 +1796,6 @@ $_$;
 ALTER FUNCTION public.createorupdategame(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 305 (class 1255 OID 37566)
 -- Name: createorupdatekeyword(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1677,7 +1839,6 @@ $_$;
 ALTER FUNCTION public.createorupdatekeyword(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 294 (class 1255 OID 17621)
 -- Name: createorupdatelanguage(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1742,7 +1903,6 @@ $_$;
 ALTER FUNCTION public.createorupdatelanguage(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 276 (class 1255 OID 17622)
 -- Name: createorupdatelayout(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1791,7 +1951,6 @@ $_$;
 ALTER FUNCTION public.createorupdatelayout(character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 277 (class 1255 OID 17623)
 -- Name: createorupdatelegality(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1835,7 +1994,6 @@ $_$;
 ALTER FUNCTION public.createorupdatelegality(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 275 (class 1255 OID 17624)
 -- Name: createorupdaterarity(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1879,7 +2037,6 @@ $_$;
 ALTER FUNCTION public.createorupdaterarity(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 278 (class 1255 OID 17625)
 -- Name: createorupdaterule(character varying, character varying, character varying, double precision, integer, integer); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -1962,7 +2119,6 @@ $_$;
 ALTER FUNCTION public.createorupdaterule(character varying, character varying, character varying, double precision, integer, integer) OWNER TO managuide;
 
 --
--- TOC entry 295 (class 1255 OID 17626)
 -- Name: createorupdateruling(character varying, character varying, date); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2011,7 +2167,6 @@ $_$;
 ALTER FUNCTION public.createorupdateruling(character varying, character varying, date) OWNER TO managuide;
 
 --
--- TOC entry 296 (class 1255 OID 17627)
 -- Name: createorupdateset(integer, character varying, boolean, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, integer, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2197,7 +2352,6 @@ $_$;
 ALTER FUNCTION public.createorupdateset(integer, character varying, boolean, boolean, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, integer, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 280 (class 1255 OID 17628)
 -- Name: createorupdatesetblock(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2246,7 +2400,6 @@ $_$;
 ALTER FUNCTION public.createorupdatesetblock(character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 281 (class 1255 OID 17629)
 -- Name: createorupdatesettype(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2290,7 +2443,6 @@ $_$;
 ALTER FUNCTION public.createorupdatesettype(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 292 (class 1255 OID 17630)
 -- Name: createorupdatewatermark(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2334,7 +2486,6 @@ $_$;
 ALTER FUNCTION public.createorupdatewatermark(character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 279 (class 1255 OID 17631)
 -- Name: createserverupdate(boolean); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2359,7 +2510,6 @@ $_$;
 ALTER FUNCTION public.createserverupdate(boolean) OWNER TO managuide;
 
 --
--- TOC entry 307 (class 1255 OID 17632)
 -- Name: deletecard(character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2399,7 +2549,6 @@ $_$;
 ALTER FUNCTION public.deletecard(character varying) OWNER TO managuide;
 
 --
--- TOC entry 283 (class 1255 OID 17633)
 -- Name: deleteset(character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2429,7 +2578,6 @@ $_$;
 ALTER FUNCTION public.deleteset(character varying) OWNER TO managuide;
 
 --
--- TOC entry 300 (class 1255 OID 17634)
 -- Name: searchcards(character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2450,22 +2598,22 @@ BEGIN
         _sortedBy = 's.release_date ' || _orderBy || ', s.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
     END IF;
     IF lower(_sortedBy) = 'collector_number' THEN
-        _sortedBy = 'c.number_order ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'c.number_order ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'name' THEN
-        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'')';
+        _sortedBy = 'regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'cmc' THEN
-        _sortedBy = 'c.cmc ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'c.cmc ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'type' THEN
-        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'c.type_line ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
     END IF;
     IF lower(_sortedBy) = 'rarity' THEN
-        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy;
+        _sortedBy = 'r.name ' || _orderBy || ', regexp_replace(c.name, ''"'', '''', ''g'') ' || _orderBy || ', c.released_at DESC';
     END IF;
 
-    command := 'SELECT
+    command := 'SELECT DISTINCT ON (regexp_replace(c.name, ''"'', '''', ''g''))
                     c.new_id,
                     c.collector_number,
                     c.face_order,
@@ -2562,7 +2710,6 @@ BEGIN
                     ) AS supertypes ';               
 
     command := command || 'FROM cmcard c ';
-    command := command || 'LEFT join cmset s ON c.cmset = s.code ';
     command := command || 'WHERE c.cmlanguage = ''en'' ';
     command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face) ';
     command := command || 'AND lower(c.name) LIKE ''%' || _query || '%'' ';
@@ -2576,7 +2723,6 @@ $_$;
 ALTER FUNCTION public.searchcards(character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 282 (class 1255 OID 17635)
 -- Name: searchrules(character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2624,7 +2770,6 @@ $_$;
 ALTER FUNCTION public.searchrules(character varying) OWNER TO managuide;
 
 --
--- TOC entry 298 (class 1255 OID 17636)
 -- Name: selectcard(character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -3062,7 +3207,6 @@ $_$;
 ALTER FUNCTION public.selectcard(character varying) OWNER TO managuide;
 
 --
--- TOC entry 302 (class 1255 OID 17638)
 -- Name: selectcards(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -3209,7 +3353,6 @@ $_$;
 ALTER FUNCTION public.selectcards(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 301 (class 1255 OID 31814)
 -- Name: selectotherprintings(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -3325,7 +3468,6 @@ $_$;
 ALTER FUNCTION public.selectotherprintings(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 299 (class 1255 OID 21409)
 -- Name: selectprintings(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -3460,7 +3602,6 @@ $_$;
 ALTER FUNCTION public.selectprintings(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 284 (class 1255 OID 17639)
 -- Name: selectrules(integer); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -3479,7 +3620,7 @@ BEGIN
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT p.id, p.term, p.definition
-                            FROM cmrule p WHERE p.id = s.cmrule_parent
+                            FROM cmrule p WHERE p.id = s.cmrule_parent LIMIT 100
                         ) x
                     ) AS parent';
 
@@ -3489,9 +3630,12 @@ BEGIN
                         SELECT row_to_json(x) FROM (' ||
                             command || ', (SELECT children from selectRules(c.id))'
                             ' FROM cmrule c
-                            WHERE c.cmrule_parent = s.id ORDER BY c.term'
+                            WHERE c.cmrule_parent = s.id ORDER BY c.term LIMIT 100'
                         ') x
-                    ) AS children FROM cmrule s';
+                    ) AS children ';
+                    
+    command := command ||                
+                    'FROM cmrule s';
 
     IF _id IS NOT NULL THEN
         command := command || ' WHERE s.id = ' || _id || '';
@@ -3499,7 +3643,7 @@ BEGIN
 	    command := command || ' WHERE s.cmrule_parent IS NULL';
     END IF;
 
-    command := command || ' ORDER BY s.order ASC';
+    command := command || ' ORDER BY s.order ASC LIMIT 100';
 
     RETURN QUERY EXECUTE command;
 END;
@@ -3509,7 +3653,6 @@ $_$;
 ALTER FUNCTION public.selectrules(integer) OWNER TO managuide;
 
 --
--- TOC entry 285 (class 1255 OID 17640)
 -- Name: selectset(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -3574,7 +3717,6 @@ $_$;
 ALTER FUNCTION public.selectset(character varying, character varying, character varying, character varying) OWNER TO managuide;
 
 --
--- TOC entry 297 (class 1255 OID 17641)
 -- Name: selectsets(); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -3623,7 +3765,7 @@ BEGIN
 
 
     command := command || ' GROUP BY cmset_parent, card_count, code';
-    command := command || ' ORDER BY release_date DESC, cmset_parent DESC, cmset_parent DESC';
+    command := command || ' ORDER BY release_date DESC, cmset_parent DESC, name ASC';
 
     
     RETURN QUERY EXECUTE command;
@@ -3633,12 +3775,185 @@ $$;
 
 ALTER FUNCTION public.selectsets() OWNER TO managuide;
 
+--
+-- Name: selectsets(character varying, integer, integer); Type: FUNCTION; Schema: public; Owner: managuide
+--
+
+CREATE FUNCTION public.selectsets(character varying, integer, integer) RETURNS TABLE(page integer, page_limit integer, page_count integer, row_count integer, data json[])
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    _code ALIAS FOR $1;
+    _page ALIAS FOR $2;
+    _page_limit ALIAS FOR $3;
+    dataCommand character varying;
+    pageCommand character varying;
+    command     character varying;
+BEGIN
+    dataCommand := 'SELECT card_count,
+                    code,
+                    is_foil_only,
+                    is_online_only,
+                    mtgo_code,
+                    keyrune_unicode,
+                    keyrune_class,
+                    my_name_section,
+                    my_year_section,
+                    name,
+                    release_date,
+                    cmset_parent,
+                    tcgplayer_id,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT p.code
+                            FROM cmset p WHERE p.code = s.cmset_parent
+                        ) x
+                    ) AS parent,
+                    (
+                        SELECT row_to_json(x) FROM (
+                            SELECT sb.code, sb.name, sb.name_section
+                            FROM cmsetblock sb WHERE sb.code = s.cmsetblock
+                        ) x
+                   ) AS set_block,
+                   (
+                       SELECT row_to_json(x) FROM (
+                            SELECT st.name, st.name_section
+                            FROM cmsettype st WHERE st.name = s.cmsettype
+                        ) x
+                   ) AS set_type,
+                   array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT l.code, l.display_code, l.name, l.name_section
+                            FROM cmset_language sl left join cmlanguage l on sl.cmlanguage = l.code
+                            WHERE sl.cmset = s.code
+                        ) x
+	               ) AS languages
+            FROM cmset s WHERE s.card_count > 0 ';
+
+    IF _page = 1 THEN
+        pageCommand := 'LIMIT ' || _page_limit;
+    ELSE
+        pageCommand := 'OFFSET ' || (_page - 1) * _page_limit || ' LIMIT ' || _page_limit;
+    END IF;
+
+    IF _code IS NOT NULL THEN
+        dataCommand := dataCommand || ' AND s.code = ''' || _code || ''' ORDER BY s.name ASC ' || pageCommand;
+    ELSE
+        dataCommand := dataCommand || ' ORDER BY s.release_date DESC, s.name ASC ' || pageCommand;
+    END IF;
+
+
+    command := 'SELECT ' || _page || ',' || _page_limit ||
+           ', (count(*)::integer / 100) + (CASE WHEN (count(*)::integer / 100) > 0 THEN 1 ELSE 0 END),
+           count(*)::integer,
+           array(SELECT row_to_json(x) FROM (' || dataCommand || ') x) AS data
+           FROM cmset
+           WHERE card_count > 0 ';
+
+    RETURN QUERY EXECUTE command;
+END;
+$_$;
+
+
+ALTER FUNCTION public.selectsets(character varying, integer, integer) OWNER TO managuide;
+
+--
+-- Name: selectsubsets(character varying); Type: FUNCTION; Schema: public; Owner: managuide
+--
+
+CREATE FUNCTION public.selectsubsets(character varying) RETURNS TABLE(card_count integer, cmset_parent character varying, parent_level integer, code character varying, is_foil_only boolean, is_online_only boolean, mtgo_code character varying, keyrune_unicode character varying, keyrune_class character varying, my_name_section character varying, my_year_section character varying, name character varying, release_date character varying, tcgplayer_id integer)
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    _code ALIAS FOR $1;
+    command     character varying;
+BEGIN
+    IF lower(_code) = 'null' THEN
+        _code := NULL;
+    END IF;
+	
+    command :=
+	'WITH RECURSIVE sets AS (
+        SELECT card_count,
+		       cmset_parent,
+			   1 as parent_level,
+	           code,
+	           is_foil_only,
+	           is_online_only,
+	           mtgo_code,
+	           keyrune_unicode,
+	           keyrune_class,
+	           my_name_section,
+	           my_year_section,
+               name,
+               release_date,
+               tcgplayer_id
+		from cmset where cmset_parent = ''' || _code || '''
+    UNION ALL
+        SELECT b.card_count,
+		       b.cmset_parent,
+			   sets.parent_level + 1 AS parent_level,
+	           b.code,
+	           b.is_foil_only,
+	           b.is_online_only,
+	           b.mtgo_code,
+	           b.keyrune_unicode,
+	           b.keyrune_class,
+	           b.my_name_section,
+	           b.my_year_section,
+               b.name,
+               b.release_date,
+               b.tcgplayer_id
+		from cmset b
+        JOIN sets ON b.cmset_parent = sets.code 
+)
+SELECT * FROM sets;';
+
+	RETURN QUERY EXECUTE command;
+END;
+$_$;
+
+
+ALTER FUNCTION public.selectsubsets(character varying) OWNER TO managuide;
+
+--
+-- Name: updatesetscardcount(); Type: FUNCTION; Schema: public; Owner: managuide
+--
+
+CREATE FUNCTION public.updatesetscardcount() RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    _card_count integer := 0;
+    row RECORD;
+BEGIN
+    FOR row IN SELECT cmset, cmlanguage, card_count FROM cmset_language
+        ORDER BY cmset, cmlanguage
+    LOOP
+        SELECT count(new_id) INTO _card_count FROM cmcard c
+        WHERE c.cmset = row.cmset AND c.cmlanguage = row.cmlanguage;
+        
+        RAISE NOTICE 'Updating %_% to %', row.cmset, row.cmlanguage, _card_count;
+
+        UPDATE cmset_language SET
+            card_count = _card_count,
+            date_updated = now()
+        WHERE cmset = row.cmset AND cmlanguage = row.cmlanguage;
+
+    END LOOP;
+
+	RETURN;
+END;
+$$;
+
+
+ALTER FUNCTION public.updatesetscardcount() OWNER TO managuide;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- TOC entry 215 (class 1259 OID 17642)
 -- Name: cmartist; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3656,7 +3971,6 @@ CREATE TABLE public.cmartist (
 ALTER TABLE public.cmartist OWNER TO managuide;
 
 --
--- TOC entry 216 (class 1259 OID 17649)
 -- Name: cmcard; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3718,7 +4032,6 @@ CREATE TABLE public.cmcard (
 ALTER TABLE public.cmcard OWNER TO managuide;
 
 --
--- TOC entry 258 (class 1259 OID 37533)
 -- Name: cmcard_artist; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3733,7 +4046,6 @@ CREATE TABLE public.cmcard_artist (
 ALTER TABLE public.cmcard_artist OWNER TO managuide;
 
 --
--- TOC entry 217 (class 1259 OID 17656)
 -- Name: cmcard_color; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3748,7 +4060,6 @@ CREATE TABLE public.cmcard_color (
 ALTER TABLE public.cmcard_color OWNER TO managuide;
 
 --
--- TOC entry 218 (class 1259 OID 17663)
 -- Name: cmcard_coloridentity; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3763,7 +4074,6 @@ CREATE TABLE public.cmcard_coloridentity (
 ALTER TABLE public.cmcard_coloridentity OWNER TO managuide;
 
 --
--- TOC entry 219 (class 1259 OID 17670)
 -- Name: cmcard_colorindicator; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3778,7 +4088,6 @@ CREATE TABLE public.cmcard_colorindicator (
 ALTER TABLE public.cmcard_colorindicator OWNER TO managuide;
 
 --
--- TOC entry 220 (class 1259 OID 17677)
 -- Name: cmcard_component_part; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3794,7 +4103,6 @@ CREATE TABLE public.cmcard_component_part (
 ALTER TABLE public.cmcard_component_part OWNER TO managuide;
 
 --
--- TOC entry 221 (class 1259 OID 17684)
 -- Name: cmcard_face; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3809,7 +4117,6 @@ CREATE TABLE public.cmcard_face (
 ALTER TABLE public.cmcard_face OWNER TO managuide;
 
 --
--- TOC entry 222 (class 1259 OID 17691)
 -- Name: cmcard_format_legality; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3826,7 +4133,6 @@ CREATE TABLE public.cmcard_format_legality (
 ALTER TABLE public.cmcard_format_legality OWNER TO managuide;
 
 --
--- TOC entry 223 (class 1259 OID 17698)
 -- Name: cmcard_format_legality_id_seq; Type: SEQUENCE; Schema: public; Owner: managuide
 --
 
@@ -3839,11 +4145,9 @@ CREATE SEQUENCE public.cmcard_format_legality_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.cmcard_format_legality_id_seq OWNER TO managuide;
+ALTER TABLE public.cmcard_format_legality_id_seq OWNER TO managuide;
 
 --
--- TOC entry 4141 (class 0 OID 0)
--- Dependencies: 223
 -- Name: cmcard_format_legality_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: managuide
 --
 
@@ -3851,7 +4155,6 @@ ALTER SEQUENCE public.cmcard_format_legality_id_seq OWNED BY public.cmcard_forma
 
 
 --
--- TOC entry 224 (class 1259 OID 17699)
 -- Name: cmcard_frameeffect; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3866,7 +4169,6 @@ CREATE TABLE public.cmcard_frameeffect (
 ALTER TABLE public.cmcard_frameeffect OWNER TO managuide;
 
 --
--- TOC entry 256 (class 1259 OID 37423)
 -- Name: cmcard_game; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3881,7 +4183,6 @@ CREATE TABLE public.cmcard_game (
 ALTER TABLE public.cmcard_game OWNER TO managuide;
 
 --
--- TOC entry 257 (class 1259 OID 37512)
 -- Name: cmcard_keyword; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3896,7 +4197,6 @@ CREATE TABLE public.cmcard_keyword (
 ALTER TABLE public.cmcard_keyword OWNER TO managuide;
 
 --
--- TOC entry 225 (class 1259 OID 17706)
 -- Name: cmcard_otherlanguage; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3911,7 +4211,6 @@ CREATE TABLE public.cmcard_otherlanguage (
 ALTER TABLE public.cmcard_otherlanguage OWNER TO managuide;
 
 --
--- TOC entry 226 (class 1259 OID 17713)
 -- Name: cmcard_otherprinting; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3926,7 +4225,6 @@ CREATE TABLE public.cmcard_otherprinting (
 ALTER TABLE public.cmcard_otherprinting OWNER TO managuide;
 
 --
--- TOC entry 227 (class 1259 OID 17720)
 -- Name: cmcard_subtype; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3942,7 +4240,6 @@ CREATE TABLE public.cmcard_subtype (
 ALTER TABLE public.cmcard_subtype OWNER TO managuide;
 
 --
--- TOC entry 228 (class 1259 OID 17727)
 -- Name: cmcard_supertype; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3957,7 +4254,6 @@ CREATE TABLE public.cmcard_supertype (
 ALTER TABLE public.cmcard_supertype OWNER TO managuide;
 
 --
--- TOC entry 229 (class 1259 OID 17734)
 -- Name: cmcard_variation; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3972,7 +4268,6 @@ CREATE TABLE public.cmcard_variation (
 ALTER TABLE public.cmcard_variation OWNER TO managuide;
 
 --
--- TOC entry 230 (class 1259 OID 17741)
 -- Name: cmcardprice; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -3994,7 +4289,6 @@ CREATE TABLE public.cmcardprice (
 ALTER TABLE public.cmcardprice OWNER TO managuide;
 
 --
--- TOC entry 231 (class 1259 OID 17748)
 -- Name: cmcardprice_id_seq; Type: SEQUENCE; Schema: public; Owner: managuide
 --
 
@@ -4007,11 +4301,9 @@ CREATE SEQUENCE public.cmcardprice_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.cmcardprice_id_seq OWNER TO managuide;
+ALTER TABLE public.cmcardprice_id_seq OWNER TO managuide;
 
 --
--- TOC entry 4142 (class 0 OID 0)
--- Dependencies: 231
 -- Name: cmcardprice_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: managuide
 --
 
@@ -4019,7 +4311,6 @@ ALTER SEQUENCE public.cmcardprice_id_seq OWNED BY public.cmcardprice.id;
 
 
 --
--- TOC entry 232 (class 1259 OID 17749)
 -- Name: cmcardstatistics; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4036,7 +4327,6 @@ CREATE TABLE public.cmcardstatistics (
 ALTER TABLE public.cmcardstatistics OWNER TO managuide;
 
 --
--- TOC entry 233 (class 1259 OID 17756)
 -- Name: cmcardstatistics_id_seq; Type: SEQUENCE; Schema: public; Owner: managuide
 --
 
@@ -4049,11 +4339,9 @@ CREATE SEQUENCE public.cmcardstatistics_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.cmcardstatistics_id_seq OWNER TO managuide;
+ALTER TABLE public.cmcardstatistics_id_seq OWNER TO managuide;
 
 --
--- TOC entry 4143 (class 0 OID 0)
--- Dependencies: 233
 -- Name: cmcardstatistics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: managuide
 --
 
@@ -4061,7 +4349,6 @@ ALTER SEQUENCE public.cmcardstatistics_id_seq OWNED BY public.cmcardstatistics.i
 
 
 --
--- TOC entry 234 (class 1259 OID 17757)
 -- Name: cmcardtype; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4077,7 +4364,6 @@ CREATE TABLE public.cmcardtype (
 ALTER TABLE public.cmcardtype OWNER TO managuide;
 
 --
--- TOC entry 235 (class 1259 OID 17764)
 -- Name: cmcolor; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4094,7 +4380,6 @@ CREATE TABLE public.cmcolor (
 ALTER TABLE public.cmcolor OWNER TO managuide;
 
 --
--- TOC entry 236 (class 1259 OID 17771)
 -- Name: cmcomponent; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4109,7 +4394,6 @@ CREATE TABLE public.cmcomponent (
 ALTER TABLE public.cmcomponent OWNER TO managuide;
 
 --
--- TOC entry 237 (class 1259 OID 17778)
 -- Name: cmformat; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4124,7 +4408,6 @@ CREATE TABLE public.cmformat (
 ALTER TABLE public.cmformat OWNER TO managuide;
 
 --
--- TOC entry 238 (class 1259 OID 17785)
 -- Name: cmframe; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4140,7 +4423,6 @@ CREATE TABLE public.cmframe (
 ALTER TABLE public.cmframe OWNER TO managuide;
 
 --
--- TOC entry 239 (class 1259 OID 17792)
 -- Name: cmframeeffect; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4157,7 +4439,6 @@ CREATE TABLE public.cmframeeffect (
 ALTER TABLE public.cmframeeffect OWNER TO managuide;
 
 --
--- TOC entry 254 (class 1259 OID 37399)
 -- Name: cmgame; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4172,7 +4453,6 @@ CREATE TABLE public.cmgame (
 ALTER TABLE public.cmgame OWNER TO managuide;
 
 --
--- TOC entry 255 (class 1259 OID 37410)
 -- Name: cmkeyword; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4187,7 +4467,6 @@ CREATE TABLE public.cmkeyword (
 ALTER TABLE public.cmkeyword OWNER TO managuide;
 
 --
--- TOC entry 240 (class 1259 OID 17799)
 -- Name: cmlanguage; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4204,7 +4483,6 @@ CREATE TABLE public.cmlanguage (
 ALTER TABLE public.cmlanguage OWNER TO managuide;
 
 --
--- TOC entry 241 (class 1259 OID 17806)
 -- Name: cmlayout; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4220,7 +4498,6 @@ CREATE TABLE public.cmlayout (
 ALTER TABLE public.cmlayout OWNER TO managuide;
 
 --
--- TOC entry 242 (class 1259 OID 17813)
 -- Name: cmlegality; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4235,7 +4512,6 @@ CREATE TABLE public.cmlegality (
 ALTER TABLE public.cmlegality OWNER TO managuide;
 
 --
--- TOC entry 243 (class 1259 OID 17820)
 -- Name: cmrarity; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4250,7 +4526,6 @@ CREATE TABLE public.cmrarity (
 ALTER TABLE public.cmrarity OWNER TO managuide;
 
 --
--- TOC entry 244 (class 1259 OID 17827)
 -- Name: cmrule; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4269,7 +4544,6 @@ CREATE TABLE public.cmrule (
 ALTER TABLE public.cmrule OWNER TO managuide;
 
 --
--- TOC entry 245 (class 1259 OID 17834)
 -- Name: cmruling; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4286,7 +4560,6 @@ CREATE TABLE public.cmruling (
 ALTER TABLE public.cmruling OWNER TO managuide;
 
 --
--- TOC entry 246 (class 1259 OID 17841)
 -- Name: cmruling_id_seq; Type: SEQUENCE; Schema: public; Owner: managuide
 --
 
@@ -4299,11 +4572,9 @@ CREATE SEQUENCE public.cmruling_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.cmruling_id_seq OWNER TO managuide;
+ALTER TABLE public.cmruling_id_seq OWNER TO managuide;
 
 --
--- TOC entry 4144 (class 0 OID 0)
--- Dependencies: 246
 -- Name: cmruling_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: managuide
 --
 
@@ -4311,7 +4582,6 @@ ALTER SEQUENCE public.cmruling_id_seq OWNED BY public.cmruling.id;
 
 
 --
--- TOC entry 247 (class 1259 OID 17842)
 -- Name: cmset; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4341,7 +4611,6 @@ CREATE TABLE public.cmset (
 ALTER TABLE public.cmset OWNER TO managuide;
 
 --
--- TOC entry 248 (class 1259 OID 17849)
 -- Name: cmset_language; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4356,7 +4625,6 @@ CREATE TABLE public.cmset_language (
 ALTER TABLE public.cmset_language OWNER TO managuide;
 
 --
--- TOC entry 249 (class 1259 OID 17856)
 -- Name: cmsetblock; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4372,7 +4640,6 @@ CREATE TABLE public.cmsetblock (
 ALTER TABLE public.cmsetblock OWNER TO managuide;
 
 --
--- TOC entry 250 (class 1259 OID 17863)
 -- Name: cmsettype; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4387,7 +4654,6 @@ CREATE TABLE public.cmsettype (
 ALTER TABLE public.cmsettype OWNER TO managuide;
 
 --
--- TOC entry 251 (class 1259 OID 17870)
 -- Name: cmwatermark; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4402,7 +4668,6 @@ CREATE TABLE public.cmwatermark (
 ALTER TABLE public.cmwatermark OWNER TO managuide;
 
 --
--- TOC entry 252 (class 1259 OID 17877)
 -- Name: serverupdate; Type: TABLE; Schema: public; Owner: managuide
 --
 
@@ -4417,7 +4682,6 @@ CREATE TABLE public.serverupdate (
 ALTER TABLE public.serverupdate OWNER TO managuide;
 
 --
--- TOC entry 253 (class 1259 OID 17882)
 -- Name: serverupdate_id_seq; Type: SEQUENCE; Schema: public; Owner: managuide
 --
 
@@ -4430,11 +4694,9 @@ CREATE SEQUENCE public.serverupdate_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.serverupdate_id_seq OWNER TO managuide;
+ALTER TABLE public.serverupdate_id_seq OWNER TO managuide;
 
 --
--- TOC entry 4145 (class 0 OID 0)
--- Dependencies: 253
 -- Name: serverupdate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: managuide
 --
 
@@ -4442,7 +4704,6 @@ ALTER SEQUENCE public.serverupdate_id_seq OWNED BY public.serverupdate.id;
 
 
 --
--- TOC entry 3769 (class 2604 OID 17883)
 -- Name: cmcard_format_legality id; Type: DEFAULT; Schema: public; Owner: managuide
 --
 
@@ -4450,7 +4711,6 @@ ALTER TABLE ONLY public.cmcard_format_legality ALTER COLUMN id SET DEFAULT nextv
 
 
 --
--- TOC entry 3782 (class 2604 OID 17884)
 -- Name: cmcardprice id; Type: DEFAULT; Schema: public; Owner: managuide
 --
 
@@ -4458,7 +4718,6 @@ ALTER TABLE ONLY public.cmcardprice ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3785 (class 2604 OID 17885)
 -- Name: cmcardstatistics id; Type: DEFAULT; Schema: public; Owner: managuide
 --
 
@@ -4466,7 +4725,6 @@ ALTER TABLE ONLY public.cmcardstatistics ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
--- TOC entry 3812 (class 2604 OID 17886)
 -- Name: cmruling id; Type: DEFAULT; Schema: public; Owner: managuide
 --
 
@@ -4474,7 +4732,6 @@ ALTER TABLE ONLY public.cmruling ALTER COLUMN id SET DEFAULT nextval('public.cmr
 
 
 --
--- TOC entry 3825 (class 2604 OID 17887)
 -- Name: serverupdate id; Type: DEFAULT; Schema: public; Owner: managuide
 --
 
@@ -4482,7 +4739,6 @@ ALTER TABLE ONLY public.serverupdate ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- TOC entry 3838 (class 2606 OID 17910)
 -- Name: cmartist cmartist_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4491,7 +4747,6 @@ ALTER TABLE ONLY public.cmartist
 
 
 --
--- TOC entry 3947 (class 2606 OID 37539)
 -- Name: cmcard_artist cmcard_artist_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4500,7 +4755,6 @@ ALTER TABLE ONLY public.cmcard_artist
 
 
 --
--- TOC entry 3853 (class 2606 OID 17912)
 -- Name: cmcard_color cmcard_color_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4509,7 +4763,6 @@ ALTER TABLE ONLY public.cmcard_color
 
 
 --
--- TOC entry 3855 (class 2606 OID 17914)
 -- Name: cmcard_coloridentity cmcard_coloridentity_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4518,7 +4771,6 @@ ALTER TABLE ONLY public.cmcard_coloridentity
 
 
 --
--- TOC entry 3857 (class 2606 OID 17916)
 -- Name: cmcard_coloridentity cmcard_coloridentity_unique; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4527,7 +4779,6 @@ ALTER TABLE ONLY public.cmcard_coloridentity
 
 
 --
--- TOC entry 3859 (class 2606 OID 17918)
 -- Name: cmcard_colorindicator cmcard_colorindicator_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4536,7 +4787,6 @@ ALTER TABLE ONLY public.cmcard_colorindicator
 
 
 --
--- TOC entry 3861 (class 2606 OID 17920)
 -- Name: cmcard_colorindicator cmcard_colorindicator_unique; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4545,7 +4795,6 @@ ALTER TABLE ONLY public.cmcard_colorindicator
 
 
 --
--- TOC entry 3863 (class 2606 OID 17922)
 -- Name: cmcard_component_part cmcard_component_part_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4554,7 +4803,6 @@ ALTER TABLE ONLY public.cmcard_component_part
 
 
 --
--- TOC entry 3867 (class 2606 OID 17924)
 -- Name: cmcard_face cmcard_face_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4563,7 +4811,6 @@ ALTER TABLE ONLY public.cmcard_face
 
 
 --
--- TOC entry 3869 (class 2606 OID 17926)
 -- Name: cmcard_face cmcard_face_unique; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4572,7 +4819,6 @@ ALTER TABLE ONLY public.cmcard_face
 
 
 --
--- TOC entry 3871 (class 2606 OID 17928)
 -- Name: cmcard_format_legality cmcard_format_legality_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4581,7 +4827,6 @@ ALTER TABLE ONLY public.cmcard_format_legality
 
 
 --
--- TOC entry 3873 (class 2606 OID 17930)
 -- Name: cmcard_format_legality cmcard_format_legality_unique; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4590,7 +4835,6 @@ ALTER TABLE ONLY public.cmcard_format_legality
 
 
 --
--- TOC entry 3875 (class 2606 OID 17939)
 -- Name: cmcard_frameeffect cmcard_frameeffect_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4599,7 +4843,6 @@ ALTER TABLE ONLY public.cmcard_frameeffect
 
 
 --
--- TOC entry 3877 (class 2606 OID 17941)
 -- Name: cmcard_frameeffect cmcard_frameeffect_unique; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4608,7 +4851,6 @@ ALTER TABLE ONLY public.cmcard_frameeffect
 
 
 --
--- TOC entry 3943 (class 2606 OID 37431)
 -- Name: cmcard_game cmcard_game_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4617,7 +4859,6 @@ ALTER TABLE ONLY public.cmcard_game
 
 
 --
--- TOC entry 3945 (class 2606 OID 37520)
 -- Name: cmcard_keyword cmcard_keyword_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4626,7 +4867,6 @@ ALTER TABLE ONLY public.cmcard_keyword
 
 
 --
--- TOC entry 3879 (class 2606 OID 17943)
 -- Name: cmcard_otherlanguage cmcard_otherlanguage_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4635,7 +4875,6 @@ ALTER TABLE ONLY public.cmcard_otherlanguage
 
 
 --
--- TOC entry 3881 (class 2606 OID 17945)
 -- Name: cmcard_otherprinting cmcard_otherprinting_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4644,7 +4883,6 @@ ALTER TABLE ONLY public.cmcard_otherprinting
 
 
 --
--- TOC entry 3865 (class 2606 OID 17947)
 -- Name: cmcard_component_part cmcard_part_unique; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4653,7 +4891,6 @@ ALTER TABLE ONLY public.cmcard_component_part
 
 
 --
--- TOC entry 3850 (class 2606 OID 17949)
 -- Name: cmcard cmcard_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4662,7 +4899,6 @@ ALTER TABLE ONLY public.cmcard
 
 
 --
--- TOC entry 3883 (class 2606 OID 17951)
 -- Name: cmcard_subtype cmcard_subtype_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4671,7 +4907,6 @@ ALTER TABLE ONLY public.cmcard_subtype
 
 
 --
--- TOC entry 3885 (class 2606 OID 17953)
 -- Name: cmcard_subtype cmcard_subtype_unique; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4680,7 +4915,6 @@ ALTER TABLE ONLY public.cmcard_subtype
 
 
 --
--- TOC entry 3887 (class 2606 OID 17955)
 -- Name: cmcard_supertype cmcard_supertype_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4689,7 +4923,6 @@ ALTER TABLE ONLY public.cmcard_supertype
 
 
 --
--- TOC entry 3889 (class 2606 OID 17957)
 -- Name: cmcard_supertype cmcard_supertype_unique; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4698,7 +4931,6 @@ ALTER TABLE ONLY public.cmcard_supertype
 
 
 --
--- TOC entry 3891 (class 2606 OID 17959)
 -- Name: cmcard_variation cmcard_variation_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4707,7 +4939,6 @@ ALTER TABLE ONLY public.cmcard_variation
 
 
 --
--- TOC entry 3904 (class 2606 OID 17961)
 -- Name: cmformat cmcardformat_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4716,7 +4947,6 @@ ALTER TABLE ONLY public.cmformat
 
 
 --
--- TOC entry 3893 (class 2606 OID 17963)
 -- Name: cmcardprice cmcardprice_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4725,7 +4955,6 @@ ALTER TABLE ONLY public.cmcardprice
 
 
 --
--- TOC entry 3895 (class 2606 OID 17965)
 -- Name: cmcardstatistics cmcardstatistics_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4734,7 +4963,6 @@ ALTER TABLE ONLY public.cmcardstatistics
 
 
 --
--- TOC entry 3898 (class 2606 OID 17967)
 -- Name: cmcardtype cmcardtype_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4743,7 +4971,6 @@ ALTER TABLE ONLY public.cmcardtype
 
 
 --
--- TOC entry 3900 (class 2606 OID 17969)
 -- Name: cmcolor cmcolor_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4752,7 +4979,6 @@ ALTER TABLE ONLY public.cmcolor
 
 
 --
--- TOC entry 3902 (class 2606 OID 17971)
 -- Name: cmcomponent cmcomponent_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4761,7 +4987,6 @@ ALTER TABLE ONLY public.cmcomponent
 
 
 --
--- TOC entry 3906 (class 2606 OID 17973)
 -- Name: cmframe cmframe_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4770,7 +4995,6 @@ ALTER TABLE ONLY public.cmframe
 
 
 --
--- TOC entry 3908 (class 2606 OID 17975)
 -- Name: cmframeeffect cmframeeffect_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4779,7 +5003,6 @@ ALTER TABLE ONLY public.cmframeeffect
 
 
 --
--- TOC entry 3939 (class 2606 OID 37409)
 -- Name: cmgame cmgame_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4788,7 +5011,6 @@ ALTER TABLE ONLY public.cmgame
 
 
 --
--- TOC entry 3941 (class 2606 OID 37527)
 -- Name: cmkeyword cmkeyword_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4797,7 +5019,6 @@ ALTER TABLE ONLY public.cmkeyword
 
 
 --
--- TOC entry 3911 (class 2606 OID 17977)
 -- Name: cmlanguage cmlanguage_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4806,7 +5027,6 @@ ALTER TABLE ONLY public.cmlanguage
 
 
 --
--- TOC entry 3913 (class 2606 OID 17979)
 -- Name: cmlayout cmlayout_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4815,7 +5035,6 @@ ALTER TABLE ONLY public.cmlayout
 
 
 --
--- TOC entry 3915 (class 2606 OID 17981)
 -- Name: cmlegality cmlegality_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4824,7 +5043,6 @@ ALTER TABLE ONLY public.cmlegality
 
 
 --
--- TOC entry 3917 (class 2606 OID 17983)
 -- Name: cmrarity cmrarity_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4833,7 +5051,6 @@ ALTER TABLE ONLY public.cmrarity
 
 
 --
--- TOC entry 3919 (class 2606 OID 17985)
 -- Name: cmrule cmrule_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4842,7 +5059,6 @@ ALTER TABLE ONLY public.cmrule
 
 
 --
--- TOC entry 3921 (class 2606 OID 17987)
 -- Name: cmruling cmruling_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4851,7 +5067,6 @@ ALTER TABLE ONLY public.cmruling
 
 
 --
--- TOC entry 3927 (class 2606 OID 17989)
 -- Name: cmset_language cmset_language_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4860,7 +5075,6 @@ ALTER TABLE ONLY public.cmset_language
 
 
 --
--- TOC entry 3929 (class 2606 OID 17991)
 -- Name: cmset_language cmset_language_unique; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4869,7 +5083,6 @@ ALTER TABLE ONLY public.cmset_language
 
 
 --
--- TOC entry 3925 (class 2606 OID 17993)
 -- Name: cmset cmset_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4878,7 +5091,6 @@ ALTER TABLE ONLY public.cmset
 
 
 --
--- TOC entry 3931 (class 2606 OID 17995)
 -- Name: cmsetblock cmsetblock_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4887,7 +5099,6 @@ ALTER TABLE ONLY public.cmsetblock
 
 
 --
--- TOC entry 3933 (class 2606 OID 17997)
 -- Name: cmsettype cmsettype_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4896,7 +5107,6 @@ ALTER TABLE ONLY public.cmsettype
 
 
 --
--- TOC entry 3935 (class 2606 OID 17999)
 -- Name: cmwatermark cmwatermark_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4905,7 +5115,6 @@ ALTER TABLE ONLY public.cmwatermark
 
 
 --
--- TOC entry 3937 (class 2606 OID 18001)
 -- Name: serverupdate serverupdate_pkey; Type: CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -4914,7 +5123,6 @@ ALTER TABLE ONLY public.serverupdate
 
 
 --
--- TOC entry 3836 (class 1259 OID 18002)
 -- Name: cmartist_name_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4922,7 +5130,6 @@ CREATE INDEX cmartist_name_index ON public.cmartist USING btree (name varchar_op
 
 
 --
--- TOC entry 3839 (class 1259 OID 18003)
 -- Name: cmcard_cmartist_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4930,7 +5137,6 @@ CREATE INDEX cmcard_cmartist_index ON public.cmcard USING btree (cmartist varcha
 
 
 --
--- TOC entry 3840 (class 1259 OID 18004)
 -- Name: cmcard_cmframe_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4938,7 +5144,6 @@ CREATE INDEX cmcard_cmframe_index ON public.cmcard USING btree (cmframe varchar_
 
 
 --
--- TOC entry 3841 (class 1259 OID 18005)
 -- Name: cmcard_cmlanguage_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4946,7 +5151,6 @@ CREATE INDEX cmcard_cmlanguage_index ON public.cmcard USING btree (cmlanguage va
 
 
 --
--- TOC entry 3842 (class 1259 OID 18006)
 -- Name: cmcard_cmlayout_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4954,7 +5158,6 @@ CREATE INDEX cmcard_cmlayout_index ON public.cmcard USING btree (cmlayout varcha
 
 
 --
--- TOC entry 3843 (class 1259 OID 18007)
 -- Name: cmcard_cmrarity_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4962,7 +5165,6 @@ CREATE INDEX cmcard_cmrarity_index ON public.cmcard USING btree (cmrarity varcha
 
 
 --
--- TOC entry 3844 (class 1259 OID 18008)
 -- Name: cmcard_cmset_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4970,7 +5172,6 @@ CREATE INDEX cmcard_cmset_index ON public.cmcard USING btree (cmset varchar_patt
 
 
 --
--- TOC entry 3845 (class 1259 OID 18009)
 -- Name: cmcard_cmwatermark_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4978,7 +5179,6 @@ CREATE INDEX cmcard_cmwatermark_index ON public.cmcard USING btree (cmwatermark 
 
 
 --
--- TOC entry 3846 (class 1259 OID 18010)
 -- Name: cmcard_collector_number_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4986,7 +5186,6 @@ CREATE INDEX cmcard_collector_number_index ON public.cmcard USING btree (collect
 
 
 --
--- TOC entry 3847 (class 1259 OID 18011)
 -- Name: cmcard_name_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -4994,7 +5193,6 @@ CREATE INDEX cmcard_name_index ON public.cmcard USING btree (name varchar_patter
 
 
 --
--- TOC entry 3848 (class 1259 OID 18012)
 -- Name: cmcard_new_id_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -5002,7 +5200,6 @@ CREATE INDEX cmcard_new_id_index ON public.cmcard USING btree (new_id varchar_pa
 
 
 --
--- TOC entry 3851 (class 1259 OID 18013)
 -- Name: cmcard_tcgplayer_id_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -5010,7 +5207,6 @@ CREATE INDEX cmcard_tcgplayer_id_index ON public.cmcard USING btree (tcgplayer_i
 
 
 --
--- TOC entry 3896 (class 1259 OID 18014)
 -- Name: cmcardtype_name_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -5018,7 +5214,6 @@ CREATE INDEX cmcardtype_name_index ON public.cmcardtype USING btree (name varcha
 
 
 --
--- TOC entry 3909 (class 1259 OID 18015)
 -- Name: cmlanguage_code_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -5026,7 +5221,6 @@ CREATE INDEX cmlanguage_code_index ON public.cmlanguage USING btree (code varcha
 
 
 --
--- TOC entry 3922 (class 1259 OID 18016)
 -- Name: cmset_card_count_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -5034,7 +5228,6 @@ CREATE INDEX cmset_card_count_index ON public.cmset USING btree (card_count);
 
 
 --
--- TOC entry 3923 (class 1259 OID 18017)
 -- Name: cmset_code_index; Type: INDEX; Schema: public; Owner: managuide
 --
 
@@ -5042,7 +5235,6 @@ CREATE INDEX cmset_code_index ON public.cmset USING btree (code varchar_ops);
 
 
 --
--- TOC entry 3948 (class 2606 OID 18018)
 -- Name: cmcard cmartist_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5051,7 +5243,6 @@ ALTER TABLE ONLY public.cmcard
 
 
 --
--- TOC entry 3991 (class 2606 OID 37545)
 -- Name: cmcard_artist cmartist_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5060,7 +5251,6 @@ ALTER TABLE ONLY public.cmcard_artist
 
 
 --
--- TOC entry 3964 (class 2606 OID 18023)
 -- Name: cmcard_face cmcard_face_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5069,7 +5259,6 @@ ALTER TABLE ONLY public.cmcard_face
 
 
 --
--- TOC entry 3955 (class 2606 OID 18028)
 -- Name: cmcard_color cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5078,7 +5267,6 @@ ALTER TABLE ONLY public.cmcard_color
 
 
 --
--- TOC entry 3957 (class 2606 OID 18033)
 -- Name: cmcard_coloridentity cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5087,7 +5275,6 @@ ALTER TABLE ONLY public.cmcard_coloridentity
 
 
 --
--- TOC entry 3959 (class 2606 OID 18038)
 -- Name: cmcard_colorindicator cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5096,7 +5283,6 @@ ALTER TABLE ONLY public.cmcard_colorindicator
 
 
 --
--- TOC entry 3961 (class 2606 OID 18043)
 -- Name: cmcard_component_part cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5105,7 +5291,6 @@ ALTER TABLE ONLY public.cmcard_component_part
 
 
 --
--- TOC entry 3965 (class 2606 OID 18048)
 -- Name: cmcard_face cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5114,7 +5299,6 @@ ALTER TABLE ONLY public.cmcard_face
 
 
 --
--- TOC entry 3966 (class 2606 OID 18053)
 -- Name: cmcard_format_legality cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5123,7 +5307,6 @@ ALTER TABLE ONLY public.cmcard_format_legality
 
 
 --
--- TOC entry 3969 (class 2606 OID 18058)
 -- Name: cmcard_frameeffect cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5132,7 +5315,6 @@ ALTER TABLE ONLY public.cmcard_frameeffect
 
 
 --
--- TOC entry 3971 (class 2606 OID 18063)
 -- Name: cmcard_otherlanguage cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5141,7 +5323,6 @@ ALTER TABLE ONLY public.cmcard_otherlanguage
 
 
 --
--- TOC entry 3972 (class 2606 OID 18068)
 -- Name: cmcard_otherprinting cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5150,7 +5331,6 @@ ALTER TABLE ONLY public.cmcard_otherprinting
 
 
 --
--- TOC entry 3973 (class 2606 OID 18073)
 -- Name: cmcard_subtype cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5159,7 +5339,6 @@ ALTER TABLE ONLY public.cmcard_subtype
 
 
 --
--- TOC entry 3975 (class 2606 OID 18078)
 -- Name: cmcard_supertype cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5168,7 +5347,6 @@ ALTER TABLE ONLY public.cmcard_supertype
 
 
 --
--- TOC entry 3977 (class 2606 OID 18083)
 -- Name: cmcard_variation cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5177,7 +5355,6 @@ ALTER TABLE ONLY public.cmcard_variation
 
 
 --
--- TOC entry 3978 (class 2606 OID 18088)
 -- Name: cmcardprice cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5186,7 +5363,6 @@ ALTER TABLE ONLY public.cmcardprice
 
 
 --
--- TOC entry 3979 (class 2606 OID 18093)
 -- Name: cmcardstatistics cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5195,7 +5371,6 @@ ALTER TABLE ONLY public.cmcardstatistics
 
 
 --
--- TOC entry 3987 (class 2606 OID 37432)
 -- Name: cmcard_game cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5204,7 +5379,6 @@ ALTER TABLE ONLY public.cmcard_game
 
 
 --
--- TOC entry 3989 (class 2606 OID 37521)
 -- Name: cmcard_keyword cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5213,7 +5387,6 @@ ALTER TABLE ONLY public.cmcard_keyword
 
 
 --
--- TOC entry 3992 (class 2606 OID 37540)
 -- Name: cmcard_artist cmcard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5222,7 +5395,6 @@ ALTER TABLE ONLY public.cmcard_artist
 
 
 --
--- TOC entry 3962 (class 2606 OID 18098)
 -- Name: cmcard_component_part cmcard_part_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5231,7 +5403,6 @@ ALTER TABLE ONLY public.cmcard_component_part
 
 
 --
--- TOC entry 3974 (class 2606 OID 18103)
 -- Name: cmcard_subtype cmcardtype_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5240,7 +5411,6 @@ ALTER TABLE ONLY public.cmcard_subtype
 
 
 --
--- TOC entry 3976 (class 2606 OID 18108)
 -- Name: cmcard_supertype cmcardtype_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5249,7 +5419,6 @@ ALTER TABLE ONLY public.cmcard_supertype
 
 
 --
--- TOC entry 3980 (class 2606 OID 18113)
 -- Name: cmcardtype cmcardtype_parent; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5258,7 +5427,6 @@ ALTER TABLE ONLY public.cmcardtype
 
 
 --
--- TOC entry 3956 (class 2606 OID 18118)
 -- Name: cmcard_color cmcolor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5267,7 +5435,6 @@ ALTER TABLE ONLY public.cmcard_color
 
 
 --
--- TOC entry 3958 (class 2606 OID 18123)
 -- Name: cmcard_coloridentity cmcolor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5276,7 +5443,6 @@ ALTER TABLE ONLY public.cmcard_coloridentity
 
 
 --
--- TOC entry 3960 (class 2606 OID 18128)
 -- Name: cmcard_colorindicator cmcolor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5285,7 +5451,6 @@ ALTER TABLE ONLY public.cmcard_colorindicator
 
 
 --
--- TOC entry 3963 (class 2606 OID 18133)
 -- Name: cmcard_component_part cmcomponent_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5294,7 +5459,6 @@ ALTER TABLE ONLY public.cmcard_component_part
 
 
 --
--- TOC entry 3967 (class 2606 OID 18138)
 -- Name: cmcard_format_legality cmformat_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5303,7 +5467,6 @@ ALTER TABLE ONLY public.cmcard_format_legality
 
 
 --
--- TOC entry 3949 (class 2606 OID 18143)
 -- Name: cmcard cmframe_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5312,7 +5475,6 @@ ALTER TABLE ONLY public.cmcard
 
 
 --
--- TOC entry 3970 (class 2606 OID 18148)
 -- Name: cmcard_frameeffect cmframeeffect_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5321,7 +5483,6 @@ ALTER TABLE ONLY public.cmcard_frameeffect
 
 
 --
--- TOC entry 3988 (class 2606 OID 37437)
 -- Name: cmcard_game cmgame_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5330,7 +5491,6 @@ ALTER TABLE ONLY public.cmcard_game
 
 
 --
--- TOC entry 3990 (class 2606 OID 37528)
 -- Name: cmcard_keyword cmkeyword_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5339,7 +5499,6 @@ ALTER TABLE ONLY public.cmcard_keyword
 
 
 --
--- TOC entry 3950 (class 2606 OID 18153)
 -- Name: cmcard cmlanguage_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5348,7 +5507,6 @@ ALTER TABLE ONLY public.cmcard
 
 
 --
--- TOC entry 3985 (class 2606 OID 18158)
 -- Name: cmset_language cmlanguage_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5357,7 +5515,6 @@ ALTER TABLE ONLY public.cmset_language
 
 
 --
--- TOC entry 3951 (class 2606 OID 18163)
 -- Name: cmcard cmlayout_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5366,7 +5523,6 @@ ALTER TABLE ONLY public.cmcard
 
 
 --
--- TOC entry 3968 (class 2606 OID 18168)
 -- Name: cmcard_format_legality cmlegality_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5375,7 +5531,6 @@ ALTER TABLE ONLY public.cmcard_format_legality
 
 
 --
--- TOC entry 3952 (class 2606 OID 18173)
 -- Name: cmcard cmrarity_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5384,7 +5539,6 @@ ALTER TABLE ONLY public.cmcard
 
 
 --
--- TOC entry 3981 (class 2606 OID 18178)
 -- Name: cmrule cmrule_parent_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5393,7 +5547,6 @@ ALTER TABLE ONLY public.cmrule
 
 
 --
--- TOC entry 3953 (class 2606 OID 18183)
 -- Name: cmcard cmset_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5402,7 +5555,6 @@ ALTER TABLE ONLY public.cmcard
 
 
 --
--- TOC entry 3986 (class 2606 OID 18188)
 -- Name: cmset_language cmset_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5411,7 +5563,6 @@ ALTER TABLE ONLY public.cmset_language
 
 
 --
--- TOC entry 3982 (class 2606 OID 18193)
 -- Name: cmset cmset_parent_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5420,7 +5571,6 @@ ALTER TABLE ONLY public.cmset
 
 
 --
--- TOC entry 3983 (class 2606 OID 18198)
 -- Name: cmset cmsetblock_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5429,7 +5579,6 @@ ALTER TABLE ONLY public.cmset
 
 
 --
--- TOC entry 3984 (class 2606 OID 18203)
 -- Name: cmset cmsettype_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
@@ -5438,15 +5587,12 @@ ALTER TABLE ONLY public.cmset
 
 
 --
--- TOC entry 3954 (class 2606 OID 18208)
 -- Name: cmcard cmwatermark_fkey; Type: FK CONSTRAINT; Schema: public; Owner: managuide
 --
 
 ALTER TABLE ONLY public.cmcard
     ADD CONSTRAINT cmwatermark_fkey FOREIGN KEY (cmwatermark) REFERENCES public.cmwatermark(name) NOT VALID;
 
-
--- Completed on 2023-12-14 05:28:10 UTC
 
 --
 -- PostgreSQL database dump complete

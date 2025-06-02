@@ -48,8 +48,8 @@ BEGIN
             _info);
     ELSE
         IF row.first_name IS DISTINCT FROM _first_name OR
-           row.last_name IS DISTINCT FROM _last_name 
-           row.name_section IS DISTINCT FROM _name_section
+           row.last_name IS DISTINCT FROM _last_name OR
+           row.name_section IS DISTINCT FROM _name_section OR
            row.info IS DISTINCT FROM _info THEN
             IF row.info IS NULL THEN
                 _new_info := _info;
