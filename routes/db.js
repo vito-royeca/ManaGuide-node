@@ -3,10 +3,10 @@ const url = require("url")
 const errorRouter = require('./error')
 
 const pool = new Pool({
-    user: 'managuide',
-    host: '192.168.1.182',
-    database: 'managuide_dev',
-    password: 'DarkC0nfidant',
+    user: 'user',
+    host: 'host',
+    database: 'database',
+    password: 'password',
     port: 5432,
 })
 
