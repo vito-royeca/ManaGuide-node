@@ -2132,32 +2132,14 @@ DECLARE
 
     row cmruling%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmruling
-        WHERE oracle_id = _oracle_id
-        LIMIT 1;
-
-    IF NOT FOUND THEN
-        INSERT INTO cmruling(
-            oracle_id,
-            text,
-            date_published)
-        VALUES(
-            _oracle_id,
-            _text,
-            _date_published);
-    ELSE
-        IF row.oracle_id IS DISTINCT FROM _oracle_id OR
-           row.text IS DISTINCT FROM _text OR
-           row.date_published IS DISTINCT FROM _date_published THEN
-
-            UPDATE cmruling SET
-                oracle_id = _oracle_id,
-                text = _text,
-                date_published = _date_published,
-                date_updated = now()
-            WHERE oracle_id = _oracle_id;
-        END IF;  
-    END IF;        
+    INSERT INTO cmruling(
+        oracle_id,
+        text,
+        date_published)
+    VALUES(
+        _oracle_id,
+        _text,
+        _date_published);
 
     RETURN;
 END;
