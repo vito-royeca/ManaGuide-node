@@ -5,14 +5,19 @@ const my = require('./my')
 
 // select by cmset and cmlanguage
 router.get('/:cmset/:cmlanguage', function(req, res, next) {
-    const sql = 'SELECT * from selectSet($1,$2,$3,$4)'
-    const parameters = [
-        req.params.cmset,
-        req.params.cmlanguage,
-        db.cleanSortedBy(req.query.sortedBy),
-        db.cleanOrderBy(req.query.orderBy)]
+    if (req.query.sortedBy == 'name' && req.query.orderBy == 'asc') {
+        const sql = 'SELECT * from matv_cmset_' + req.params.cmset + '_' + req.params.cmlanguage
+        db.executeQuery(req, res, next, sql, null, callback)
+    } else {
+        const sql = 'SELECT * from selectSet($1,$2,$3,$4)'
+        const parameters = [
+            req.params.cmset,
+            req.params.cmlanguage,
+            db.cleanSortedBy(req.query.sortedBy),
+            db.cleanOrderBy(req.query.orderBy)]
 
-    db.executeQuery(req, res, next, sql, parameters, callback)
+        db.executeQuery(req, res, next, sql, parameters, callback)
+    }
 })
 
 function callback(req, res, queryResults) {
