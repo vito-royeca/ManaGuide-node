@@ -8,7 +8,7 @@ DECLARE
 BEGIN
 
     command := 'CREATE MATERIALIZED VIEW IF NOT EXISTS matv_cmset_' || _code || '_' || _language || ' AS ';
-    command := command || 'SELECT card_count
+    command := command || 'SELECT card_count,
         code,
         is_foil_only,
         is_online_only,
