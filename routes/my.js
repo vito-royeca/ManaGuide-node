@@ -82,9 +82,6 @@ function trimImageUrls(new_id, card, faces, isMobile) {
 }
 
 function replaceCardImageUrls(card, faces) {
-    let artCropUrl = ""
-    let normalUrl  = ""
-    let pngUrl     = ""
     let soonUrl    = "/images/cards/soon.jpg"
 
     try {
@@ -98,10 +95,16 @@ function replaceCardImageUrls(card, faces) {
                 normalUrl  = "/images/cards/" + newId2Path(faces[i].new_id) + "/normal.jpg"
                 pngUrl     = "/images/cards/" + newId2Path(faces[i].new_id) + "/png.png"
 
+                artCropUrl_0 = "/images/cards/" + newId2Path(faces[i].new_id) + "_0/art_crop.jpg"
+                normalUrl_0  = "/images/cards/" + newId2Path(faces[i].new_id) + "_0/normal.jpg"
+                pngUrl_0     = "/images/cards/" + newId2Path(faces[i].new_id) + "_0/png.png"
+
                 if (fs.existsSync("./public/" + artCropUrlOrig)) {
                     faces[i].art_crop_url = artCropUrlOrig
                 } else if (fs.existsSync("./public/" + artCropUrl)) {
                     faces[i].art_crop_url = artCropUrl
+                } else if (fs.existsSync("./public/" + artCropUrl_0)) {
+                    faces[i].art_crop_url = artCropUrl_0
                 } else {
                     faces[i].art_crop_url = soonUrl
                 }
@@ -110,6 +113,8 @@ function replaceCardImageUrls(card, faces) {
                     faces[i].normal_url = normalUrlOrig
                 } else if (fs.existsSync("./public/" + normalUrl)) {
                     faces[i].normal_url = normalUrl
+                } else if (fs.existsSync("./public/" + normalUrl_0)) {
+                    faces[i].normal_url = normalUrl_0
                 } else {
                     faces[i].normal_url = soonUrl
                 }
@@ -118,6 +123,8 @@ function replaceCardImageUrls(card, faces) {
                     faces[i].png_url = pngUrlOrig
                 } else if (fs.existsSync("./public/" + pngUrl)) {
                     faces[i].png_url = pngUrl
+                } else if (fs.existsSync("./public/" + pngUrl_0)) {
+                    faces[i].png_url = pngUrl_0
                 } else {
                     faces[i].png_url = soonUrl
                 }
