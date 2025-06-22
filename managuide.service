@@ -1,0 +1,15 @@
+[Unit]
+Description=ManaGuide systemd service
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/node /path/to/managuide/node/bin/www
+WorkingDirectory=/path/to/managuide/node/
+RestartSec=10
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=managuide
+
+[Install]
+WantedBy=multi-user.target
