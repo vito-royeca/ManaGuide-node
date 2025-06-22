@@ -2492,6 +2492,125 @@ $_$;
 ALTER FUNCTION public.createserverupdate(boolean) OWNER TO managuide;
 
 --
+-- Name: createsetmaterializedview(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
+--
+
+CREATE FUNCTION public.createsetmaterializedview(character varying, character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    _code ALIAS FOR $1;
+    _language ALIAS FOR $2;
+    command character varying;
+BEGIN
+
+    command := 'CREATE MATERIALIZED VIEW IF NOT EXISTS matv_cmset_' || _code || '_' || _language || ' AS ';
+    command := command || 'SELECT card_count,
+        code,
+        is_foil_only,
+        is_online_only,
+        logo_code,
+        mtgo_code,
+        keyrune_unicode,
+        keyrune_class,
+        year_section,
+        name,
+        release_date,
+        tcgplayer_id,
+        (
+            SELECT row_to_json(x) FROM (
+                SELECT sb.code, sb.name
+                FROM cmsetblock sb WHERE sb.code = s.cmsetblock
+                LIMIT 1
+            ) x
+        ) AS set_block,
+        (
+            SELECT row_to_json(x) FROM (
+                SELECT st.name
+                FROM cmsettype st WHERE st.name = s.cmsettype
+                LIMIT 1
+            ) x
+        ) AS set_type,
+        array(
+            SELECT row_to_json(x) FROM (
+                SELECT l.code, l.display_code, l.name
+                FROM cmset_language sl left join cmlanguage l on sl.cmlanguage = l.code
+                WHERE sl.cmset = s.code
+                LIMIT 100
+            ) x
+        ) AS languages,
+        array_to_json(
+            array(SELECT selectCards(''' || _code || ''', ''' || _language || ''', ''name'', ''ASC''))
+        ) AS cards
+        FROM cmset s WHERE s.code = ''' || _code || '''';
+
+    EXECUTE command;
+
+    RETURN;
+END;
+$_$;
+
+
+ALTER FUNCTION public.createsetmaterializedview(character varying, character varying) OWNER TO managuide;
+
+--
+-- Name: createsetsmaterializedview(); Type: FUNCTION; Schema: public; Owner: managuide
+--
+
+CREATE FUNCTION public.createsetsmaterializedview() RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    
+BEGIN
+    CREATE MATERIALIZED VIEW IF NOT EXISTS matv_cmsets AS 
+        SELECT card_count,
+                code,
+                is_foil_only,
+                is_online_only,
+                logo_code,
+                mtgo_code,
+                keyrune_unicode,
+                keyrune_class,
+                year_section,
+                name,
+                release_date,
+                tcgplayer_id,
+                cmset_parent,
+                (
+                    SELECT row_to_json(x) FROM (
+                        SELECT sb.code, sb.name
+                        FROM cmsetblock sb WHERE sb.code = s.cmsetblock
+                        LIMIT 1
+                    ) x
+                ) AS set_block,
+                (
+                    SELECT row_to_json(x) FROM (
+                        SELECT st.name
+                        FROM cmsettype st WHERE st.name = s.cmsettype
+                        LIMIT 1
+                    ) x
+                ) AS set_type,
+                array(
+                    SELECT row_to_json(x) FROM (
+                        SELECT l.code, l.display_code, l.name
+                        FROM cmset_language sl left join cmlanguage l on sl.cmlanguage = l.code
+                        WHERE sl.cmset = s.code
+                        LIMIT 100
+                    ) x
+                ) AS languages
+        FROM cmset s WHERE s.card_count > 0
+        GROUP BY cmset_parent, card_count, code
+        ORDER BY release_date DESC, cmset_parent DESC, name ASC;
+
+    RETURN;
+END;
+$$;
+
+
+ALTER FUNCTION public.createsetsmaterializedview() OWNER TO managuide;
+
+--
 -- Name: deletecard(character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -2755,7 +2874,7 @@ ALTER FUNCTION public.searchrules(character varying) OWNER TO managuide;
 -- Name: selectcard(character varying); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
-CREATE FUNCTION public.selectcard(character varying) RETURNS TABLE(collector_number character varying, cmc double precision, face_order integer, flavor_text character varying, is_foil boolean, is_full_art boolean, is_highres_image boolean, is_nonfoil boolean, is_oversized boolean, is_reserved boolean, is_story_spotlight boolean, loyalty character varying, mana_cost character varying, number_order double precision, name character varying, oracle_text character varying, power character varying, printed_name character varying, printed_text character varying, toughness character varying, arena_id integer, mtgo_id integer, tcgplayer_id integer, hand_modifier character varying, life_modifier character varying, is_booster boolean, is_digital boolean, is_promo boolean, released_at date, is_textless boolean, mtgo_foil_id integer, is_reprint boolean, new_id character varying, printed_type_line character varying, type_line character varying, multiverse_ids integer[], art_crop_url character varying, normal_url character varying, png_url character varying, set json, rarity json, language json, layout json, watermark json, frame json, artist json, colors json[], color_identities json[], color_indicators json[], component_parts json[], faces json[], other_languages json[], other_printings json[], variations json[], format_legalities json[], frame_effects json[], subtypes json[], supertypes json[], prices json[], rulings json[])
+CREATE FUNCTION public.selectcard(character varying) RETURNS TABLE(collector_number character varying, cmc double precision, face_order integer, flavor_text character varying, is_foil boolean, is_full_art boolean, is_highres_image boolean, is_nonfoil boolean, is_oversized boolean, is_reserved boolean, is_story_spotlight boolean, loyalty character varying, mana_cost character varying, number_order double precision, name character varying, name_section character varying, oracle_text character varying, power character varying, printed_name character varying, printed_text character varying, toughness character varying, arena_id integer, mtgo_id integer, tcgplayer_id integer, hand_modifier character varying, life_modifier character varying, is_booster boolean, is_digital boolean, is_promo boolean, released_at date, is_textless boolean, mtgo_foil_id integer, is_reprint boolean, new_id character varying, printed_type_line character varying, type_line character varying, multiverse_ids integer[], art_crop_url character varying, normal_url character varying, png_url character varying, set json, rarity json, language json, layout json, watermark json, frame json, artists json[], colors json[], color_identities json[], color_indicators json[], component_parts json[], faces json[], other_languages json[], other_printings json[], variations json[], format_legalities json[], frame_effects json[], subtypes json[], supertypes json[], prices json[], rulings json[])
     LANGUAGE plpgsql
     AS $_$
 DECLARE
@@ -2781,6 +2900,7 @@ BEGIN
                     c.mana_cost,
                     c.number_order,
                     c.name,
+                    c.name_section,
                     c.oracle_text,
                     c.power,
                     c.printed_name,
@@ -2852,17 +2972,17 @@ BEGIN
                             LIMIT 1
                         ) x
                     ) AS frame,
-                    (
-                        SELECT row_to_json(x) FROM (
-                            SELECT v.name
-                            FROM cmartist v
-                            WHERE v.name = c.cmartist
-                            LIMIT 10
-                        ) x
-                    ) AS artist,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name
+                            SELECT w.first_name, w.last_name, w.name, w.name_section, w.info
+                            FROM cmcard_artist v left join cmartist w on v.cmartist = w.name
+                            WHERE v.cmcard = c.new_id
+                            LIMIT 10
+                        ) x
+                    ) AS artists,
+                    array(
+                        SELECT row_to_json(x) FROM (
+                            SELECT w.name, w.symbol
                             FROM cmcard_color v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
                             LIMIT 10
@@ -2870,7 +2990,7 @@ BEGIN
                     ) AS colors,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name
+                            SELECT w.name, w.symbol
                             FROM cmcard_coloridentity v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
                             LIMIT 10
@@ -2878,7 +2998,7 @@ BEGIN
                     ) AS color_identities,
                     array(
                         SELECT row_to_json(x) FROM (
-                            SELECT w.name
+                            SELECT w.name, w.symbol
                             FROM cmcard_colorindicator v left join cmcolor w on v.cmcolor = w.symbol
                             WHERE v.cmcard = c.new_id
                             LIMIT 10
@@ -2898,6 +3018,7 @@ BEGIN
                                 	select x.new_id,
                                     x.collector_number,
                                 	x.name,
+                                    x.name_section,
                                 	x.printed_name,
                                     x.art_crop_url,
                                     x.normal_url,
@@ -2922,6 +3043,7 @@ BEGIN
                                             SELECT
                                                 new_id,
                                                 name,
+                                                name_section,
                                                 printed_name,
                                                 art_crop_url,
                                                 normal_url,
@@ -2955,6 +3077,7 @@ BEGIN
                             SELECT
                                 x.cmcard_otherlanguage as new_id,
                                 c.name,
+                                c.name_section,
                                 c.printed_name,
                                 c.collector_number,
                                 c.art_crop_url,
@@ -2989,6 +3112,7 @@ BEGIN
                                         SELECT
                                             new_id,
                                             name,
+                                            name_section,
                                             printed_name,
                                             art_crop_url,
                                             normal_url,
@@ -3001,7 +3125,7 @@ BEGIN
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
                             left join cmcard_otherlanguage x on x.cmcard_otherlanguage = c.new_id
                             WHERE x.cmcard = ''' || _new_id || '''' || ' and x.cmcard_otherlanguage LIKE ''%' || _collector_number || '''' ||
-                            ' group by w.code, x.cmcard_otherlanguage, c.cmset, c.name, c.printed_name, c.cmrarity, c.collector_number,
+                            ' group by w.code, x.cmcard_otherlanguage, c.cmset, c.name, c.name_section, c.printed_name, c.cmrarity, c.collector_number,
                               c.art_crop_url, c.normal_url, c.png_url 
 							 order by w.code
                              LIMIT 50
@@ -3015,6 +3139,7 @@ BEGIN
 						    SELECT
                                 c.new_id,
                                 c.name,
+                                c.name_section,
                                 c.printed_name,
                                 c.collector_number,
                                 c.art_crop_url,
@@ -3075,6 +3200,7 @@ BEGIN
 						SELECT c.new_id,
                             c.collector_number,
                             c.name,
+                            c.name_section,
                             c.printed_name,
                             c.collector_number,
                             c.art_crop_url,
@@ -3899,6 +4025,30 @@ $_$;
 ALTER FUNCTION public.selectsubsets(character varying) OWNER TO managuide;
 
 --
+-- Name: updatesetmaterializedview(character varying, character varying); Type: FUNCTION; Schema: public; Owner: managuide
+--
+
+CREATE FUNCTION public.updatesetmaterializedview(character varying, character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    _code ALIAS FOR $1;
+    _language ALIAS FOR $2;
+    command character varying;
+BEGIN
+
+    command := 'REFRESH MATERIALIZED VIEW matv_cmset_' || _code || '_' || _language || ';';
+
+    EXECUTE command;
+
+    RETURN;
+END;
+$_$;
+
+
+ALTER FUNCTION public.updatesetmaterializedview(character varying, character varying) OWNER TO managuide;
+
+--
 -- Name: updatesetscardcount(); Type: FUNCTION; Schema: public; Owner: managuide
 --
 
@@ -3930,6 +4080,25 @@ $$;
 
 
 ALTER FUNCTION public.updatesetscardcount() OWNER TO managuide;
+
+--
+-- Name: updatesetsmaterializedview(); Type: FUNCTION; Schema: public; Owner: managuide
+--
+
+CREATE FUNCTION public.updatesetsmaterializedview() RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    
+BEGIN
+    REFRESH MATERIALIZED VIEW matv_cmsets;
+
+    RETURN;
+END;
+$$;
+
+
+ALTER FUNCTION public.updatesetsmaterializedview() OWNER TO managuide;
 
 SET default_tablespace = '';
 
