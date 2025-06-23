@@ -7,7 +7,7 @@ DECLARE
 
     row cmcard_face%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmcard_face
+    SELECT cmcard, cmcard_face INTO row FROM cmcard_face
     WHERE cmcard = _cmcard
         AND cmcard_face = _cmcard_face
         LIMIT 1;
