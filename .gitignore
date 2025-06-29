@@ -35,11 +35,11 @@ Pods/
 .idea
 node_modules/
 package-lock.json
-routes/db.js
 
 #Node.js
 .env
 
 # others 
-public/images
+public/images/
 ssl/
+routes/db.js
