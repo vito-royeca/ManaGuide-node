@@ -4,33 +4,17 @@ CREATE OR REPLACE FUNCTION createOrUpdateCardFaces(
 DECLARE
     _cmcard ALIAS FOR $1;
     _cmcard_face ALIAS FOR $2;
-
-    row cmcard_face%ROWTYPE;
 BEGIN
-    SELECT cmcard, cmcard_face INTO row FROM cmcard_face
-    WHERE cmcard = _cmcard
-        AND cmcard_face = _cmcard_face
-        LIMIT 1;
-
-    IF NOT FOUND THEN
-        INSERT INTO cmcard_face(
-            cmcard,
-            cmcard_face)
-        VALUES(
-            _cmcard,
-            _cmcard_face);
-    ELSE
-        IF row.cmcard IS DISTINCT FROM _cmcard OR
-           row.cmcard_face IS DISTINCT FROM _cmcard_face THEN
-
-            UPDATE cmcard_face SET
-                cmcard = _cmcard,
-                cmcard_face = _cmcard_face,
-                date_updated = now()
-            WHERE cmcard = _cmcard
-                AND cmcard_face = _cmcard_face;
-        END IF;        
-    END IF;
+    INSERT INTO cmcard_face(
+        cmcard,
+        cmcard_face)
+    VALUES(
+        _cmcard,
+        _cmcard_face)
+    ON CONFLICT(
+        cmcard,
+        cmcard_face)
+        DO NOTHING;
 
     RETURN;
 END;

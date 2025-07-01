@@ -3,7 +3,6 @@ DECLARE
     currentRow integer := 0;
     row RECORD;
     row2 RECORD;
-    rowOtherLanguage cmcard_otherlanguage%ROWTYPE;
 BEGIN
     RAISE NOTICE 'other languages: %', currentRow;
 
@@ -22,18 +21,17 @@ BEGIN
                 cmlanguage IS DISTINCT FROM row.cmlanguage
             ORDER BY s.release_date, c.name
         LOOP
-            SELECT * INTO rowOtherLanguage FROM cmcard_otherlanguage
-                WHERE cmcard = row.new_id AND cmcard_otherlanguage = row2.new_id
-                LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_otherlanguage(
-                    cmcard,
-                    cmcard_otherlanguage)
-                VALUES(
-                    row.new_id,
-                    row2.new_id);
-            END IF;        
+            INSERT INTO cmcard_otherlanguage(
+                cmcard,
+                cmcard_otherlanguage)
+            VALUES(
+                row.new_id,
+                row2.new_id)
+            ON CONFLICT(
+                cmcard,
+                cmcard_otherlanguage
+            )
+                DO NOTHING;
         END LOOP;
 
         currentRow := currentRow + 1;

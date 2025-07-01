@@ -121,21 +121,6 @@ DECLARE
     pkey2 character varying;
     pkey3 character varying;
     released_at_ date;
-
-    -- row types
-    rowCard cmcard%ROWTYPE;
-    rowSetLanguage cmset_language%ROWTYPE;
-    rowArtist cmcard_artist%ROWTYPE;
-    rowFrameEffect cmcard_frameeffect%ROWTYPE;
-    rowColor cmcard_color%ROWTYPE;
-    rowColorIndentity cmcard_coloridentity%ROWTYPE;
-    rowColorIndicator cmcard_colorindicator%ROWTYPE;
-    rowFormatLegality cmcard_format_legality%ROWTYPE;
-    rowSubtype cmcard_subtype%ROWTYPE;
-    rowSupertype cmcard_supertype%ROWTYPE;
-    rowGame cmcard_game%ROWTYPE;
-    rowKeyword cmcard_keyword%ROWTYPE;
-
 BEGIN
     -- check for nulls
     IF lower(_collector_number) = 'null' THEN
@@ -234,419 +219,354 @@ BEGIN
         _png_url := NULL;
     END IF;
 
-    SELECT * INTO rowCard FROM cmcard
-        WHERE new_id = _new_id
-        LIMIT 1;
-
-    IF NOT FOUND THEN
-        INSERT INTO cmcard(
-            collector_number,
-            cmc,
-            flavor_text,
-            is_foil,
-            is_full_art,
-            is_highres_image,
-            is_nonfoil,
-            is_oversized,
-            is_reserved,
-            is_story_spotlight,
-            loyalty,
-            mana_cost,
-            multiverse_ids,
-            name_section,
-            number_order,
-            name,
-            oracle_text,
-            power,
-            printed_name,
-            printed_text,
-            toughness,
-            arena_id,
-            mtgo_id,
-            tcgplayer_id,
-            hand_modifier,
-            life_modifier,
-            is_booster,
-            is_digital,
-            is_promo,
-            released_at,
-            is_textless,
-            mtgo_foil_id,
-            is_reprint,
-            cmset,
-            cmrarity,
-            cmlanguage,
-            cmlayout,
-            cmwatermark,
-            cmframe,
-            type_line,
-            printed_type_line,
-            face_order,
-            new_id,
-            oracle_id,
-            id,
-            art_crop_url,
-            normal_url,
-            png_url)
-        VALUES(
-            _collector_number,
-            _cmc,
-            _flavor_text,
-            _is_foil,
-            _is_full_art,
-            _is_highres_image,
-            _is_nonfoil,
-            _is_oversized,
-            _is_reserved,
-            _is_story_spotlight,
-            _loyalty,
-            _mana_cost,
-            _multiverse_ids,
-            _name_section,
-            _number_order,
-            _name,
-            _oracle_text,
-            _power,
-            _printed_name,
-            _printed_text,
-            _toughness,
-            _arena_id::integer,
-            _mtgo_id::integer,
-            _tcgplayer_id::integer,
-            _hand_modifier,
-            _life_modifier,
-            _is_booster,
-            _is_digital,
-            _is_promo,
-            released_at_,
-            _is_textless,
-            _mtgo_foil_id::integer,
-            _is_reprint,
-            _cmset,
-            _cmrarity,
-            _cmlanguage,
-            _cmlayout,
-            _cmwatermark,
-            _cmframe,
-            _type_line,
-            _printed_type_line,
-            _face_order,
-            _new_id,
-            _oracle_id,
-            _id,
-            _art_crop_url,
-            _normal_url,
-            _png_url);
-    ELSE
-        IF rowCard.collector_number IS DISTINCT FROM _collector_number OR
-           rowCard.cmc IS DISTINCT FROM _cmc OR
-           rowCard.flavor_text IS DISTINCT FROM _flavor_text OR
-           rowCard.is_foil IS DISTINCT FROM _is_foil OR
-           rowCard.is_full_art IS DISTINCT FROM _is_full_art OR
-           rowCard.is_highres_image IS DISTINCT FROM _is_highres_image OR
-           rowCard.is_nonfoil IS DISTINCT FROM _is_nonfoil OR
-           rowCard.is_oversized IS DISTINCT FROM _is_oversized OR
-           rowCard.is_reserved IS DISTINCT FROM _is_reserved OR
-           rowCard.is_story_spotlight IS DISTINCT FROM _is_story_spotlight OR
-           rowCard.loyalty IS DISTINCT FROM _loyalty OR
-           rowCard.mana_cost IS DISTINCT FROM _mana_cost OR
-           rowCard.multiverse_ids IS DISTINCT FROM _multiverse_ids OR
-           rowCard.name_section IS DISTINCT FROM _name_section OR
-           rowCard.number_order IS DISTINCT FROM _number_order OR
-           rowCard.name IS DISTINCT FROM _name OR
-           rowCard.oracle_text IS DISTINCT FROM _oracle_text OR
-           rowCard.power IS DISTINCT FROM _power OR
-           rowCard.printed_name IS DISTINCT FROM _printed_name OR
-           rowCard.printed_text IS DISTINCT FROM _printed_text OR
-           rowCard.toughness IS DISTINCT FROM _toughness OR
-           rowCard.arena_id IS DISTINCT FROM _arena_id::integer OR
-           rowCard.mtgo_id IS DISTINCT FROM _mtgo_id::integer OR
-           rowCard.tcgplayer_id IS DISTINCT FROM _tcgplayer_id::integer OR
-           rowCard.hand_modifier IS DISTINCT FROM _hand_modifier OR
-           rowCard.life_modifier IS DISTINCT FROM _life_modifier OR
-           rowCard.is_booster IS DISTINCT FROM _is_booster OR
-           rowCard.is_digital IS DISTINCT FROM _is_digital OR
-           rowCard.is_promo IS DISTINCT FROM _is_promo OR
-           rowCard.released_at IS DISTINCT FROM released_at_ OR
-           rowCard.is_textless IS DISTINCT FROM _is_textless OR
-           rowCard.mtgo_foil_id IS DISTINCT FROM _mtgo_foil_id::integer OR
-           rowCard.is_reprint IS DISTINCT FROM _is_reprint OR
-           rowCard.cmset IS DISTINCT FROM _cmset OR
-           rowCard.cmrarity IS DISTINCT FROM _cmrarity OR
-           rowCard.cmlanguage IS DISTINCT FROM _cmlanguage OR
-           rowCard.cmlayout IS DISTINCT FROM _cmlayout OR
-           rowCard.cmwatermark IS DISTINCT FROM _cmwatermark OR
-           rowCard.cmframe IS DISTINCT FROM _cmframe OR
-           rowCard.type_line IS DISTINCT FROM _type_line OR
-           rowCard.printed_type_line IS DISTINCT FROM _printed_type_line OR
-           rowCard.face_order IS DISTINCT FROM _face_order OR
-           rowCard.new_id IS DISTINCT FROM _new_id OR
-           rowCard.oracle_id IS DISTINCT FROM _oracle_id OR
-           rowCard.id IS DISTINCT FROM _id OR
-           rowCard.art_crop_url IS DISTINCT FROM _art_crop_url OR
-           rowCard.normal_url IS DISTINCT FROM _normal_url OR
-           rowCard.png_url IS DISTINCT FROM _png_url THEN
-        
-            UPDATE cmcard SET
-                collector_number = _collector_number,
-                cmc = _cmc,
-                flavor_text = _flavor_text,
-                is_foil = _is_foil,
-                is_full_art = _is_full_art,
-                is_highres_image = _is_highres_image,
-                is_nonfoil = _is_nonfoil,
-                is_oversized = _is_oversized,
-                is_reserved = _is_reserved,
-                is_story_spotlight = _is_story_spotlight,
-                loyalty = _loyalty,
-                mana_cost = _mana_cost,
-                multiverse_ids = _multiverse_ids,
-                name_section = _name_section,
-                number_order = _number_order,
-                name = _name,
-                oracle_text = _oracle_text,
-                power = _power,
-                printed_name = _printed_name,
-                printed_text = _printed_text,
-                toughness = _toughness,
-                arena_id = _arena_id::integer,
-                mtgo_id = _mtgo_id::integer,
-                tcgplayer_id = _tcgplayer_id::integer,
-                hand_modifier = _hand_modifier,
-                life_modifier = _life_modifier,
-                is_booster = _is_booster,
-                is_digital = _is_digital,
-                is_promo = _is_promo,
-                released_at = released_at_,
-                is_textless = _is_textless,
-                mtgo_foil_id = _mtgo_foil_id::integer,
-                is_reprint = _is_reprint,
-                cmset = _cmset,
-                cmrarity = _cmrarity,
-                cmlanguage = _cmlanguage,
-                cmlayout = _cmlayout,
-                cmwatermark = _cmwatermark,
-                cmframe = _cmframe,
-                type_line = _type_line,
-                printed_type_line = _printed_type_line,
-                face_order = _face_order,
-                new_id = _new_id,
-                oracle_id = _oracle_id,
-                id = _id,
-                art_crop_url = _art_crop_url,
-                normal_url = _normal_url,
-                png_url = _png_url,
-                date_updated = now()
-            WHERE new_id = _new_id;
-        END IF;    
-    END IF;
+    -- card
+    INSERT INTO cmcard(
+        collector_number,
+        cmc,
+        flavor_text,
+        is_foil,
+        is_full_art,
+        is_highres_image,
+        is_nonfoil,
+        is_oversized,
+        is_reserved,
+        is_story_spotlight,
+        loyalty,
+        mana_cost,
+        multiverse_ids,
+        name_section,
+        number_order,
+        name,
+        oracle_text,
+        power,
+        printed_name,
+        printed_text,
+        toughness,
+        arena_id,
+        mtgo_id,
+        tcgplayer_id,
+        hand_modifier,
+        life_modifier,
+        is_booster,
+        is_digital,
+        is_promo,
+        released_at,
+        is_textless,
+        mtgo_foil_id,
+        is_reprint,
+        cmset,
+        cmrarity,
+        cmlanguage,
+        cmlayout,
+        cmwatermark,
+        cmframe,
+        type_line,
+        printed_type_line,
+        face_order,
+        new_id,
+        oracle_id,
+        id,
+        art_crop_url,
+        normal_url,
+        png_url)
+    VALUES(
+        _collector_number,
+        _cmc,
+        _flavor_text,
+        _is_foil,
+        _is_full_art,
+        _is_highres_image,
+        _is_nonfoil,
+        _is_oversized,
+        _is_reserved,
+        _is_story_spotlight,
+        _loyalty,
+        _mana_cost,
+        _multiverse_ids,
+        _name_section,
+        _number_order,
+        _name,
+        _oracle_text,
+        _power,
+        _printed_name,
+        _printed_text,
+        _toughness,
+        _arena_id::integer,
+        _mtgo_id::integer,
+        _tcgplayer_id::integer,
+        _hand_modifier,
+        _life_modifier,
+        _is_booster,
+        _is_digital,
+        _is_promo,
+        released_at_,
+        _is_textless,
+        _mtgo_foil_id::integer,
+        _is_reprint,
+        _cmset,
+        _cmrarity,
+        _cmlanguage,
+        _cmlayout,
+        _cmwatermark,
+        _cmframe,
+        _type_line,
+        _printed_type_line,
+        _face_order,
+        _new_id,
+        _oracle_id,
+        _id,
+        _art_crop_url,
+        _normal_url,
+        _png_url)
+    ON CONFLICT(new_id)
+        DO UPDATE SET
+            collector_number = EXCLUDED.collector_number,
+            cmc = EXCLUDED.cmc,
+            flavor_text = EXCLUDED.flavor_text,
+            is_foil = EXCLUDED.is_foil,
+            is_full_art = EXCLUDED.is_full_art,
+            is_highres_image = EXCLUDED.is_highres_image,
+            is_nonfoil = EXCLUDED.is_nonfoil,
+            is_oversized = EXCLUDED.is_oversized,
+            is_reserved = EXCLUDED.is_reserved,
+            is_story_spotlight = EXCLUDED.is_story_spotlight,
+            loyalty = EXCLUDED.loyalty,
+            mana_cost = EXCLUDED.mana_cost,
+            multiverse_ids = EXCLUDED.multiverse_ids,
+            name_section = EXCLUDED.name_section,
+            number_order = EXCLUDED.number_order,
+            name = EXCLUDED.name,
+            oracle_text = EXCLUDED.oracle_text,
+            power = EXCLUDED.power,
+            printed_name = EXCLUDED.printed_name,
+            printed_text = EXCLUDED.printed_text,
+            toughness = EXCLUDED.toughness,
+            arena_id = EXCLUDED.arena_id::integer,
+            mtgo_id = EXCLUDED.mtgo_id::integer,
+            tcgplayer_id = EXCLUDED.tcgplayer_id::integer,
+            hand_modifier = EXCLUDED.hand_modifier,
+            life_modifier = EXCLUDED.life_modifier,
+            is_booster = EXCLUDED.is_booster,
+            is_digital = EXCLUDED.is_digital,
+            is_promo = EXCLUDED.is_promo,
+            released_at = released_at_,
+            is_textless = EXCLUDED.is_textless,
+            mtgo_foil_id = EXCLUDED.mtgo_foil_id::integer,
+            is_reprint = EXCLUDED.is_reprint,
+            cmset = EXCLUDED.cmset,
+            cmrarity = EXCLUDED.cmrarity,
+            cmlanguage = EXCLUDED.cmlanguage,
+            cmlayout = EXCLUDED.cmlayout,
+            cmwatermark = EXCLUDED.cmwatermark,
+            cmframe = EXCLUDED.cmframe,
+            type_line = EXCLUDED.type_line,
+            printed_type_line = EXCLUDED.printed_type_line,
+            face_order = EXCLUDED.face_order,
+            new_id = EXCLUDED.new_id,
+            oracle_id = EXCLUDED.oracle_id,
+            id = EXCLUDED.id,
+            art_crop_url = EXCLUDED.art_crop_url,
+            normal_url = EXCLUDED.normal_url,
+            png_url = EXCLUDED.png_url,
+            date_updated = now();
 
     -- set and language
     IF _cmset IS NOT NULL AND _cmlanguage IS NOT NULL THEN
-        SELECT * INTO rowSetLanguage FROM cmset_language
-            WHERE cmset = _cmset AND cmlanguage = _cmlanguage
-            LIMIT 1;
-
-        IF NOT FOUND THEN
-            INSERT INTO cmset_language(
-                cmset,
-                cmlanguage
-            ) VALUES(
-                _cmset,
-                _cmlanguage
-            );
-        END IF;    
+        INSERT INTO cmset_language(
+            cmset,
+            cmlanguage
+        ) VALUES(
+            _cmset,
+            _cmlanguage
+        )
+        ON CONFLICT(
+            cmset,
+            cmlanguage
+        )
+            DO NOTHING;
     END IF;
 
      -- artists
     IF _cmartists IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmartists LOOP
-            SELECT * INTO rowArtist FROM cmcard_artist
-                WHERE cmcard = _new_id AND cmartist = pkey
-                LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_artist(
-                    cmcard,
-                    cmartist
-                ) VALUES (
-                    _new_id,
-                    pkey
-                );
-            END IF;    
+            INSERT INTO cmcard_artist(
+                cmcard,
+                cmartist
+            ) VALUES (
+                _new_id,
+                pkey
+            )
+            ON CONFLICT(
+                cmcard,
+                cmartist
+            )
+                DO NOTHING;
         END LOOP;
     END IF;
 
     -- frame effects
     IF _cmframeeffects IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmframeeffects LOOP
-            SELECT * INTO rowFrameEffect FROM cmcard_frameeffect
-                WHERE cmcard = _new_id AND cmframeeffect = pkey
-                LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_frameeffect(
-                    cmcard,
-                    cmframeeffect
-                ) VALUES (
-                    _new_id,
-                    pkey
-                );
-            END IF;    
+            INSERT INTO cmcard_frameeffect(
+                cmcard,
+                cmframeeffect
+            ) VALUES (
+                _new_id,
+                pkey
+            )
+            ON CONFLICT(
+                cmcard,
+                cmframeeffect
+            )
+                DO NOTHING;
         END LOOP;
     END IF;
 
     -- colors
     IF _cmcolors IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolors LOOP
-            SELECT * INTO rowColor FROM cmcard_color
-                WHERE cmcard = _new_id AND cmcolor = pkey
-                LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_color(
-                    cmcard,
-                    cmcolor
-                ) VALUES (
-                    _new_id,
-                    pkey
-                );
-            END IF;    
+            INSERT INTO cmcard_color(
+                cmcard,
+                cmcolor
+            ) VALUES (
+                _new_id,
+                pkey
+            )
+            ON CONFLICT(
+                cmcard,
+                cmcolor
+            )
+                DO NOTHING;
+            
         END LOOP;
     END IF;
 
     -- color identities
     IF _cmcolor_identities IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_identities LOOP
-            SELECT * INTO rowColorIndentity FROM cmcard_coloridentity
-                WHERE cmcard = _new_id AND cmcolor = pkey
-                LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_coloridentity(
-                    cmcard,
-                    cmcolor
-                ) VALUES (
-                    _new_id,
-                    pkey
-                );
-            END IF;    
+            INSERT INTO cmcard_coloridentity(
+                cmcard,
+                cmcolor
+            ) VALUES (
+                _new_id,
+                pkey
+            )
+            ON CONFLICT(
+                cmcard,
+                cmcolor
+            )
+                DO NOTHING;
         END LOOP;
     END IF;
 
     -- color indicators
     IF _cmcolor_indicators IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcolor_indicators LOOP
-            SELECT * INTO rowColorIndicator FROM cmcard_colorindicator
-                WHERE cmcard = _new_id AND cmcolor = pkey
-                LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_colorindicator(
-                    cmcard,
-                    cmcolor
-                ) VALUES (
-                    _new_id,
-                    pkey
-                );
-            END IF;    
+            INSERT INTO cmcard_colorindicator(
+                cmcard,
+                cmcolor
+            ) VALUES (
+                _new_id,
+                pkey
+            )
+            ON CONFLICT(
+                cmcard,
+                cmcolor
+            )
+                DO NOTHING;
         END LOOP;
     END IF;
 
     -- legalities
     IF _cmlegalities IS NOT NULL THEN
         FOR pkey2, pkey3 IN SELECT * FROM jsonb_each_text(_cmlegalities) LOOP
-            SELECT * INTO rowFormatLegality FROM cmcard_format_legality
-                WHERE cmcard = _new_id AND cmformat = pkey2 AND cmlegality = pkey3
-                LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_format_legality(
-                    cmcard,
-                    cmformat,
-                    cmlegality
-                ) VALUES (
-                    _new_id,
-                    pkey2,
-                    pkey3
-                );
-            END IF;    
+            INSERT INTO cmcard_format_legality(
+                cmcard,
+                cmformat,
+                cmlegality
+            ) VALUES (
+                _new_id,
+                pkey2,
+                pkey3
+            )
+            ON CONFLICT(
+                cmcard,
+                cmformat,
+                cmlegality
+            )
+                DO NOTHING;
         END LOOP;
     END IF;
 
     -- subtypes
     IF _cmcardtype_subtypes IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcardtype_subtypes LOOP
-            SELECT * INTO rowSubtype FROM cmcard_subtype
-                WHERE cmcard = _new_id AND cmcardtype = pkey
-                LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_subtype(
-                    cmcard,
-                    cmcardtype
-                ) VALUES (
-                    _new_id,
-                    pkey
-                );
-            END IF;
+            INSERT INTO cmcard_subtype(
+                cmcard,
+                cmcardtype
+            ) VALUES (
+                _new_id,
+                pkey
+            )
+            ON CONFLICT(
+                cmcard,
+                cmcardtype
+            )
+                DO NOTHING;
         END LOOP;
     END IF;
 
     -- supertypes
     IF _cmcardtype_subtypes IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmcardtype_supertypes LOOP
-            SELECT * INTO rowSupertype FROM cmcard_supertype
-               WHERE cmcard = _new_id AND cmcardtype = pkey
-               LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_supertype(
-                    cmcard,
-                    cmcardtype
-                ) VALUES (
-                    _new_id,
-                    pkey
-                );
-            END IF;    
+            INSERT INTO cmcard_supertype(
+                cmcard,
+                cmcardtype
+            ) VALUES (
+                _new_id,
+                pkey
+            )
+            ON CONFLICT(
+                cmcard,
+                cmcardtype
+            )
+                DO NOTHING;
         END LOOP;
     END IF;
 
     -- games
     IF _cmgames IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmgames LOOP
-            SELECT * INTO rowGame FROM cmcard_game
-               WHERE cmcard = _new_id AND cmgame = pkey
-               LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_game(
-                    cmcard,
-                    cmgame
-                ) VALUES (
-                    _new_id,
-                    pkey
-                );
-            END IF;    
+            INSERT INTO cmcard_game(
+                cmcard,
+                cmgame
+            ) VALUES (
+                _new_id,
+                pkey
+            )
+            ON CONFLICT(
+                cmcard,
+                cmgame
+            )
+                DO NOTHING;
         END LOOP;
     END IF;
 
     -- keywords
     IF _cmkeywords IS NOT NULL THEN
         FOREACH pkey IN ARRAY _cmkeywords LOOP
-            SELECT * INTO rowKeyword FROM cmcard_keyword
-               WHERE cmcard = _new_id AND cmkeyword = pkey
-               LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_keyword(
-                    cmcard,
-                    cmkeyword
-                ) VALUES (
-                    _new_id,
-                    pkey
-                );
-            END IF;    
+            INSERT INTO cmcard_keyword(
+                cmcard,
+                cmkeyword
+            ) VALUES (
+                _new_id,
+                pkey
+            )
+            ON CONFLICT(
+                cmcard,
+                cmkeyword
+            )
+                DO NOTHING;
         END LOOP;
     END IF;
 

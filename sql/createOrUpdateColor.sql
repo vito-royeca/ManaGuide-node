@@ -8,38 +8,24 @@ DECLARE
     _name ALIAS FOR $2;
     _name_section ALIAS FOR $3;
     _is_mana_color ALIAS FOR $4;
-
-    row cmcolor%ROWTYPE;
 BEGIN
-    SELECT * INTO row FROM cmcolor WHERE name = _name
-        LIMIT 1;
-
-    IF NOT FOUND THEN
-        INSERT INTO cmcolor(
-            symbol,
-            name,
-            name_section,
-            is_mana_color)
-        VALUES(
-            _symbol,
-            _name,
-            _name_section,
-            _is_mana_color);
-    ELSE
-        IF row.symbol IS DISTINCT FROM _symbol OR
-           row.name IS DISTINCT FROM _name OR
-           row.name_section IS DISTINCT FROM _name_section OR
-           row.is_mana_color IS DISTINCT FROM _is_mana_color THEN
-
-            UPDATE cmcolor SET
-                symbol = _symbol,
-                name = _name,
-                name_section = _name_section,
-                is_mana_color = _is_mana_color,
-                date_updated = now()
-            WHERE name = _name;
-        END IF;    
-    END IF;
+    INSERT INTO cmcolor(
+        symbol,
+        name,
+        name_section,
+        is_mana_color)
+    VALUES(
+        _symbol,
+        _name,
+        _name_section,
+        _is_mana_color)
+    ON CONFLICT(symbol)
+        DO UPDATE SET
+            symbol = EXCLUDED.symbol,
+            name = EXCLUDED.name,
+            name_section = EXCLUDED.name_section,
+            is_mana_color = EXCLUDED.is_mana_color,
+            date_updated = now();
 
     RETURN;
 END;

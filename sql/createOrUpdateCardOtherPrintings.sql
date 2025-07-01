@@ -4,7 +4,6 @@ DECLARE
     rows integer := 0;
     row RECORD;
     row2 RECORD;
-    rowOtherPrinting cmcard_otherprinting%ROWTYPE;
 BEGIN
     RAISE NOTICE 'other printings: %', currentRow;
 
@@ -24,18 +23,16 @@ BEGIN
                 cmlanguage = row.cmlanguage
             ORDER BY s.release_date, c.name
         LOOP
-            SELECT * INTO rowOtherPrinting FROM cmcard_otherprinting
-                WHERE cmcard = row.new_id AND cmcard_otherprinting = row2.new_id
-                LIMIT 1;
-
-            IF NOT FOUND THEN
-                INSERT INTO cmcard_otherprinting(
-                    cmcard,
-                    cmcard_otherprinting)
-                VALUES(
-                    row.new_id,
-                    row2.new_id);
-            END IF;        
+            INSERT INTO cmcard_otherprinting(
+                cmcard,
+                cmcard_otherprinting)
+            VALUES(
+                row.new_id,
+                row2.new_id)
+            ON CONFLICT(
+                cmcard,
+                cmcard_otherprinting)
+                DO NOTHING;
         END LOOP;
 
         currentRow := currentRow + 1;

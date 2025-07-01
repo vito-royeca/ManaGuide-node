@@ -8,8 +8,6 @@ DECLARE
     _name ALIAS FOR $2;
     _name_section ALIAS FOR $3;
     _description ALIAS FOR $4;
-
-    row cmframeeffect%ROWTYPE;
 BEGIN
     -- check for nulls
     IF lower(_id) = 'null' THEN
@@ -25,37 +23,23 @@ BEGIN
         _description := NULL;
     END IF;
 
-    SELECT * INTO row FROM cmframeeffect
-        WHERE id = _id
-        LIMIT 1;
-
-    IF NOT FOUND THEN
-        INSERT INTO cmframeeffect(
-            id,
-            name,
-            name_section,
-            description)
-        VALUES(
-            _id,
-            _name,
-            _name_section,
-            _description);
-    ELSE
-        IF row.id IS DISTINCT FROM _id OR
-           row.name IS DISTINCT FROM _name OR
-           row.name_section IS DISTINCT FROM _name_section OR
-           row.description IS DISTINCT FROM _description THEN
-            
-            UPDATE cmframeeffect SET
-                id = _id,
-                name = _name,
-                name_section = _name_section,
-                description = _description,
-                date_updated = now()
-            WHERE id = _id;
-        END IF;    
-    END IF;
-
+    INSERT INTO cmframeeffect(
+        id,
+        name,
+        name_section,
+        description)
+    VALUES(
+        _id,
+        _name,
+        _name_section,
+        _description)
+    ON CONFLICT(id)
+    DO UPDATE SET
+        name = EXCLUDED.name,
+        name_section = EXCLUDED.name_section,
+        description = EXCLUDED.description,
+        date_updated = now();
+    
     RETURN;
 END;
 $$ LANGUAGE plpgsql;
