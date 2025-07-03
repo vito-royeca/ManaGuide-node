@@ -13,16 +13,18 @@ BEGIN
         WHERE id = _cmcard_part
         LIMIT 1;
 
-    INSERT INTO cmcard_component_part(
-        cmcard,
-        cmcomponent,
-        cmcard_part)
-    VALUES(
-        _cmcard,
-        _cmcomponent,
-        cmcard_part_new_id)
-    ON CONFLICT(cmcard, cmcomponent, cmcard_part)
-        DO NOTHING;
+    IF FOUND THEN
+        INSERT INTO cmcard_component_part(
+            cmcard,
+            cmcomponent,
+            cmcard_part)
+        VALUES(
+            _cmcard,
+            _cmcomponent,
+            cmcard_part_new_id)
+        ON CONFLICT(cmcard, cmcomponent, cmcard_part)
+            DO NOTHING;
+    END IF;
 
     RETURN;
 END;
