@@ -5,10 +5,10 @@ DECLARE
 
     pkey character varying;
 BEGIN
-        INSERT INTO serverupdate(
-            full_update)
-        VALUES(
-            _full_update);
+    INSERT INTO serverupdate(
+        full_update)
+    VALUES(
+        _full_update);
 
     RETURN _full_update;
 END;

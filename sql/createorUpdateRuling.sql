@@ -16,7 +16,12 @@ BEGIN
     VALUES(
         _oracle_id,
         _text,
-        _date_published);
+        _date_published)
+    ON CONFLICT(id)
+        DO UPDATE SET
+            text = EXCLUDED.text,
+            date_published = EXCLUDED.date_published,
+            date_updated = now();
 
     RETURN;
 END;
