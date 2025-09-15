@@ -1,10 +1,17 @@
 CREATE OR REPLACE FUNCTION deleteCard(
     character varying) RETURNS boolean AS $$
 DECLARE
-    _new_id ALIAS FOR $1;
+    _new_id_or_id ALIAS FOR $1;
 
     pkey character varying;
+    _new_id character varying;
 BEGIN
+    SELECT new_id INTO _new_id FROM cmcard c where c.new_id = _new_id_or_id;
+
+    IF NOT FOUND THEN
+        SELECT new_id INTO _new_id FROM cmcard c where c.id = _new_id_or_id;
+    END IF;
+
     DELETE from cmcard_color WHERE cmcard = _new_id;
     DELETE from cmcard_coloridentity WHERE cmcard = _new_id;
 	DELETE from cmcard_colorindicator WHERE cmcard = _new_id;
