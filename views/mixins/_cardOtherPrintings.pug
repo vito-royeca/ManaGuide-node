@@ -2,6 +2,7 @@ mixin cardOtherPrintings(card)
     if card.other_printings.length > 0
         - var foilMarket = 0
         - var normalMarket = 0
+        - var displayTcgPricingMessage = false
 
         p
         table.ui.small.table
@@ -30,10 +31,12 @@ mixin cardOtherPrintings(card)
                                       card.name,
                                       "250px")
                     if normalMarket > 0
+                        - displayTcgPricingMessage = true
                         td.right.aligned $#{ number2USD(normalMarket) }
                     else
                         td.right.aligned &#8212
                     if foilMarket > 0
+                        - displayTcgPricingMessage = true
                         td.right.aligned $#{ number2USD(foilMarket) }
                     else
                         td.right.aligned &#8212
@@ -44,7 +47,7 @@ mixin cardOtherPrintings(card)
                         if card.other_printings.length == 10
                             p.left.aligned 
                                 a(href="/printings/" + card.new_id + "/" + card.language.code + "?displayAs=image&sortedBy=set_release&orderBy=desc") View All Printings
-                        if foilMarket > 0 || normalMarket > 0 
+                        if displayTcgPricingMessage
                             p.left.aligned Pricing data provided by <a href="https://www.tcgplayer.com" target="_blank" rel="noopener noreferrer"> TCGPlayer</a>
                     
 
