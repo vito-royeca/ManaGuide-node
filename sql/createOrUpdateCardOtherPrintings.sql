@@ -17,7 +17,7 @@ BEGIN
         FOR row2 IN SELECT new_id FROM cmcard c
                 LEFT JOIN cmset s ON c.cmset = s.code
             WHERE
-                new_id IS DISTINCT FROM row.new_id AND
+                -- new_id IS DISTINCT FROM row.new_id AND
                 -- cmset IS DISTINCT FROM row.cmset AND
                 c.name = row.name AND
                 cmlanguage = row.cmlanguage
