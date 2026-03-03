@@ -10,15 +10,15 @@ BEGIN
     FOR row IN SELECT new_id, c.name, cmset, cmlanguage FROM cmcard c
             LEFT JOIN cmset s ON c.cmset = s.code
         WHERE
-            c.new_id NOT IN (SELECT cmcard_face FROM cmcard_face) AND
-            c.new_id NOT IN (SELECT cmcard_part FROM cmcard_component_part)
+            c.new_id NOT IN (SELECT cmcard_face FROM cmcard_face WHERE cmcard = c.new_id) -- AND
+            -- c.new_id NOT IN (SELECT cmcard_part FROM cmcard_component_part)
         ORDER BY s.release_date, c.name
     LOOP
         FOR row2 IN SELECT new_id FROM cmcard c
                 LEFT JOIN cmset s ON c.cmset = s.code
             WHERE
                 new_id IS DISTINCT FROM row.new_id AND
-                cmset IS DISTINCT FROM row.cmset AND
+                -- cmset IS DISTINCT FROM row.cmset AND
                 c.name = row.name AND
                 cmlanguage = row.cmlanguage
             ORDER BY s.release_date, c.name

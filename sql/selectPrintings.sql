@@ -139,16 +139,10 @@ BEGIN
                         ) x
                     ) AS supertypes ';   
 
-    -- FROM cmcard c
-    --                         left join cmcard_otherprinting x on x.cmcard_otherprinting = c.new_id
-    --                         left join cmset y on y.code = c.cmset
-    --                         WHERE x.cmcard = ''' || _new_id || '''' ||
-    --                         ' order by y.release_date desc, c.collector_number
-
     command := command || 'FROM cmcard c left join cmcard_otherprinting x on x.cmcard_otherprinting = c.new_id ';
 	command := command || 'left join cmset s on s.code = c.cmset ';
-    command := command || 'WHERE x.cmcard = ''' || _newId || ''' ';
-    command := command || 'AND c.cmlanguage = ''' || _cmlanguage || ''' ';
+    -- command := command || 'WHERE x.cmcard = ''' || _newId || ''' ';
+    command := command || 'WHERE c.cmlanguage = ''' || _cmlanguage || ''' ';
     command := command || 'ORDER BY ' || _sortedBy || '';
 
 

@@ -73,7 +73,7 @@ BEGIN
                     printed_name,
                     printed_type_line,
                     type_line,
-	                power,
+                    power,
                     toughness,
                     c.tcgplayer_id,
                     released_at,
@@ -83,28 +83,28 @@ BEGIN
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT s.code, s.name, s.keyrune_class, s.keyrune_unicode
-                            FROM cmset s WHERE s.code = c.cmset
+                            FROM public.cmset s WHERE s.code = c.cmset
                             LIMIT 1
                         ) x
                     ) AS set,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT r.name
-                            FROM cmrarity r WHERE r.name = c.cmrarity
+                            FROM public.cmrarity r WHERE r.name = c.cmrarity
                             LIMIT 1
                         ) x
                     ) AS rarity,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT l.code, l.name
-                            FROM cmlanguage l WHERE l.code = c.cmlanguage
+                            FROM public.cmlanguage l WHERE l.code = c.cmlanguage
                             LIMIT 1
                         ) x
                     ) AS language,
                     (
                         SELECT row_to_json(x) FROM (
                             SELECT v.name, v.description
-                            FROM cmlayout v
+                            FROM public.cmlayout v
                             WHERE v.name = c.cmlayout
                             LIMIT 1
                         ) x
@@ -112,7 +112,7 @@ BEGIN
                     array(
                         SELECT row_to_json(x) FROM (
                             SELECT v.id, v.low, v.median, v.high, v.market, v.direct_low, v.is_foil, v.date_updated
-                            FROM cmcardprice v
+                            FROM public.cmcardprice v
                             WHERE v.cmcard = c.new_id
                             LIMIT 1
                         ) x
@@ -139,7 +139,7 @@ BEGIN
                                 art_crop_url,
                                 normal_url,
                                 png_url
-                            FROM cmcard d left join cmcard_face w on w.cmcard_face = d.new_id
+                            FROM public.cmcard d left join public.cmcard_face w on w.cmcard_face = d.new_id
                             WHERE w.cmcard = c.new_id
                             ORDER BY face_order
                             LIMIT 10
@@ -151,20 +151,19 @@ BEGIN
                     ', array(
                         SELECT row_to_json(x) FROM (
                             SELECT w.name
-                            FROM cmcard_supertype v left join cmcardtype w on v.cmcardtype = w.name
+                            FROM public.cmcard_supertype v left join public.cmcardtype w on v.cmcardtype = w.name
                             WHERE v.cmcard = c.new_id
                             LIMIT 50
                         ) x
                     ) AS supertypes ';                
 
-    command := command || 'FROM cmcard c LEFT JOIN cmset s ON c.cmset = s.code ';
-	command := command || 'LEFT JOIN cmrarity r ON c.cmrarity = r.name ';
+    command := command || 'FROM public.cmcard c LEFT JOIN public.cmset s ON c.cmset = s.code ';
+	command := command || 'LEFT JOIN public.cmrarity r ON c.cmrarity = r.name ';
     command := command || 'WHERE c.cmset = ''' || _cmset || ''' ';
     command := command || 'AND c.cmlanguage = ''' || _cmlanguage || ''' ';
-    command := command || 'AND c.new_id NOT IN(select cmcard_face from cmcard_face) ';
+    command := command || 'AND c.new_id NOT IN(select cmcard_face from public.cmcard_face) ';
     command := command || 'ORDER BY ' || _sortedBy || '';
 
     RETURN QUERY EXECUTE command;
 END;
 $$ LANGUAGE plpgsql;
-
