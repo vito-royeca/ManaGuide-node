@@ -15,6 +15,7 @@ CREATE OR REPLACE FUNCTION selectSets()
 		cmset_parent    character varying,
         set_block       json,
         set_type        json,
+        set_parent      json,
         languages       json[])
 AS
 $$
@@ -48,6 +49,13 @@ BEGIN
                             LIMIT 1
                         ) x
                    ) AS set_type,
+                   (
+                       SELECT row_to_json(x) FROM (
+                            SELECT sp.code
+                            FROM cmset sp WHERE sp.code = s.cmset_parent
+                            LIMIT 1
+                        ) x
+                   ) AS set_parent,
                    array(
                         SELECT row_to_json(x) FROM (
                             SELECT l.code, l.display_code, l.name
