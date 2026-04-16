@@ -96,16 +96,16 @@ BEGIN
                     ) AS rarity,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT l.code, l.name
+                            SELECT l.code, l.display_code, l.name
                             FROM public.cmlanguage l WHERE l.code = c.cmlanguage
                             LIMIT 1
                         ) x
                     ) AS language,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.name, v.description
+                            SELECT v.code, v.name, v.description
                             FROM public.cmlayout v
-                            WHERE v.name = c.cmlayout
+                            WHERE v.code = c.cmlayout
                             LIMIT 1
                         ) x
                     ) AS layout,

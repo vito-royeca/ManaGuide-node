@@ -3,24 +3,23 @@ CREATE OR REPLACE FUNCTION createOrUpdateLayout(
     character varying,
     character varying) RETURNS void AS $$
 DECLARE
-    _name ALIAS FOR $1;
-    _name_section ALIAS FOR $2;
+    _code ALIAS FOR $1;
+    _name ALIAS FOR $2;
     _description ALIAS FOR $3;
 BEGIN
     INSERT INTO cmlayout(
+        code,
         name,
-        name_section,
         description)
     VALUES(
+        _code,
         _name,
-        _name_section,
         _description)
-    ON CONFLICT(name)
+    ON CONFLICT(code)
         DO UPDATE SET
-            name_section = EXCLUDED.name_section,
+            name = EXCLUDED.name,
             description = EXCLUDED.description,
             date_updated = now();
-    
 
     RETURN;
 END;

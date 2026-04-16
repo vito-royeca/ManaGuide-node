@@ -102,9 +102,9 @@ BEGIN
                     ) AS language,
                     (
                         SELECT row_to_json(x) FROM (
-                            SELECT v.name, v.description
+                            SELECT v.code, v.name, v.description
                             FROM cmlayout v
-                            WHERE v.name = c.cmlayout
+                            WHERE v.code = c.cmlayout
                             LIMIT 1
                         ) x
                     ) AS layout,
