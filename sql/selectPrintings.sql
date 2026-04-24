@@ -141,8 +141,8 @@ BEGIN
 
     command := command || 'FROM cmcard c left join cmcard_otherprinting x on x.cmcard_otherprinting = c.new_id ';
 	command := command || 'left join cmset s on s.code = c.cmset ';
-    -- command := command || 'WHERE x.cmcard = ''' || _newId || ''' ';
-    command := command || 'WHERE c.cmlanguage = ''' || _cmlanguage || ''' ';
+    command := command || 'WHERE x.cmcard = ''' || _newId || ''' ';
+    command := command || 'AND c.cmlanguage = ''' || _cmlanguage || ''' ';
     command := command || 'ORDER BY ' || _sortedBy || '';
 
 
