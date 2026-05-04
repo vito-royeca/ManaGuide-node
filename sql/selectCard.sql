@@ -237,7 +237,7 @@ BEGIN
                                                 png_url
                                             FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                                             WHERE w.cmcard = x.new_id
-                                            LIMIT 100
+                                            LIMIT 10
                                         ) x
                                     ) AS faces
 								)
@@ -306,7 +306,7 @@ BEGIN
                                             png_url
                                         FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                                         WHERE w.cmcard = x.cmcard_otherlanguage
-                                        LIMIT 100
+                                        LIMIT 10
                                     ) x
                                 ) AS faces
                             FROM cmcard c left join cmlanguage w on w.code = cmlanguage
@@ -350,10 +350,17 @@ BEGIN
                                 ) AS set,
 								array(
                                     SELECT row_to_json(x) FROM (
-                                        SELECT new_id, art_crop_url, normal_url, png_url
+                                        SELECT 
+                                            new_id,
+                                            name,
+                                            name_section,
+                                            printed_name,
+                                            art_crop_url,
+                                            normal_url,
+                                            png_url
                                         FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
                                         WHERE w.cmcard = x.cmcard_otherprinting
-                                        LIMIT 100
+                                        LIMIT 10
                                     ) x
                                 ) AS faces,
                                 array(
@@ -409,6 +416,21 @@ BEGIN
                                     LIMIT 1
                                 ) x
                             ) AS set,
+                            array(
+                                SELECT row_to_json(x) FROM (
+                                    SELECT
+                                        new_id,
+                                        name,
+                                        name_section,
+                                        printed_name,
+                                        art_crop_url,
+                                        normal_url,
+                                        png_url
+                                    FROM cmcard c left join cmcard_face w on w.cmcard_face = c.new_id
+                                    WHERE w.cmcard = x.cmcard_variation
+                                    LIMIT 10
+                                ) x
+                            ) AS faces,
                             (
                                 SELECT row_to_json(x) FROM (
                                     SELECT v.code, v.name
@@ -417,8 +439,9 @@ BEGIN
                                     LIMIT 1
                                 ) x
                             ) AS language
-                        FROM cmcard c left join cmcard_variation w on w.cmcard_variation = c.new_id
-                        WHERE w.cmcard = ''' || _new_id || '''' ||
+                        FROM cmcard c
+                        left join cmcard_variation x on x.cmcard_variation = c.new_id
+                        WHERE x.cmcard = ''' || _new_id || '''' ||
                         ' order by c.collector_number
                         LIMIT 50
                     ) x
